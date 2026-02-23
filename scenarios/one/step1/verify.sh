@@ -7,7 +7,7 @@ customChecks:
   - name: app-secret-check
     template: env-var
     params:
-      name: APP_TOKEN
+      name: APP_TOKEN$
 EOF
 
 # Run kube-linter on the masterclass-fastapi-app Helm chart.
