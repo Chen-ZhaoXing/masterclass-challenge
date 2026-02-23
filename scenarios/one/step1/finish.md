@@ -15,7 +15,11 @@ env:
       name: SECRET_PASSWORD
 ```
 OWASP kubernetes cheatsheet & CIS benchmark do encourage secrets to be mounted as files with `volumes` & `volumneMounts` instead as `readOnly`.
+
 This is primarily due to how environment variables might be more prone to leakages in logs and linux file permission mechanism.
+
 However to do this most of the time the applications has to be written in such a way that takes this into account in a kubernetes environment.
-There are other better methods such as KMS or external secret store which can involve both infrasturcture & source code changes.
+
+There are other better methods such as KMS or external secret store compared to `volumes` which can involve both infrasturcture & source code changes.
+
 
