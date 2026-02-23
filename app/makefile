@@ -1,6 +1,6 @@
 docker:
 	docker build -t touching/masterclass-fastapi-app:latest .
-	docker tag touching/masterclass-fastapi-app:latest touching/masterclass-app:v0.1.0
+	docker tag touching/masterclass-fastapi-app:latest touching/masterclass-fastapi-app:v0.1.0
 	docker push touching/masterclass-fastapi-app:latest
 	docker push touching/masterclass-fastapi-app:v0.1.0
 

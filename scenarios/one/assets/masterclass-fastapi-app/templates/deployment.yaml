@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: challenge1-app
-          image: "touching/masterclass-app"
+          image: "touching/masterclass-fastapi-app:latest"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
