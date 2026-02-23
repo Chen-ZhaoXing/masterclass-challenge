@@ -31,9 +31,5 @@ rm get_helm.sh
 
 kubectl create ns challenge1
 
-helm upgrade --install challenge1 ~/masterclass-fastapi-app -n challenge1
-
-kubectl wait --for=condition=available deployment challenge1 -n challenge1
-
 # Optional: Create a 'done' file if your foreground.sh or index.json needs to wait for this
 touch /opt/background-finished
