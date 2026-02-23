@@ -17,8 +17,8 @@
         "assets": {
             "host01": [
                 {
-                    "file": "scenarios/one/assets/*",
-                    "target": "~/",
+                    "file": "masterclass-fastapi-app",
+                    "target": "~/masterclass-fastapi-app",
                     "chmod": "+rw"
                 }
             ]
