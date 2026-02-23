@@ -7,6 +7,7 @@ image:
 service:
   port: 8000
 
+#---Edit the lines below here for the challenge---
 env:
   mode: "production"
   appToken: "myverysecretpassword"
