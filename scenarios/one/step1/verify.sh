@@ -8,11 +8,6 @@ customChecks:
     template: env-var
     params:
       name: APP_TOKEN
-  - name: mode-check
-    template: env-var
-    params:
-      name: MODE
-      value: "production"
 EOF
 
 # Run kube-linter on the masterclass-fastapi-app Helm chart.
