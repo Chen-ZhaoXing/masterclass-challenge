@@ -18,7 +18,7 @@
             "host01": [
                 {
                     "file": "masterclass-fastapi-app/**/*.*",
-                    "target": "~/masterclass-fastapi-app",
+                    "target": "~/",
                     "chmod": "+rw"
                 }
             ]
