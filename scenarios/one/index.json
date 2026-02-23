@@ -17,7 +17,7 @@
         "assets": {
             "host01": [
                 {
-                    "file": "masterclass-fastapi-app",
+                    "file": "masterclass-fastapi-app/**/*.*",
                     "target": "~/masterclass-fastapi-app",
                     "chmod": "+rw"
                 }
