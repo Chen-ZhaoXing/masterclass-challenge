@@ -6,3 +6,5 @@ helm upgrade --install challenge1 ~/masterclass-fastapi-app -n challenge1
 
 kubectl wait --for=condition=available deployment challenge1 -n challenge1
 
+cd ~/masterclass-fastapi-app
+
