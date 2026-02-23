@@ -1,0 +1,6 @@
+app/.venv
+app/.env*
+app/token
+app/src/__pycache__
+app/masterclass-fastapi-app/output.yaml
+scenario-examples

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: challenge1-service
+  labels:
+    {{- include "masterclass-fastapi-app.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "masterclass-fastapi-app.selectorLabels" . | nindent 4 }}

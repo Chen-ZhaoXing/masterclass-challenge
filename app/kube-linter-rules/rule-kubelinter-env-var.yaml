@@ -1,0 +1,12 @@
+checks:
+  doNotAutoAddDefaults: true
+customChecks:
+  - name: app-secret-check
+    template: env-var
+    params:
+      name: APP_TOKEN
+  - name: mode-check
+    template: env-var
+    params:
+      name: MODE
+      value: "production"

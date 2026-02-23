@@ -1,0 +1,12 @@
+namespace: challenge1
+image:
+  repository: masterclass-fastapi-app
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  port: 8000
+
+env:
+  mode: "production"
+  appToken: "myverysecretpassword"

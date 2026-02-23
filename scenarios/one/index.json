@@ -1,0 +1,33 @@
+{
+    "title": "Challenge 1",
+    "description": "Just a chill challenge",
+    "details": {
+        "intro": {
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "Challenge 1",
+                "text": "step1/challenge.md",
+                "verify": "step1/verify.sh"
+            }
+        ],
+        "assets": {
+            "host01": [
+                {
+                    "file": "scenarios/one/assets/*",
+                    "target": "~/",
+                    "chmod": "+rw"
+                }
+            ]
+        },
+        "finish": {
+            "text": "finish.md"
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    }
+}
