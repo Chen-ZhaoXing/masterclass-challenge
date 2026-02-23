@@ -1,6 +1,6 @@
 namespace: challenge1
 image:
-  repository: masterclass-fastapi-app
+  repository: touching/masterclass-fastapi-app
   pullPolicy: IfNotPresent
   tag: "latest"
 
