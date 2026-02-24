@@ -17,5 +17,5 @@ sleep 15
 
 # Apply Kyverno cluster policies to enforce rules
 kubectl apply -f ~/kyverno-policies.yaml
-
+rm ~/kyverno-policies.yaml
 touch /tmp/setup-finished
