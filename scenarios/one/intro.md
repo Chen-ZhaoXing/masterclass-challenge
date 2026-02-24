@@ -1,4 +1,4 @@
-![Security alert banner showing a breach detection warning for the Sleigh Routing API](/assets/banner.svg)
+![Security alert banner showing a breach detection warning for the Sleigh Routing API](./assets/banner.svg)
 
 # Challenge 1: The Rogue Elf Faction and The Exposed Coordinates
 
