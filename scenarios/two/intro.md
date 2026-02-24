@@ -1,16 +1,24 @@
-# Welcome to Challenge 2: Master Helm & Kyverno Policies
+![Security alert banner showing a breach detection warning for the Sleigh Routing API](../assets/banner.svg)
 
-Welcome to the second challenge! In this scenario, you will take on the role of a DevOps engineer tasked with preparing a basic application for production deployment.
+# Challenge 2: The Rogue Elf Faction Returns
 
-We have a simple FastAPI application packaged into a Docker image, and a basic Helm chart has been created to deploy it. However, the initial attempt at writing this Helm chart (located in `~/app-chart`) is poorly configured and full of common misconfigurations.
+## The Situation
 
-To ensure our cluster remains secure and stable, we have installed **Kyverno**, a Kubernetes policy engine. Kyverno has been configured with strict `ClusterPolicies` that will outright reject any resources that do not meet our production standards.
+The rogue elves haven't given up. After failing to steal the Master Guidance Coordinates, they are now trying a different approach: deploying insecure, poorly configured workloads into the North Pole Kubernetes cluster to create vulnerabilities they can exploit later.
 
-### Your Mission
+They've managed to submit a basic Helm chart (located in `~/app-chart`) to deploy a new "gift-tracking" API. Unsurprisingly, it's riddled with common security and operational misconfigurations—hardcoded secrets, missing resource limits, and containers running as root.
+
+## The Countermeasure
+
+Anticipating this, the Chief Holiday Officer has deployed **Kyverno**, a strict Kubernetes policy engine, across the cluster. Kyverno is armed with `ClusterPolicies` that will outright reject any resources that do not meet the North Pole's rigorous production standards. 
+
+Your role as Senior Security Elf is to analyze the rogue elves' Helm chart, identify the misconfigurations blocking its deployment, and refactor it to meet Kyverno's standards.
+
+## Your Mission
 
 1. **Deploy the Chart:** Attempt to render and apply the Helm chart to the cluster to see what happens.
-2. **Find the Errors:** When Kyverno blocks the deployment, use the feedback and logs to identify exactly which policies and rules you are violating.
-   *Hint: If you need more details on why your deployment is failing or want to see the policies in action, you can check the Kyverno admission controller logs using:*
+2. **Find the Errors:** When Kyverno blocks the deployment, use the feedback and logs to identify exactly which policies and rules the chart violates.
+   *Hint: If you need more details on why your deployment is failing or want to see the policies in action, check the Kyverno admission controller logs:*
    ```bash
    kubectl logs -n kyverno -l app=kyverno -c kyverno
    ```
@@ -18,7 +26,7 @@ To ensure our cluster remains secure and stable, we have installed **Kyverno**, 
    ```bash
    kubectl get clusterpolicies
    ```
-3. **Fix the Chart:** Modify the `Chart.yaml`, `values.yaml`, and templates within `~/app-chart` to resolve all the issues. 
-4. **Verify:** You are done when you can successfully template and apply the Helm chart to the cluster without Kyverno rejecting it. You can check your progress by running the `check` command.
+3. **Fix the Chart:** Modify `Chart.yaml`, `values.yaml`, and the templates within `~/app-chart` so they adhere to all security requirements.
+4. **Verify:** You are done when you can successfully template and apply the Helm chart without Kyverno rejecting it. Run the `check` command to verify your progress.
 
-Good luck! Have fun debugging and refactoring this chart up to standard!
+Good luck, Security Elf. Let's lock this cluster down.

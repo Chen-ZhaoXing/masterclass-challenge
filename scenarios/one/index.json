@@ -4,14 +4,14 @@
     "details": {
         "intro": {
             "text": "intro.md",
-            "foreground": "step1/foreground.sh",
-            "background": "step1/background.sh"
+            "foreground": "foreground.sh",
+            "background": "background.sh"
         },
         "steps": [
             {
                 "title": "The Exposed Coordinates",
-                "text": "step1/challenge.md",
-                "verify": "step1/verify.sh"
+                "text": "intro.md",
+                "verify": "verify.sh"
             }
         ],
         "assets": {
@@ -24,7 +24,7 @@
             ]
         },
         "finish": {
-            "text": "step1/finish.md"
+            "text": "finish.md"
         }
     },
     "backend": {

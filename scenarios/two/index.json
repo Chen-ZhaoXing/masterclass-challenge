@@ -1,6 +1,6 @@
 {
-    "title": "Challenge 2: Helm & Kyverno",
-    "description": "Fix common Helm chart mistakes to pass Kyverno validation policies.",
+    "title": "Challenge 2: The Rogue Elf Faction Returns",
+    "description": "The rogue elves are attempting to deploy insecure workloads to the North Pole cluster. Enforce strict Helm chart security with Kyverno policies!",
     "details": {
         "intro": {
             "text": "intro.md",
@@ -9,7 +9,7 @@
         },
         "steps": [
             {
-                "title": "Fix the Helm Chart",
+                "title": "Securing the North Pole Cluster",
                 "text": "readme.md",
                 "verify": "verify.sh"
             }
