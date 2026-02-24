@@ -6,8 +6,21 @@ replicaCount: 1
 
 image:
   repository: touching/masterclass-fastapi-app
-  tag: "latest"
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 80
+
+securityContext:
+  enabled: false
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - "ALL"
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"

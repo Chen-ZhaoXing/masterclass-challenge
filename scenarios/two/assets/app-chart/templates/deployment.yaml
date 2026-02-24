@@ -16,8 +16,20 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "myregistry.io/app-image:latest" 
+          image: "{{ .Values.image.repository }}:latest"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 8000
               protocol: TCP
+          {{- if .Values.securityContext.enabled }}
+          securityContext:
+            runAsNonRoot: false
+            capabilities:
+              drop:
+              {{- toYaml .Values.securityContext.capabilities.drop | nindent 14 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
