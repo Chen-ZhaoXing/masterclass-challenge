@@ -10,7 +10,7 @@ helm repo update
 helm install kyverno kyverno/kyverno -n kyverno --create-namespace --set admissionController.replicas=1 --set admissionController.podLabels.app=admission
 
 # Wait for Kyverno to be ready
-kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kyverno -n kyverno --timeout=300s
+kubectl wait --for=condition=ready pod -l app=admission -n kyverno --timeout=300s
 
 # Give Kyverno webhooks a moment to fully register
 sleep 15
