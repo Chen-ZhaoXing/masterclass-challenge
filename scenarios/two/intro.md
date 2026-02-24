@@ -1,4 +1,4 @@
-![Security alert banner showing a breach detection warning for the Sleigh Routing API](../assets/banner.svg)
+![Security alert banner showing a best practices warning](./assets/banner.png)
 
 # Challenge 2: The Rogue Elf Faction Returns
 
