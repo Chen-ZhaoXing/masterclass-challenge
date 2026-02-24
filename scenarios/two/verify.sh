@@ -4,7 +4,10 @@
 # We verify if they can successfully dry-run apply the rendered helm chart to the cluster
 # Kyverno will block it if the policies are not satisfied.
 
-cd /root/app-chart || exit 1
+# Re-apply policies in case the user accidentally or intentionally deleted them
+kubectl apply -f ~/kyverno-policies.yaml > /dev/null 2>&1
+
+cd ~/app-chart || exit 1
 
 # If the template command fails, they have a syntax error
 TEMPLATE_OUT=$(helm template release-name . -f values.yaml 2>/dev/null)
