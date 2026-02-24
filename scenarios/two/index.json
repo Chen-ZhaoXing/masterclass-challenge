@@ -10,7 +10,7 @@
         "steps": [
             {
                 "title": "Securing the North Pole Cluster",
-                "text": "readme.md",
+                "text": "intro.md",
                 "verify": "verify.sh"
             }
         ],
