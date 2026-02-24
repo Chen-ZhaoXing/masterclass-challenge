@@ -1,0 +1,13 @@
+# Default values for app-chart.
+# This is a barebones values file.
+# Note that some configurations are missing or hardcoded in the templates.
+
+replicaCount: 1
+
+image:
+  repository: touching/masterclass-fastapi-app
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80

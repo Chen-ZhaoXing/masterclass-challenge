@@ -1,0 +1,38 @@
+{
+    "title": "Challenge 2: Helm & Kyverno",
+    "description": "Fix common Helm chart mistakes to pass Kyverno validation policies.",
+    "details": {
+        "intro": {
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "Fix the Helm Chart",
+                "text": "readme.md",
+                "verify": "verify.sh"
+            }
+        ],
+        "assets": {
+            "host01": [
+                {
+                    "file": "assets/app-chart",
+                    "target": "/root/app-chart",
+                    "chmod": "+rwx"
+                },
+                {
+                    "file": "assets/kyverno-policies.yaml",
+                    "target": "/root/kyverno-policies.yaml",
+                    "chmod": "+rw"
+                }
+            ]
+        },
+        "finish": {
+            "text": "finish.md"
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    }
+}
