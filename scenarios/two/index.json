@@ -17,12 +17,12 @@
         "assets": {
             "host01": [
                 {
-                    "file": "assets/app-chart",
+                    "file": "app-chart",
                     "target": "~/",
                     "chmod": "+rwx"
                 },
                 {
-                    "file": "assets/kyverno-policies.yaml",
+                    "file": "kyverno-policies.yaml",
                     "target": "~/kyverno-policies.yaml",
                     "chmod": "+rw"
                 }
