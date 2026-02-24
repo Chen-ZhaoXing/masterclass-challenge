@@ -16,6 +16,5 @@ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=kyverno -n kyve
 sleep 15
 
 # Apply Kyverno cluster policies to enforce rules
-kubectl apply -f ~/kyverno-policies.yaml
-rm ~/kyverno-policies.yaml
+kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-challenge-assets/refs/heads/main/kyverno-policies/masterclass-policies.yaml
 touch /tmp/setup-finished
