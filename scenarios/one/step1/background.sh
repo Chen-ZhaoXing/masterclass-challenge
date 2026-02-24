@@ -31,5 +31,9 @@ rm get_helm.sh
 
 kubectl create ns challenge1
 
+kubectl create secret generic masterclass-auth \
+  --from-literal=legacy-sys-token=s3cr3t-ch4ll3ng3-t0k3n \
+  -n challenge1
+
 # Optional: Create a 'done' file if your foreground.sh or index.json needs to wait for this
 touch /opt/background-finished
