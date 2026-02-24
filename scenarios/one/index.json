@@ -1,6 +1,6 @@
 {
-    "title": "Operation: Secure Vault",
-    "description": "The auth token is leaking through env vars — fix the Helm chart before the auditors arrive!",
+    "title": "Challenge 1: The Rogue Elf Faction",
+    "description": "The Sleigh Routing API is leaking the Master Guidance Coordinates through a plaintext env var. Stop the rogue elves before they hijack Christmas!",
     "details": {
         "intro": {
             "text": "intro.md",
@@ -9,7 +9,7 @@
         },
         "steps": [
             {
-                "title": "Operation: Secure Vault",
+                "title": "The Exposed Coordinates",
                 "text": "step1/challenge.md",
                 "verify": "step1/verify.sh"
             }

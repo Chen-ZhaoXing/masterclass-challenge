@@ -1,49 +1,55 @@
-## 🕵️ Operation: Secure Vault
+![Security alert banner showing a breach detection warning for the Sleigh Routing API](../assets/banner.svg)
 
-> *"We've intercepted a critical threat. The auth token is leaking through environment variables — any process on the node can read it. You have one hour to fix the deployment before the auditors arrive."*
-> — Commander Kube, Head of Platform Security
+# Challenge 1: The Rogue Elf Faction and The Exposed Coordinates
 
----
+## The Situation
 
-Your squad's latest intelligence app has been deployed to OpenShift… but the Security Council has flagged it: **the auth token is being passed as a plain environment variable**, which means it's visible in pod descriptions, container logs, and process listings. 😱
+Tensions are high at the North Pole. A rogue faction of elves is attempting to sabotage the holiday season by hijacking the sleigh's automated routing system.
 
-The dev team already did their part — they refactored the app to **read the token from a file path** (via an env var called `APP_TOKEN_PATH`) instead of reading `APP_TOKEN` directly.
+During a recent security audit, the Chief Holiday Officer discovered a critical vulnerability: the Sleigh Routing API deployed in our Kubernetes cluster is reading the Master Guidance Coordinates from a plaintext environment variable (`APP_TOKEN`). The rogue elves are actively scraping process trees and container logs to steal this token.
 
-Your mission: **update the Helm chart** so the token is securely injected as a mounted file from a Kubernetes Secret.
+## The Mitigation
 
----
+To stop the leak, the Elven Engineering Team has updated the source code and rebuilt the container image. The application will no longer read from `APP_TOKEN`. Instead, it now expects the secret to be securely mounted as a file, and it will locate that file using a new environment variable: `APP_TOKEN_PATH`.
 
-### 🎯 Mission Objectives
+Your role as Senior Security Elf is to update the cluster's deployment configuration so the coordinates are mounted securely and the application is pointed to the new file.
 
-- The token file **must** be named `credentials.key`
-- The deployment **must not** expose `APP_TOKEN` as a plain env var
-- The secret is already stored in a Kubernetes Secret inside the `challenge1` namespace — **find it yourself**
-- Set `APP_TOKEN_PATH` to point to the exact file path of `credentials.key` inside the container
+## Technical Resources
 
----
+- **The Helm Chart:** Located at `~/masterclass-fastapi-app/`
+- **The Secret:** The coordinates already exist in the cluster inside a Kubernetes Secret named `masterclass-auth` in the `challenge1` namespace.
+- **The Data Key:** Inside that Secret, the token is stored under the key `legacy-sys-token`.
 
-### 🔍 Intel Gathering
-
-Use these commands to gather your intel from the cluster:
+Use these commands to inspect the cluster and confirm what is available:
 
 ```bash
-# What secrets are available in the namespace?
+# List secrets in the namespace
 kubectl get secrets -n challenge1
 
-# What keys does the secret hold?
-kubectl describe secret <secret-name> -n challenge1
+# Inspect a secret's keys
+kubectl describe secret masterclass-auth -n challenge1
 
-# Is the app crashing? Check the logs
+# Check application logs for errors
 kubectl logs -l app.kubernetes.io/name=masterclass-fastapi-app -n challenge1
 ```
 
-Once you've gathered your intel, edit the Helm chart at `~/masterclass-fastapi-app/` and redeploy with:
+## Requirements for Validation
+
+To pass the Elf Validation Script, your Helm chart must meet the following exact specifications:
+
+1. **File name:** The secret must be mounted as a file named exactly `credentials.key` (the extension is required).
+2. **Environment variable:** You must set `APP_TOKEN_PATH` in the container's environment.
+3. **Value:** `APP_TOKEN_PATH` must contain the absolute path to `credentials.key` at whatever mount path you choose (for example `/etc/secrets/credentials.key`).
+4. **No plaintext exposure:** The `APP_TOKEN` environment variable must not appear in the deployment.
+
+Edit the Helm chart templates, then redeploy your release:
 
 ```bash
 helm upgrade challenge1 ~/masterclass-fastapi-app -n challenge1
 ```
 
-Good luck, Agent. The auditors are watching. 🔐
+Save the holiday season, Security Elf. The Chief Holiday Officer is watching.
+
 
 
 

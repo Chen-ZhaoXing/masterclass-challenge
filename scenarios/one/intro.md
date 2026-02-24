@@ -1,10 +1,5 @@
-## 🔐 Welcome to Operation: Secure Vault
+## Challenge 1: The Rogue Elf Faction
 
-*Incoming transmission from Commander Kube...*
+Greetings, Security Elf. Your workstation is being prepared.
 
-> Agent, your mission briefing will appear shortly. The Platform is being prepared.
-> Stand by for deployment intel. Do NOT touch your keyboard until you see **DONE**.
-
----
-
-Please wait for the scenario to be ready.
+The North Pole Cluster is coming online. Please hold your position until you see **DONE** before proceeding to the briefing.
