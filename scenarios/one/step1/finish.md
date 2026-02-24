@@ -1,30 +1,59 @@
-## Jam 1
-### Rationale
-The intent of this challenge is not to outright say that mounting secrets to environment variables is wrong and everyone should be mounting secrets as files instead.
-The intent here is to use a different kubernetes method to mount secrets as files when the application does allow for it.
+## 🎉 Mission Accomplished, Agent!
 
-However, mounting secrets directly in plain to env with the block snippet below is highly discouraged.
-```
+*Incoming transmission from Commander Kube...*
+
+> Excellent work. The auditors reviewed the deployment and confirmed: no secrets are leaking through environment variables. The vault is sealed. The Security Council sends their regards.
+
+---
+
+### 🧠 Debrief: Why Does This Matter?
+
+You just fixed a real-world security anti-pattern. Here's the full picture:
+
+#### ❌ The dangerous way — plain env var
+```yaml
 env:
-  name: MY_SECRET_PASSWORD
-  value: verysecretindeed
+  - name: MY_SECRET_PASSWORD
+    value: verysecretindeed
 ```
+This embeds the secret value directly in the pod spec. Anyone with `kubectl describe pod` access can read it.
 
-Mounting secrets to environment variables with `secretKeyRef` is better then the method above.
-```
+#### ⚠️ Better — `secretKeyRef`
+```yaml
 env:
-  valueFrom:
-    secretKeyRef:
-      name: SECRET_PASSWORD
+  - name: MY_SECRET_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: my-secret
+        key: password
+```
+The value isn't stored in the pod spec, but it still lands in the container's environment — which means it can appear in crash logs, `/proc/<pid>/environ`, and debug tooling.
+
+#### ✅ Best (when the app supports it) — file-mounted Secret
+```yaml
+volumes:
+  - name: token-vol
+    secret:
+      secretName: masterclass-auth
+      items:
+        - key: legacy-sys-token
+          path: credentials.key
+containers:
+  - volumeMounts:
+      - name: token-vol
+        mountPath: /app/token
+        readOnly: true
+    env:
+      - name: APP_TOKEN_PATH
+        value: /app/token/credentials.key
 ```
 
-OWASP kubernetes cheatsheet & CIS benchmark do encourage/prefer secrets to be mounted as files with `volumes` & `volumneMounts` instead as `readOnly`. **NOTE**: The word here is **encourage**/**prefer**
+This approach leverages Linux file permissions and never exposes the secret as an environment variable. Combined with `readOnly: true`, it limits blast radius significantly.
 
-This is primarily due to how environment variables might be more prone to leakages in logs and linux file permission mechanism.
+**The OWASP Kubernetes Security Cheat Sheet and CIS Benchmark both recommend file-based secret mounting** when the application supports it.
 
-However to do this, the applications has to be written in such a way that takes this into account.
+> Of course, for the strongest security posture, consider external secret stores (HashiCorp Vault, AWS Secrets Manager, Azure Key Vault) via operators like External Secrets Operator — but that's a mission for another day. 😉
 
-There are other also better methods such as KMS or external secret store compared to `volumes` which can involve both infrasturcture & source code changes.
 
 
 

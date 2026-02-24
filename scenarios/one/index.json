@@ -1,6 +1,6 @@
 {
-    "title": "Challenge 1",
-    "description": "Just a chill challenge",
+    "title": "Operation: Secure Vault",
+    "description": "The auth token is leaking through env vars — fix the Helm chart before the auditors arrive!",
     "details": {
         "intro": {
             "text": "intro.md",
@@ -9,7 +9,7 @@
         },
         "steps": [
             {
-                "title": "Challenge 1",
+                "title": "Operation: Secure Vault",
                 "text": "step1/challenge.md",
                 "verify": "step1/verify.sh"
             }

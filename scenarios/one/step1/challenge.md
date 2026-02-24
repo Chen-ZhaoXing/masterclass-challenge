@@ -1,29 +1,50 @@
-## Jam 1
+## 🕵️ Operation: Secure Vault
 
-The development team has updated the application to read its authentication token from a **file** rather than directly from an environment variable. This change aligns with Kubernetes security best practices around secret handling.
+> *"We've intercepted a critical threat. The auth token is leaking through environment variables — any process on the node can read it. You have one hour to fix the deployment before the auditors arrive."*
+> — Commander Kube, Head of Platform Security
 
-The updated container image has been deployed, but the Helm chart has **not** been updated to match the new application behaviour — causing the token endpoint to fail.
+---
 
-### Your Task
+Your squad's latest intelligence app has been deployed to OpenShift… but the Security Council has flagged it: **the auth token is being passed as a plain environment variable**, which means it's visible in pod descriptions, container logs, and process listings. 😱
 
-Update the Helm chart at `~/masterclass-fastapi-app/` so the application can securely access its authentication token.
+The dev team already did their part — they refactored the app to **read the token from a file path** (via an env var called `APP_TOKEN_PATH`) instead of reading `APP_TOKEN` directly.
 
-- The application uses the `APP_TOKEN_PATH` environment variable to locate the token file
+Your mission: **update the Helm chart** so the token is securely injected as a mounted file from a Kubernetes Secret.
+
+---
+
+### 🎯 Mission Objectives
+
 - The token file **must** be named `credentials.key`
-- A Secret containing the token has already been provisioned for you in the `challenge1` namespace
+- The deployment **must not** expose `APP_TOKEN` as a plain env var
+- The secret is already stored in a Kubernetes Secret inside the `challenge1` namespace — **find it yourself**
+- Set `APP_TOKEN_PATH` to point to the exact file path of `credentials.key` inside the container
 
-**Investigate the cluster to find what you need:**
+---
+
+### 🔍 Intel Gathering
+
+Use these commands to gather your intel from the cluster:
 
 ```bash
-# Check what secrets exist
+# What secrets are available in the namespace?
 kubectl get secrets -n challenge1
 
-# Inspect a secret's keys
+# What keys does the secret hold?
 kubectl describe secret <secret-name> -n challenge1
 
-# Check the application logs
+# Is the app crashing? Check the logs
 kubectl logs -l app.kubernetes.io/name=masterclass-fastapi-app -n challenge1
 ```
+
+Once you've gathered your intel, edit the Helm chart at `~/masterclass-fastapi-app/` and redeploy with:
+
+```bash
+helm upgrade challenge1 ~/masterclass-fastapi-app -n challenge1
+```
+
+Good luck, Agent. The auditors are watching. 🔐
+
 
 
 
