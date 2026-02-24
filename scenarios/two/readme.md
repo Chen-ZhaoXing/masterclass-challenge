@@ -12,4 +12,5 @@ In this scenario, you will be tasked with fixing the following common Kubernetes
 - **Lack of Proper Labels and Selectors:** Inconsistent or missing standard labels can break Service routing, Deployment selectors, and complicate resource management and observability.
 - **Running Containers as Root:** Neglecting to define proper `securityContext` settings (such as `runAsNonRoot: true` or `runAsUser`), unnecessarily expanding the container's attack surface and violating security best practices.
 - **Failing to Drop Capabilities:** Leaving Linux capabilities enabled by default rather than dropping `ALL` capabilities and only adding what is strictly required, thereby increasing the risk of privilege escalation.
+- **Using the Default Service Account:** Relying on the `default` ServiceAccount in a namespace, which often grants unintended permissions to the application, instead of explicitly creating and assigning a least-privilege ServiceAccount.
 - **Missing Image Pull Configuration:** Forgetting to configure `imagePullPolicy` properly or omitting `imagePullSecrets` for private registries, leading to deployment failures.
