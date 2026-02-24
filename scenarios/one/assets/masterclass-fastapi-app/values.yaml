@@ -7,7 +7,8 @@ image:
 service:
   port: 8000
 
-#---Edit the lines below here for the challenge---
 env:
   mode: "production"
-  appToken: "myverysecretpassword"
+  # appToken is intentionally left empty: this is the insecure starting state
+  # that participants must replace with a proper Kubernetes Secret volume mount.
+  appToken: ""

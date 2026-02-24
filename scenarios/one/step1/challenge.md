@@ -1,21 +1,29 @@
 ## Jam 1
 
-The application deployed in the kubernetes cluster now reads a secret from an environment variable `APP_TOKEN`. 
+The development team has updated the application to read its authentication token from a **file** rather than directly from an environment variable. This change aligns with Kubernetes security best practices around secret handling.
 
-We were told that referencing secrets in environment variables does not meet the security posture. 
+The updated container image has been deployed, but the Helm chart has **not** been updated to match the new application behaviour — causing the token endpoint to fail.
 
-The application team has now edited the source code & rebuilt the container image to read the secret from a file with the environment variable `APP_TOKEN_PATH` instead.
+### Your Task
 
-### Your task
-The application token already exists in the cluster inside a Secret named masterclass-auth.
+Update the Helm chart at `~/masterclass-fastapi-app/` so the application can securely access its authentication token.
 
-Inside this Secret, the token is stored under the specific data key: legacy-sys-token.
+- The application uses the `APP_TOKEN_PATH` environment variable to locate the token file
+- The token file **must** be named `credentials.key`
+- A Secret containing the token has already been provisioned for you in the `challenge1` namespace
 
-Strict Requirement: The application validation script requires the secret file to be mounted into the container and named exactly credentials.key (with the extension).
+**Investigate the cluster to find what you need:**
 
-Set the APP_TOKEN_PATH environment variable to point to the absolute path of credentials.key.
+```bash
+# Check what secrets exist
+kubectl get secrets -n challenge1
 
-Edit the Helm chart at ~/masterclass-fastapi-app/ to implement this.
+# Inspect a secret's keys
+kubectl describe secret <secret-name> -n challenge1
+
+# Check the application logs
+kubectl logs -l app.kubernetes.io/name=masterclass-fastapi-app -n challenge1
+```
 
 
 

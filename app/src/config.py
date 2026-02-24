@@ -17,6 +17,8 @@ class Config:
         if self.mode == "development":
           return os.getenv("APP_TOKEN")
         else:
-            app_token_path = "/app/token"
+            app_token_path = os.getenv("APP_TOKEN_PATH")
+            if not app_token_path:
+                raise RuntimeError("APP_TOKEN_PATH environment variable is not set")
             with open(app_token_path, "r") as f:
                 return f.read().strip()
