@@ -19,9 +19,7 @@ fi
 # Attempt to dry-run apply to cluster to trigger Kyverno validation
 echo "$TEMPLATE_OUT" | kubectl apply --dry-run=server -f - > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-    # Kyverno admitted the manifests, which means all policies passed!
     exit 0
 else
-    # Kyverno rejected the manifests due to missing requirements
     exit 1
 fi
