@@ -19,13 +19,10 @@ Your role as Senior Security Elf is to analyze the rogue elves' Helm chart, iden
 1. **Deploy the Chart:** Attempt to render and apply the Helm chart to the cluster to see what happens.
 2. **Find the Errors:** When Kyverno blocks the deployment, use the feedback and logs to identify exactly which policies and rules the chart violates.
    *Hint: If you need more details on why your deployment is failing or want to see the policies in action, check the Kyverno admission controller logs:*
-   ```bash
-   kubectl logs -n kyverno -l app=admission -c kyverno
-   ```
+   `kubectl logs -n kyverno -l app=admission -c kyverno`
    *You can also inspect the active policies directly:*
-   ```bash
-   kubectl get clusterpolicies -n kyverno
-   ```
+   `kubectl get clusterpolicies -n kyverno`
+   
 3. **Fix the Chart:** Modify `Chart.yaml`, `values.yaml`, and the templates within `~/app-chart` so they adhere to all security requirements.
 4. **Verify:** You are done when you can successfully template and apply the Helm chart without Kyverno rejecting it. Run the `check` command to verify your progress.
 
