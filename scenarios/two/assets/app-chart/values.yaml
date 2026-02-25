@@ -14,7 +14,7 @@ service:
   port: 80
 
 securityContext:
-  enabled: false
+  enabled: true
   runAsNonRoot: true
   capabilities:
     drop:

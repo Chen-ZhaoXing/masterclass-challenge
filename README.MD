@@ -28,6 +28,9 @@ The rogue elves have submitted a poorly configured, exploitable Helm chart to de
 - **Your Mission:** Attempt to deploy the chart, debug the Kyverno policy violations, and refactor the Helm chart templates to meet all security and operational requirements.
 - **Learning Objectives:** Helm templating, Kyverno admission controllers, container security context (non-root, dropping capabilities), resource requests/limits, liveness/readiness probes, and proper workload labeling.
 
+### Challenge 3: TBD
+Multi docker stage build.
+
 ---
 
 ## 🛠 Project Structure
