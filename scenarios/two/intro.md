@@ -1,6 +1,6 @@
 ![Security alert banner showing a best practices warning](./assets/banner.png)
 
-# Challenge 2: The Rogue Elf Faction Returns
+# Challenge 2: The Trojan Helm Chart
 
 ## The Situation
 
