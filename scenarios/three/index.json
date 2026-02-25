@@ -1,0 +1,27 @@
+{
+    "title": "Challenge 3: Dockerfile Security",
+    "description": "Build and push a secure container image to the private registry.",
+    "details": {
+        "intro": {
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "Build and Push a Secure Image",
+                "text": "intro.md",
+                "verify": "verify.sh"
+            }
+        ],
+        "finish": {
+            "text": "finish.md"
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    },
+    "interface": {
+        "layout": "ide"
+    }
+}
