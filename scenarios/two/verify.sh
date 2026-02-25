@@ -4,6 +4,12 @@
 # We verify if they can successfully dry-run apply the rendered helm chart to the cluster
 # Kyverno will block it if the policies are not satisfied.
 
+# Ensure the background setup has completed before verifying
+if [ ! -f /tmp/setup-finished ]; then
+    echo "Environment is still being set up. Please wait for the setup to complete before verifying."
+    exit 1
+fi
+
 # Re-apply policies in case the user accidentally or intentionally deleted them
 kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-challenge-assets/refs/heads/main/kyverno-policies/masterclass-policies.yaml > /dev/null 2>&1
 
