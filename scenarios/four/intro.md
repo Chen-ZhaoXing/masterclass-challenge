@@ -10,7 +10,7 @@ Even worse, the container runs as **root**. If the rogue elves manage to exploit
 
 The Chief Holiday Officer has had enough. A new North Pole Container Standard has been issued:
 
-> *"No container image shall exceed 150 MB in size. No container shall run as the root user. Violations will result in immediate rejection from the Sleigh Deployment Pipeline."*
+> *"No container image shall exceed 250 MB in size. No container shall run as the root user. Violations will result in immediate rejection from the Sleigh Deployment Pipeline."*
 
 ## The Problem
 
@@ -29,7 +29,7 @@ Rewrite the Dockerfile in `~/bloated-app/` to produce a **production-ready, secu
 1. **Use a multi-stage build** — Separate the build stage (where you install dependencies) from the final runtime stage.
 2. **Choose a minimal base image** — Use `python:3.13-slim` (or smaller) for the final stage. Distroless or Alpine variants are also acceptable.
 3. **Run as a non-root user** — Create a dedicated application user and set the `USER` directive so the container never runs as root.
-4. **Keep the image under 150 MB** — The final image pushed to the local registry must be smaller than 150 MB.
+4. **Keep the image under 250 MB** — The final image pushed to the local registry must be smaller than 250 MB.
 5. **Ensure the application still works** — The FastAPI app must start and respond on port `8000`.
 
 ## Technical Resources
@@ -66,7 +66,7 @@ docker stop test-app
 To pass the Elf Validation Script, your image must meet **all** of the following:
 
 1. **Image exists in the local registry** — `localhost:30500/sleigh-telemetry:latest` must be pushed.
-2. **Image size is under 150 MB** — Measured by `docker images`.
+2. **Image size is under 250 MB** — Measured by `docker images`.
 3. **Container does NOT run as root** — The `USER` directive must be set to a non-root user (UID != 0).
 4. **Application responds** — The app must return a valid HTTP response on port `8000`.
 5. **Multi-stage build is used** — The Dockerfile must contain more than one `FROM` instruction.
