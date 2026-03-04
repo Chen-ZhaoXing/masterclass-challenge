@@ -19,7 +19,7 @@ echo "  CURRENT IMAGE SIZE (the rogue elves' mess):"
 docker images localhost:30500/sleigh-telemetry:bloated --format "  {{.Repository}}:{{.Tag}}  {{.Size}}"
 echo "============================================"
 echo ""
-echo "Your mission: rewrite the Dockerfile to get this under 150 MB and running as non-root."
+echo "Your mission: rewrite the Dockerfile to get this under 250 MB and running as non-root."
 echo "Good luck, Security Elf!"
 echo ""
 

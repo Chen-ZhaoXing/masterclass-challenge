@@ -29,7 +29,7 @@ else
 fi
 
 # ------------------------------------------------------------------
-# CHECK 2: Image size must be under 150 MB
+# CHECK 2: Image size must be under 250 MB
 # ------------------------------------------------------------------
 echo ""
 echo "[2/5] Checking image size..."
@@ -42,7 +42,7 @@ if [ -z "$IMAGE_SIZE_BYTES" ]; then
     FAIL=1
 else
     IMAGE_SIZE_MB=$((IMAGE_SIZE_BYTES / 1024 / 1024))
-    MAX_SIZE_MB=150
+    MAX_SIZE_MB=250
     if [ "$IMAGE_SIZE_MB" -lt "$MAX_SIZE_MB" ]; then
         echo "  ✅ Image size is ${IMAGE_SIZE_MB} MB (limit: ${MAX_SIZE_MB} MB)."
     else

@@ -11,7 +11,7 @@ To pass this challenge, participants must fix a deliberately bad Dockerfile to m
 - **Multi-Stage Build:** Separate build-time dependencies from the runtime image. The build stage handles dependency installation (pip, compilers, headers), while the final stage contains only the application code and its runtime dependencies.
 - **Minimal Base Image:** Use `python:3.13-slim` (or equivalent minimal image) for the final stage instead of the full `python:3.13` image which includes an entire Debian installation.
 - **Non-Root Execution:** Create a dedicated system user and group, and set the `USER` directive so the container process never runs as root (UID 0).
-- **Image Size Under 150 MB:** The final image must be smaller than 150 MB. The original bloated image is over 1 GB.
+- **Image Size Under 250 MB:** The final image must be smaller than 250 MB. The original bloated image is over 1 GB.
 - **Application Still Works:** After all optimizations, the FastAPI app must still start and respond on port 8000.
 
 ## What's Wrong With the Starting Dockerfile

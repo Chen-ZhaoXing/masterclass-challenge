@@ -80,7 +80,7 @@ __pycache__
 
 | Metric | Before (Rogue Elves) | After (Your Fix) |
 |---|---|---|
-| Image Size | ~1 GB+ | < 150 MB |
+| Image Size | ~1 GB+ | < 250 MB |
 | Runs as Root | Yes (UID 0) | No (dedicated user) |
 | Build Deps in Image | Yes | No |
 | Attack Surface | High | Minimal |
