@@ -1,0 +1,36 @@
+{
+    "title": "Challenge 4: The Bloated Sleigh Image",
+    "description": "The rogue elves have shipped a 1GB container image running as root. Slim it down and lock it out before it crashes the North Pole registry!",
+    "details": {
+        "intro": {
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "Slim Down and Lock Out",
+                "text": "intro.md",
+                "verify": "verify.sh"
+            }
+        ],
+        "assets": {
+            "host01": [
+                {
+                    "file": "bloated-app/**/*.*",
+                    "target": "~/",
+                    "chmod": "+rw"
+                }
+            ]
+        },
+        "finish": {
+            "text": "finish.md"
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    },
+    "interface": {
+        "layout": "ide"
+    }
+}
