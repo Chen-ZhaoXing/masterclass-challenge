@@ -20,6 +20,16 @@
                     "file": "bloated-app/**/*.*",
                     "target": "~/",
                     "chmod": "+rw"
+                },
+                {
+                    "file": "bloated-app/Dockerfile",
+                    "target": "~/bloated-app/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "bloated-app/.env",
+                    "target": "~/bloated-app/",
+                    "chmod": "+rw"
                 }
             ]
         },
@@ -31,6 +41,7 @@
         "imageid": "kubernetes-kubeadm-1node"
     },
     "interface": {
-        "layout": "ide"
+        "layout": "ide",
+        "root": "/root/bloated-app"
     }
 }
