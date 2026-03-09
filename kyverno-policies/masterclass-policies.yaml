@@ -42,31 +42,13 @@ spec:
                 - Pod
       validate:
         message: "Liveness and readiness probes are required."
-        anyPattern:
-          - spec:
-              containers:
-                - livenessProbe:
-                    httpGet:
-                      path: "?*"
-                  readinessProbe:
-                    httpGet:
-                      path: "?*"
-          - spec:
-              containers:
-                - livenessProbe:
-                    tcpSocket:
-                      port: "?*"
-                  readinessProbe:
-                    tcpSocket:
-                      port: "?*"
-          - spec:
-              containers:
-                - livenessProbe:
-                    exec:
-                      command: "?*"
-                  readinessProbe:
-                    exec:
-                      command: "?*"
+        pattern:
+          spec:
+            containers:
+              - livenessProbe:
+                  "?*": "?*"
+                readinessProbe:
+                  "?*": "?*"
 
 ---
 apiVersion: kyverno.io/v1
