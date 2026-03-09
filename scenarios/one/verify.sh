@@ -19,8 +19,9 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Render the Helm template
-helm template masterclass /root/masterclass-fastapi-app > /tmp/rendered-deployment.yaml
+# Render the Helm template and extract only the Deployment document
+helm template masterclass /root/masterclass-fastapi-app > /tmp/rendered-all.yaml
+yq e 'select(.kind == "Deployment")' /tmp/rendered-all.yaml > /tmp/rendered-deployment.yaml
 
 # Check if the volumeMount is configured correctly
 TOKEN_MOUNT_PATH="/app/token"
