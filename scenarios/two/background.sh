@@ -18,5 +18,6 @@ kubectl wait --for=condition=ready pod -l app=admission -n kyverno --timeout=300
 sleep 15
 
 # Apply Kyverno cluster policies to enforce rules
-kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-challenge-assets/refs/heads/main/kyverno-policies/masterclass-policies.yaml
+# kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-challenge-assets/refs/heads/main/kyverno-policies/masterclass-policies.yaml
+kubectl apply -f ../kyverno-policies/masterclass-policies.yaml
 touch /tmp/setup-finished
