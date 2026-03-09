@@ -11,7 +11,7 @@ if [ ! -f /tmp/setup-finished ]; then
 fi
 
 # Re-apply policies in case the user accidentally or intentionally deleted them
-kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-challenge-assets/refs/heads/main/kyverno-policies/masterclass-policies.yaml > /dev/null 2>&1
+kubectl apply -f https://raw.githubusercontent.com/yequan99/masterclass-challenge-assets/refs/heads/main/kyverno-policies/masterclass-policies.yaml > /dev/null 2>&1
 
 # Wait for Kyverno to register the policies and update webhooks
 sleep 5
