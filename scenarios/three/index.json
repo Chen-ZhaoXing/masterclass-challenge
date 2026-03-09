@@ -1,6 +1,6 @@
 {
-    "title": "Challenge 3: Dockerfile Security",
-    "description": "Build and push a secure container image to the private registry.",
+    "title": "Challenge 4: The Bloated Sleigh Image",
+    "description": "The rogue elves have shipped a 1GB container image running as root. Slim it down and lock it out before it crashes the North Pole registry!",
     "details": {
         "intro": {
             "text": "intro.md",
@@ -9,11 +9,30 @@
         },
         "steps": [
             {
-                "title": "Build and Push a Secure Image",
+                "title": "Slim Down and Lock Out",
                 "text": "intro.md",
                 "verify": "verify.sh"
             }
         ],
+        "assets": {
+            "host01": [
+                {
+                    "file": "bloated-app/**/*.*",
+                    "target": "~/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "bloated-app/Dockerfile",
+                    "target": "~/bloated-app/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "bloated-app/.env",
+                    "target": "~/bloated-app/",
+                    "chmod": "+rw"
+                }
+            ]
+        },
         "finish": {
             "text": "finish.md"
         }
@@ -22,6 +41,7 @@
         "imageid": "kubernetes-kubeadm-1node"
     },
     "interface": {
-        "layout": "ide"
+        "layout": "ide",
+        "root": "/root/bloated-app"
     }
 }

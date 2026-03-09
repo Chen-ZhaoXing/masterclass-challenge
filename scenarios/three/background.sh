@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Install Helm if not present
-if ! command -v helm &> /dev/null; then
-    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+# Install Docker if not present (Killercoda k8s images have containerd but may lack Docker CLI)
+if ! command -v docker &> /dev/null; then
+    apt-get update && apt-get install -y docker.io
 fi
 
 # Deploy a Docker Registry inside the cluster
@@ -58,7 +58,6 @@ EOF
 kubectl wait --for=condition=ready pod -l app=registry -n registry --timeout=120s
 
 # Configure containerd to trust the local insecure registry
-# This allows Kubernetes nodes to pull from localhost:30500
 mkdir -p /etc/containerd/certs.d/localhost:30500
 cat <<EOF > /etc/containerd/certs.d/localhost:30500/hosts.toml
 [host."http://localhost:30500"]
@@ -66,10 +65,24 @@ cat <<EOF > /etc/containerd/certs.d/localhost:30500/hosts.toml
   skip_verify = true
 EOF
 
+# Configure Docker daemon to trust the insecure registry
+mkdir -p /etc/docker
+cat <<EOF > /etc/docker/daemon.json
+{
+  "insecure-registries": ["localhost:30500"]
+}
+EOF
+
+systemctl restart docker || true
 systemctl restart containerd
 
 # Wait for containerd and nodes to come back
 sleep 10
 kubectl wait --for=condition=ready node --all --timeout=120s
+
+# Pre-pull the fat base image so the build doesn't take forever
+docker pull python:3.13 &
+docker pull python:3.13-slim &
+wait
 
 touch /tmp/setup-finished
