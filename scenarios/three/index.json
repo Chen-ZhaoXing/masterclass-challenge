@@ -1,5 +1,5 @@
 {
-    "title": "Challenge 4: The Bloated Sleigh Image",
+    "title": "Challenge 3: The Bloated Sleigh Image",
     "description": "The rogue elves have shipped a 1GB container image running as root. Slim it down and lock it out before it crashes the North Pole registry!",
     "details": {
         "intro": {

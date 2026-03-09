@@ -1,6 +1,6 @@
 ![Security alert banner showing an oversized container image warning](./assets/banner.png)
 
-# Challenge 4: The Bloated Sleigh Image
+# Challenge 3: The Bloated Sleigh Image
 
 ## The Situation
 

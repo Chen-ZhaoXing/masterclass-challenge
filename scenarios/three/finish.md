@@ -1,4 +1,4 @@
-## Challenge 4 Complete: The Image is Secured and Slimmed
+## Challenge 3 Complete: The Image is Secured and Slimmed
 
 The Chief Holiday Officer has inspected the rebuilt Sleigh Telemetry image. It is lean, secure, and ready for the production pipeline. The rogue elves' bloated monstrosity has been replaced with a proper, hardened container image.
 
