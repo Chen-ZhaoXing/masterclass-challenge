@@ -4,7 +4,12 @@
 
 set -e
 
-sudo apt update && sudo apt install curl yq -y
+sudo apt update && sudo apt install curl -y
+
+# Install yq (Mike Farah's Go-based yq v4)
+curl -sL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64" -o /usr/local/bin/yq
+chmod +x /usr/local/bin/yq
+
 # 1. Download the latest Linux tarball silently (-s) and follow redirects (-L)
 curl -sL "https://github.com/stackrox/kube-linter/releases/latest/download/kube-linter-linux.tar.gz" -o kube-linter-linux.tar.gz
 
