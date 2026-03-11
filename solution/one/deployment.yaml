@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: challenge1
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "masterclass-fastapi-app.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "masterclass-fastapi-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "masterclass-fastapi-app.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: challenge1-app
+          image: "touching/masterclass-fastapi-app:latest"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: token-vol
+              mountPath: /app/token
+              readOnly: true
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+            - name: MODE
+              value: {{ .Values.env.mode }}
+            - name: APP_TOKEN_PATH
+              value: /app/token/credentials.key
+      volumes:
+        - name: token-vol
+          secret:
+            secretName: masterclass-auth
+            items:
+              - key: legacy-sys-token
+                path: credentials.key
