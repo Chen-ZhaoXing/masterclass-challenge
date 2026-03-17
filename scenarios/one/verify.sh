@@ -23,21 +23,20 @@ fi
 helm template masterclass /root/masterclass-fastapi-app > /tmp/rendered-all.yaml
 yq e 'select(.kind == "Deployment")' /tmp/rendered-all.yaml > /tmp/rendered-deployment.yaml
 
-# Check if the volumeMount is configured correctly
-TOKEN_MOUNT_PATH="/app/token"
-MOUNT_NAME=$(yq e ".spec.template.spec.containers[0].volumeMounts[] | select(.mountPath == \"$TOKEN_MOUNT_PATH\") | .name" /tmp/rendered-deployment.yaml)
-if [ -z "$MOUNT_NAME" ]; then
-    echo "[FAIL] No volumeMount found at path '$TOKEN_MOUNT_PATH' in the deployment."
-    echo "       Hint: Add a volumeMount under spec.template.spec.containers[0].volumeMounts[] that mounts to $TOKEN_MOUNT_PATH."
-    exit 1
+# Find the secret-backed volume by the expected Secret reference
+MOUNT_NAME=$(yq e '.spec.template.spec.volumes[] | select(.secret.secretName == "masterclass-auth") | .name' /tmp/rendered-deployment.yaml | head -n 1)
+if [ -z "$MOUNT_NAME" ] || [ "$MOUNT_NAME" = "null" ]; then
+  echo "[FAIL] No volume references the expected Secret 'masterclass-auth'."
+  echo "       Hint: Define a volume under spec.template.spec.volumes[] with secret.secretName: masterclass-auth."
+  exit 1
 fi
 
-# Check if the volume is a secret
+# Check if the mounted volume is secret-backed
 IS_SECRET=$(yq e ".spec.template.spec.volumes[] | select(.name == \"$MOUNT_NAME\") | has(\"secret\")" /tmp/rendered-deployment.yaml)
 if [ "$IS_SECRET" != "true" ]; then
-    echo "[FAIL] The volume '$MOUNT_NAME' mounted at '$TOKEN_MOUNT_PATH' is not backed by a Kubernetes Secret."
-    echo "       Hint: The volume definition must use 'secret:' as its source type."
-    exit 1
+  echo "[FAIL] The volume '$MOUNT_NAME' is not backed by a Kubernetes Secret."
+  echo "       Hint: The volume definition must use 'secret:' as its source type."
+  exit 1
 fi
 
 # Check the secret name is correct
@@ -56,6 +55,14 @@ if [ "$SECRET_PATH" != "credentials.key" ]; then
     exit 1
 fi
 
+# Resolve mount path for the discovered volume name (do not hardcode path)
+TOKEN_MOUNT_PATH=$(yq e ".spec.template.spec.containers[0].volumeMounts[] | select(.name == \"$MOUNT_NAME\") | .mountPath" /tmp/rendered-deployment.yaml | head -n 1)
+if [ -z "$TOKEN_MOUNT_PATH" ] || [ "$TOKEN_MOUNT_PATH" = "null" ]; then
+  echo "[FAIL] No volumeMount found for secret-backed volume '$MOUNT_NAME' in the deployment."
+  echo "       Hint: Add a volumeMount under spec.template.spec.containers[0].volumeMounts[] that uses name: $MOUNT_NAME."
+  exit 1
+fi
+
 # Check APP_TOKEN_PATH env var is set to the correct file path
 APP_TOKEN_PATH_VALUE=$(yq e '.spec.template.spec.containers[0].env[] | select(.name == "APP_TOKEN_PATH") | .value' /tmp/rendered-deployment.yaml)
 if [ "$APP_TOKEN_PATH_VALUE" != "${TOKEN_MOUNT_PATH}/credentials.key" ]; then
@@ -68,4 +75,3 @@ fi
 
 echo "[PASS] The Master Guidance Coordinates are secured. All validation checks passed."
 exit 0
-
