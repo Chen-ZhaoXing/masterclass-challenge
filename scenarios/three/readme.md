@@ -8,18 +8,14 @@ This scenario teaches developers to stop building bloated, insecure container im
 
 To pass this challenge, participants must fix a deliberately bad Dockerfile to meet the following requirements:
 
-- **Multi-Stage Build:** Separate build-time dependencies from the runtime image. The build stage handles dependency installation (pip, compilers, headers), while the final stage contains only the application code and its runtime dependencies.
-- **Minimal Base Image:** Use `python:3.13-slim` (or equivalent minimal image) for the final stage instead of the full `python:3.13` image which includes an entire Debian installation.
-- **Non-Root Execution:** Create a dedicated system user and group, and set the `USER` directive so the container process never runs as root (UID 0).
-- **Image Size Under 250 MB:** The final image must be smaller than 250 MB. The original bloated image is over 1 GB.
-- **Application Still Works:** After all optimizations, the FastAPI app must still start and respond on port 8000.
+- **Build Strategy:** The Dockerfile must use an appropriate, modern build strategy that separates build-time dependencies from the final runtime image.
+- **Base Image:** The final image must use a minimal, secure base image to reduce attack surface and unnecessary packages.
+- **Execution Context:** The container process must never run as root.
+- **Image Size:** The final image must be exceptionally small (under 250 MB).
+- **Application Functionality:** After all optimizations, the FastAPI app must still start and respond correctly on port 8000.
 
 ## What's Wrong With the Starting Dockerfile
 
-| Anti-Pattern | Impact |
-|---|---|
-| Uses `python:3.13` (full Debian) | ~1 GB base image with compilers, man pages, and hundreds of unnecessary packages |
-| No multi-stage build | pip cache, build headers, and wheel files bloat the final image |
-| No `USER` directive | Container runs as root — a container escape gives full host access |
-| No `.dockerignore` | `.git/`, `__pycache__/`, and dev files are sent to the build context |
-| Single COPY for everything | Cache is busted on every source code change, forcing full reinstall |
+The provided Dockerfile commits several cardinal sins of container image building, leading to a massive image size and critical security vulnerabilities. Your objective is to identify and resolve these anti-patterns without breaking the application logic.
+
+> 💡 **Tip:** If you need specific actionable guidance on identifying the anti-patterns or implementing the fixes, refer to the available hints on the challenge portal.

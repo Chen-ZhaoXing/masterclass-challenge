@@ -1,6 +1,7 @@
 {
-    "title": "Challenge 3: The Bloated Sleigh Image",
-    "description": "The rogue elves have shipped a 1GB container image running as root. Slim it down and lock it out before it crashes the North Pole registry!",
+    "title": "Challenge 2: The Bloated Sleigh Image",
+    "description": "🟡 Medium • ~25 min • Dockerfile, Multi-Stage Builds, Non-Root Containers — The rogue elves shipped a 1GB+ container image running as root. Rewrite the Dockerfile to produce a secure, slim (<250MB) image.",
+    "time": "25 minutes",
     "details": {
         "intro": {
             "text": "intro.md",
@@ -10,7 +11,7 @@
         "steps": [
             {
                 "title": "Slim Down and Lock Out",
-                "text": "intro.md",
+                "text": "step1.md",
                 "verify": "verify.sh"
             }
         ],
@@ -19,16 +20,6 @@
                 {
                     "file": "bloated-app/**/*.*",
                     "target": "~/",
-                    "chmod": "+rw"
-                },
-                {
-                    "file": "bloated-app/Dockerfile",
-                    "target": "~/bloated-app/",
-                    "chmod": "+rw"
-                },
-                {
-                    "file": "bloated-app/.env",
-                    "target": "~/bloated-app/",
                     "chmod": "+rw"
                 }
             ]

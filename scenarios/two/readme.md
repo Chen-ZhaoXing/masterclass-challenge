@@ -6,13 +6,13 @@ A well-configured Helm chart is essential for reliable, scalable, and secure ope
 
 ## North Pole Security Requirements
 
-In this scenario, you must refactor the chart to address the following issues:
+In this scenario, you must refactor the chart to address multiple issues across several categories:
 
-- **Missing Resource Requests and Limits:** Failing to specify CPU and memory requests and limits can lead to unpredictable operations and node starvation, which we cannot afford on Christmas Eve.
-- **Missing or Incorrect Liveness and Readiness Probes:** Without proper health checks, the cluster cannot effectively route Sleigh traffic or recover from application deadlocks.
-- **Hardcoded Configuration Values:** Embedding environment-specific settings or secrets directly into YAML templates instead of utilizing `values.yaml` or Kubernetes Secrets.
-- **Lack of Proper Labels and Selectors:** Inconsistent standard labels break routing and observability. You must implement standard `app.kubernetes.io/name` and `app.kubernetes.io/instance` labels.
-- **Running Containers as Root:** Neglecting to define proper `securityContext` settings (such as `runAsNonRoot: true`), unnecessarily expanding the container's attack surface.
-- **Failing to Drop Capabilities:** Leaving Linux capabilities enabled by default rather than dropping `ALL` capabilities and only adding what is strictly required. 
-- **Using the Default Service Account:** Relying on the `default` ServiceAccount instead of explicitly creating and assigning a least-privilege ServiceAccount for the workload.
-- **Missing Image Pull Configuration:** Forgetting to properly configure `imagePullPolicy`.
+- **Resource Limits:** Workloads must not consume unbounded resources.
+- **Health Probes:** The cluster must know if applications are healthy and ready to serve traffic.
+- **Configuration Management:** Hardcoding configurations instead of correctly templating them is unacceptable.
+- **Observability:** Workloads require standard Kubernetes labels to ensure proper routing and tracking.
+- **Security Context:** Containers must run with the least possible privilege to minimize the attack surface.
+- **Service Accounts:** Workloads must not rely on the default ServiceAccount.
+
+> 💡 **Tip:** If you need specific actionable guidance on how to implement these requirements, refer to the available hints on the challenge portal.

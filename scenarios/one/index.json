@@ -1,6 +1,7 @@
 {
-    "title": "Challenge 1: The Rogue Elf Faction",
-    "description": "The Sleigh Routing API is leaking the Master Guidance Coordinates through a plaintext env var. Stop the rogue elves before they hijack Christmas!",
+    "title": "Challenge 1: The Exposed Coordinates",
+    "description": "🟢 Easy • ~15 min • Kubernetes Secrets, Helm, Volume Mounts — The Sleigh Routing API is leaking the Master Guidance Coordinates through a plaintext env var. Refactor the deployment to securely mount the secret as a file.",
+    "time": "15 minutes",
     "details": {
         "intro": {
             "text": "intro.md",
@@ -10,7 +11,7 @@
         "steps": [
             {
                 "title": "The Exposed Coordinates",
-                "text": "intro.md",
+                "text": "step1.md",
                 "verify": "verify.sh"
             }
         ],

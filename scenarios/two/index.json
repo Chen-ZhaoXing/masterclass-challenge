@@ -1,6 +1,7 @@
 {
-    "title": "Challenge 2: The Rogue Elf Faction Returns",
-    "description": "The rogue elves are attempting to deploy insecure workloads to the North Pole cluster. Enforce strict Helm chart security with Kyverno policies!",
+    "title": "Challenge 3: The Trojan Helm Chart",
+    "description": "🔴 Hard • ~40 min • Helm, Kyverno, Security Context, RBAC, Probes — The rogue elves submitted a misconfigured Helm chart. Debug Kyverno policy violations and refactor the chart to meet all 6+ production security standards.",
+    "time": "40 minutes",
     "details": {
         "intro": {
             "text": "intro.md",
@@ -10,7 +11,7 @@
         "steps": [
             {
                 "title": "Securing the North Pole Cluster",
-                "text": "intro.md",
+                "text": "step1.md",
                 "verify": "verify.sh"
             }
         ],
