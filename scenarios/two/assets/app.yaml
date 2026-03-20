@@ -17,3 +17,4 @@ spec:
         image: localhost:30500/sleigh-telemetry:latest
         ports:
         - containerPort: 8000
+      ## Edit below this line!
