@@ -18,7 +18,7 @@
         "assets": {
             "host01": [
                 {
-                    "file": "bloated-app/**/*.*",
+                    "file": "bloated-app/**/*",
                     "target": "~/",
                     "chmod": "+rw"
                 }
