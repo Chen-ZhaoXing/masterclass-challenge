@@ -10,9 +10,39 @@
         },
         "steps": [
             {
-                "title": "Securing the North Pole Cluster",
-                "text": "step1.md",
-                "verify": "verify.sh"
+                "title": "Request and limits",
+                "text": "step1/readme.md",
+                "verify": "step1/verify.sh",
+                "background": "step1/background.sh",
+                "foreground": "step1/foreground.sh"
+            },
+            {
+                "title": "HTTP GET Probes",
+                "text": "step2/readme.md",
+                "verify": "step2/verify.sh",
+                "background": "step2/background.sh",
+                "foreground": "step2/foreground.sh"
+            },
+            {
+                "title": "Require Labels",
+                "text": "step3/readme.md",
+                "verify": "step3/verify.sh",
+                "background": "step3/background.sh",
+                "foreground": "step3/foreground.sh"
+            },
+            {
+                "title": "Require Service Account",
+                "text": "step4/readme.md",
+                "verify": "step4/verify.sh",
+                "background": "step4/background.sh",
+                "foreground": "step4/foreground.sh"
+            },
+            {
+                "title": "Require Non-Root Container",
+                "text": "step5/readme.md",
+                "verify": "step5/verify.sh",
+                "background": "step5/background.sh",
+                "foreground": "step5/foreground.sh"
             }
         ],
         "assets": {

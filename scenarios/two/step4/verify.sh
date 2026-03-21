@@ -10,6 +10,18 @@ kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-chall
 kubectl apply -f ~/app.yaml
 
 if [ $? -eq 0 ]; then
+    kubectl get serviceaccount gift-tracking-sa >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        broadcast "❌ North Pole needs you to create the gift-tracking-sa Service Account!"
+        exit 1
+    fi
+
+    SA_NAME=$(kubectl get -f ~/app.yaml -o jsonpath='{..serviceAccountName}')
+    if [[ ! "$SA_NAME" =~ "gift-tracking-sa" ]]; then
+        broadcast "❌ North Pole needs you to set the gift-tracking-sa Service Account in your manifest!"
+        exit 1
+    fi
+
     broadcast "✅ North Pole approves of your Service Account!"
     
     # Bonus Check: Look for automountServiceAccountToken in the applied manifest
