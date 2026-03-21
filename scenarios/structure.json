@@ -14,7 +14,7 @@
         },
         {
             "path": "two",
-            "title": "🔴 Challenge 3: The Trojan Helm Chart",
+            "title": "🔴 Challenge 3: The Trojan Manifest",
             "description": "Difficulty: Hard • Topics: Helm, Kyverno, Security Context, RBAC, Probes — The rogue elves submitted a misconfigured Helm chart. Fix all 6+ Kyverno policy violations to meet North Pole production standards."
         }
     ]
