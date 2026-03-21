@@ -1,6 +1,6 @@
 {
     "title": "Challenge 3: The Trojan Helm Chart",
-    "description": "🔴 Hard • ~40 min • Helm, Kyverno, Security Context, RBAC, Probes — The rogue elves submitted a misconfigured Helm chart. Debug Kyverno policy violations and refactor the chart to meet all 6+ production security standards.",
+    "description": " Helm, Kyverno, Security Context, RBAC, Probes — The rogue elves submitted a misconfigured Helm chart. Debug Kyverno policy violations and refactor the chart to meet all 6+ production security standards.",
     "time": "40 minutes",
     "details": {
         "intro": {
