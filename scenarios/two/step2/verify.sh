@@ -7,6 +7,7 @@ broadcast() {
 }
 kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-challenge-assets/refs/heads/main/kyverno-policies/require-http-probes.yaml
 kubectl apply -f ~/app.yaml
+
 if [ $? -eq 0 ]; then
     broadcast "✅ North Pole approves of your HTTP probes!"
     exit 0

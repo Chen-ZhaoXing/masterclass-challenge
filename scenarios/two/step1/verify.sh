@@ -5,8 +5,9 @@ broadcast() {
         fi
     done
 }
-kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-challenge-assets/refs/heads/main/kyverno-policies/require-resource-limits.yaml
-kubectl apply -f app.yaml
+kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-challenge-assets/refs/heads/main/kyverno-policies/require-resource-limits.yaml -n kyverno
+
+kubectl apply -f app.yaml --force
 if [ $? -eq 0 ]; then
     broadcast "✅ North Pole approves of your resource requests and limits!"
     exit 0
