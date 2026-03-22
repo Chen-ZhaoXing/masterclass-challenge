@@ -52,7 +52,7 @@
                 },
                 {
                     "file": "kyverno-policies/*.yaml",
-                    "target": "/var/kyverno/policies",
+                    "target": "/var/kyverno/*",
                     "chmod": "+rw"
                 }
             ]
