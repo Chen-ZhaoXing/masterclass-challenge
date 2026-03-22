@@ -1,0 +1,21 @@
+replicaCount: 1
+
+image:
+  repository: curlimages/curl
+  tag: "8.7.1"
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: false
+  name: default
+
+tls:
+  certPath: /etc/tls/ca.crt
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

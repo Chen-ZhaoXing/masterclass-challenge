@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tls-echo
+  labels:
+    {{- include "tls-client.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: tls-echo
+  ports:
+    - name: https
+      port: 8443
+      targetPort: 8443

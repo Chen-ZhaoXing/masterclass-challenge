@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tls-client.fullname" . }}
+  labels:
+    {{- include "tls-client.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "tls-client.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "tls-client.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+        - name: tls-client
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TLS_CERT_PATH
+              value: "{{ .Values.tls.certPath }}"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "TLS client started. Use kubectl exec to test curl with TLS_CERT_PATH=${TLS_CERT_PATH}."
+              tail -f /dev/null
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - curl --fail --silent --show-error --cacert "${TLS_CERT_PATH}" https://tls-echo.challenge4.svc.cluster.local:8443/ > /dev/null
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
