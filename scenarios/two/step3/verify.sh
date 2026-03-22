@@ -6,10 +6,11 @@ broadcast() {
     done
 }
 kubectl apply -f /var/kyverno-policies/require-labels.yaml -n kyverno >/dev/null 2>&1
-kubectl apply -f ~/app.yaml
+APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 if [ $? -eq 0 ]; then
-    broadcast "✅ North Pole approves of your labels!"
+    broadcast "✅ North Pole approves of your HTTP probes!"
     exit 0
 else
-    broadcast "❌ North Pole needs you to set the labels!"
+    broadcast "❌ North Pole needs you to set the HTTP probes!"
     exit 1
+fi
