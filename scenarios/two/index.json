@@ -12,9 +12,7 @@
             {
                 "title": "Request and limits",
                 "text": "step1/readme.md",
-                "verify": "step1/verify.sh",
-                "background": "step1/background.sh",
-                "foreground": "step1/foreground.sh"
+                "verify": "step1/verify.sh"
             },
             {
                 "title": "HTTP GET Probes",
