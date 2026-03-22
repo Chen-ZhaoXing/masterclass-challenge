@@ -5,4 +5,4 @@ while [ ! -f /tmp/setup-finished ]; do
   echo -n "."
 done
 echo ""
-echo "You can now begin!"
+echo "✅ The Lab is now ready!"
