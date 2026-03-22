@@ -5,13 +5,12 @@ broadcast() {
         fi
     done
 }
-kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-challenge-assets/refs/heads/main/kyverno-policies/require-resource-limits.yaml -n kyverno
+kubectl apply -f https://raw.githubusercontent.com/touching123/masterclass-challenge-assets/refs/heads/main/kyverno-policies/require-resource-limits.yaml -n kyverno >/dev/null 2>&1
 
-kubectl apply -f app.yaml --force
-
-if [ $? -eq 0 ]; then
+if kubectl apply -f ~/app.yaml --dry-run=server --force >/dev/null 2>&1; then
     broadcast "✅ North Pole approves of your resource requests and limits!"
     exit 0
 else
     broadcast "❌ North Pole needs you to set the resource requests and limits"
     exit 1
+fi
