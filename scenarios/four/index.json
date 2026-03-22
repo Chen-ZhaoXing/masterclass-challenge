@@ -1,0 +1,38 @@
+{
+    "title": "Challenge 4: The Frozen Handshake",
+    "description": "🟡 Medium • ~20 min • Kubernetes TLS, Secrets, Helm Volume Mounts — The telemetry client cannot reach the secure endpoint because the CA certificate is missing. Mount the certificate secret correctly so TLS validation succeeds.",
+    "time": "20 minutes",
+    "details": {
+        "intro": {
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "Restore the TLS Handshake",
+                "text": "step1.md",
+                "verify": "verify.sh"
+            }
+        ],
+        "assets": {
+            "host01": [
+                {
+                    "file": "tls-client-chart/**/*.*",
+                    "target": "~/",
+                    "chmod": "+rw"
+                }
+            ]
+        },
+        "finish": {
+            "text": "finish.md"
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    },
+    "interface": {
+        "layout": "ide",
+        "root": "/root/tls-client-chart"
+    }
+}
