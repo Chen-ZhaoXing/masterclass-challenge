@@ -1,0 +1,19 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-non-default-sa
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+    - name: check-service-account
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Using the 'default' service account is not allowed. A specific ServiceAccount must be configured."
+        pattern:
+          spec:
+            =(serviceAccountName): "!default"

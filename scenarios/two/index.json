@@ -51,8 +51,8 @@
                     "chmod": "+rw"
                 },
                 {
-                    "file": "kyverno-policies.yaml",
-                    "target": "~/",
+                    "file": "kyverno-policies/*.yaml",
+                    "target": "/var/kyverno/policies",
                     "chmod": "+rw"
                 }
             ]
