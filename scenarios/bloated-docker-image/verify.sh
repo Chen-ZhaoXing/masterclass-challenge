@@ -63,7 +63,7 @@ fi
 # --- CHECK 4: Runtime ---
 broadcast "\n[4/9] Checking application response..."
 docker rm -f verify-test-app > /dev/null 2>&1
-docker run --rm -d --name verify-test-app -p 8000:8000 localhost:30500/sleigh-telemetry:latest > /dev/null 2>&1
+docker run -d --name verify-test-app -p 8000:8000 localhost:30500/sleigh-telemetry:latest > /dev/null 2>&1
 sleep 5
 HTTP_CODE=$(curl -sf -o /dev/null -w "%{http_code}" http://localhost:8000/ 2>/dev/null)
 if [ "$HTTP_CODE" = "200" ]; then
