@@ -5,7 +5,8 @@ broadcast() {
         fi
     done
 }
-
+kubectl delete clusterpolicies --all
+sleep 5
 kubectl apply -f /var/kyverno-policies/require-non-default-sa.yaml -n kyverno >/dev/null 2>&1
 kubectl apply -f ~/app.yaml
 
