@@ -42,6 +42,7 @@ spec:
       containers:
         - name: tracker
           image: touching/gift-tracker:latest
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: gift-tracker-config

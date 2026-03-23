@@ -10,7 +10,7 @@
 
 ## The Situation
 
-The rogue elves haven't given up. After failing to steal the Master Guidance Coordinates, they are now trying a different approach: deploying insecure, poorly configured workloads into the North Pole Kubernetes cluster to create vulnerabilities they can exploit later.
+The rogue elves haven't given up. Having failed to bloat the Sleigh Telemetry container image, they are now trying a different approach: bypassing the deployment pipeline entirely by submitting insecure, manual YAML manifests into the North Pole Kubernetes cluster.
 
 They've managed to submit a basic Kubernetes deployment manifest (located at `~/app.yaml`) to deploy a new "gift-tracking" API. Unsurprisingly, it's riddled with common security and operational misconfigurations.
 

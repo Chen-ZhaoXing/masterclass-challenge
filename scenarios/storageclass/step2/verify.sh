@@ -45,6 +45,8 @@ kubectl get pvc "$CLAIM_NAME" >/dev/null 2>&1
 if [ $? -ne 0 ]; then
     broadcast "❌ The PersistentVolumeClaim '${CLAIM_NAME}' does not exist in the cluster. Did you define and apply it?"
     exit 1
+else
+    broadcast "✅ North Pole approves: PersistentVolumeClaim '${CLAIM_NAME}' exists and is mounted!"
 fi
 
 # Verify the user created the 'mongodb-service' to fix network connectivity
@@ -52,7 +54,9 @@ kubectl get service mongodb-service >/dev/null 2>&1
 if [ $? -ne 0 ]; then
     broadcast "❌ The Python app is isolated! North Pole needs you to create the 'mongodb-service' Service so it can route to the database!"
     exit 1
+else
+    broadcast "✅ North Pole approves: 'mongodb-service' Service was successfully created!"
 fi
 
-broadcast "✅ North Pole approves of your Application Connectivity!"
+broadcast "✅ North Pole approves of your solution!"
 exit 0

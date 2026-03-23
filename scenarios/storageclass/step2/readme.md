@@ -11,9 +11,9 @@ Second, they deleted the internal Kubernetes `Service` that routes traffic to th
 Your final mission is to restore the application's storage and network connectivity!
 
 1. Open the `deployment.yaml` manifest.
-2. Define a new `PersistentVolumeClaim` (either in this file separated by `---` or in a new file) that requests `1Gi` of `ReadWriteOnce` storage using the `local-path` storage class.
+2. Define a new `PersistentVolumeClaim` that requests `1Gi` of `ReadWriteOnce` storage using the `local-path` storage class. Name the `PersistenVolumeClaim`: `backup-pvc`
 3. Inside the `gift-tracker` pod spec, add a `volumes` section that links to your new `PersistentVolumeClaim`.
 4. Update the container to include `volumeMounts`, mounting the volume to exactly `/app/data`.
-5. Finally, create a Kubernetes `Service` (you can append it to the manifest) named `mongodb-service` that targets the MongoDB StatefulSet (`app: mongodb`) on port `27017`!
+5. Finally, create a Kubernetes `Service` named `mongodb-service` that targets the MongoDB StatefulSet labels (`app: mongodb`) on port `27017`!
 6. Save your files and apply them to the cluster (`kubectl apply -f deployment.yaml`).
 7. Click the `Check` button!

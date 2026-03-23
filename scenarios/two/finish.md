@@ -1,9 +1,12 @@
-## Challenge 2 Complete: The Cluster is Secure
+## Challenge Complete: The Trojan Manifest Defeated!
 
-The Chief Holiday Officer has reviewed the deployment. The Kyverno policies held strong, and you successfully remediated the rogue elves' poorly constructed manifest. 
+You have successfully remediated the rogue elves' insecure manifest and passed Kyverno's strict policies! 
 
-By enforcing these standards, you have successfully:
-- Restructured standard Kubernetes labels for proper Sleigh network routing.
-- Safely externalized sensitive configuration into `values.yaml`.
-- Defined critical pod health checks and guaranteed resource limits for peak holiday traffic.
-- Dropped unnecessary container capabilities, blocked the default service account, and enforced non-root execution.
+By enforcing these standards, you've built a rock-solid workload:
+
+- **Resource Limits:** Prevents your pod from consuming all node capacity (the "noisy neighbor" problem).
+- **Zero-Downtime Networking:** `readinessProbes` stop traffic to unready pods, while `livenessProbes` auto-restart deadlocked apps.
+- **Identity Isolation:** Setting `automountServiceAccountToken: false` guarantees attackers can't steal the pod's API token to attack the control plane.
+- **Container Hardening:** Setting `runAsNonRoot: true` prevents attackers from modifying the host filesystem or breaking out of the container bounds. *(Note: Enterprise platforms like [OpenShift](https://docs.openshift.com/container-platform/latest/authentication/managing-security-context-constraints.html) enforce this by default—requiring an explicit Security Context Constraint (SCC) applied to the pod's Service Account to run root!)*
+
+The cluster compute layer is secure. Prepare for the next challenge!

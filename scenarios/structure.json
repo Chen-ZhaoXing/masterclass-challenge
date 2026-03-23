@@ -1,12 +1,7 @@
 {
-    "title": "🎄 Kubernetes Security Masterclass Challenges",
-    "description": "A series of hands-on, CTF-style Kubernetes security challenges. Take on the role of the Senior Security Elf and defend the North Pole cluster against the rogue elf faction! Challenges progress from Easy to Hard, covering secrets management, container hardening, Helm chart security, and Kyverno policy enforcement.",
+    "title": "🎄 Kubernetes Masterclass",
+    "description": "A series of hands-on, Kubernetes/Docker challenges. Take on the role of the Senior Security Elf and defend the North Pole cluster against the rogue elf faction!",
     "items": [
-        {
-            "path": "one",
-            "title": "The Exposed Coordinates",
-            "description": "• Topics: Kubernetes Secrets, Helm, Volume Mounts — The Sleigh Routing API is leaking the Master Guidance Coordinates through a plaintext env var. Refactor the Helm chart to securely mount the secret as a file."
-        },
         {
             "path": "three",
             "title": "The Bloated Sleigh Image",
@@ -18,14 +13,19 @@
             "description": "• Topics: Security Context, RBAC, Probes — The rogue elves submitted a misconfigured Helm chart. Fix all 6+ Kyverno policy violations to meet North Pole production standards."
         },
         {
+            "path": "storageclass",
+            "title": "The Phantom Storage",
+            "description": "• Topics: Deployment, StatefulSet, Storage Classes, PVCs, Services — The rogue elves intentionally wiped the storage and network configurations from the gift-tracking application. Restore the Persistent Volumes and internal Services to reconnect the application!"
+        },
+        {
+            "path": "one",
+            "title": "The Exposed Coordinates",
+            "description": "• Topics: Kubernetes Secrets, Helm, Volume Mounts — The Sleigh Routing API is leaking the Master Guidance Coordinates through a plaintext env var. Refactor the Helm chart to securely mount the secret as a file."
+        },
+        {
             "path": "four",
             "title": "The Frozen Handshake",
             "description": "• Topics: Kubernetes TLS, Secrets, Helm, Volume Mounts — The telemetry client cannot reach a secure endpoint because the CA certificate is missing. Mount the cert from a Secret so TLS validation succeeds."
-        },
-        {
-            "path": "storageclass",
-            "title": "The Phantom Storage",
-            "description": "• Topics: Storage Classes, PVCs, Services — The rogue elves intentionally wiped the storage and network configurations from the gift-tracking application. Restore the Persistent Volumes and internal Services to reconnect the application!"
         }
     ]
 }

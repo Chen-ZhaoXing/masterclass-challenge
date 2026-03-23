@@ -1,16 +1,16 @@
+import json
 import os
-import sys
 import time
 import logging
+
+from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure
 
 # Configure basic logging to stream directly to standard output/error (unbuffered)
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(message)s", datefmt="%H:%M:%S"
 )
 logger = logging.getLogger(__name__)
-
-from pymongo import MongoClient
-from pymongo.errors import ConnectionFailure
 
 # Use environment variables for connection or default to the statefulset values
 MONGO_USER = os.getenv("MONGO_INITDB_ROOT_USERNAME", "admin")

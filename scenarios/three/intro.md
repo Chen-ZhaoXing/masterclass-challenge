@@ -6,7 +6,7 @@
 >
 > **Learning Objectives:** Multi-stage Docker builds, image size optimization, non-root containers, `.dockerignore`, pip cache management
 
-# Challenge 2: The Bloated Sleigh Image
+# The Bloated Sleigh Image
 
 ## The Situation
 

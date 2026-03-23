@@ -6,11 +6,11 @@
 >
 > **Learning Objectives:** Kubernetes Secrets management, volume mounts, minimizing secret blast radius, kube-linter validation
 
-# Challenge 1: The Rogue Elf Faction and The Exposed Coordinates
+# The Exposed Coordinates
 
 ## The Situation
 
-Tensions are high at the North Pole. A rogue faction of elves is attempting to sabotage the holiday season by hijacking the sleigh's automated routing system.
+The rogue elves are getting desperate. After failing to disrupt the cluster's basic infrastructure and storage engines, they have turned their attention toward scraping our raw data.
 
 During a recent security audit, the Chief Holiday Officer discovered a critical vulnerability: the Sleigh Routing API deployed in our Kubernetes cluster is reading the Master Guidance Coordinates from a **plaintext environment variable**. The rogue elves are actively scraping process trees and container logs to steal this token.
 

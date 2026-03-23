@@ -4,7 +4,7 @@
 >
 > **Learning Objectives:** TLS trust chains, CA certificate distribution, Secret volume mounts, runtime verification
 
-# Challenge 4: The Frozen Handshake
+# The Frozen Handshake
 
 ## The Situation
 
