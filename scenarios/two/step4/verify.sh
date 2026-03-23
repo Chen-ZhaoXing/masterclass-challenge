@@ -8,9 +8,11 @@ broadcast() {
 
 kubectl delete clusterpolicies --all --force
 kubectl apply -f /var/kyverno/policiesrequire-sa.yaml -n kyverno >/dev/null 2>&1
-kubectl apply -f ~/app.yaml
+APPLY_OUT=$(kubectl apply -f ~/app.yaml 2>&1)
 
-if [ $? -eq 0 ]; then
+APPLY_OUT_EXIT=$?
+
+if [ $APPLY_OUT_EXIT -eq 0 ]; then
     kubectl get serviceaccount gift-tracking-sa >/dev/null 2>&1
     if [ $? -ne 0 ]; then
         broadcast "❌ North Pole needs you to create the gift-tracking-sa Service Account!"
