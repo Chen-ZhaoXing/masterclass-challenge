@@ -24,7 +24,7 @@ broadcast "  North Pole Container Standards Check"
 broadcast "========================================"
 
 # --- CHECK 1: Registry ---
-broadcast "[1/5] Checking registry..."
+broadcast "[1/9] Checking registry..."
 REGISTRY_CHECK=$(curl -sf http://localhost:30500/v2/sleigh-telemetry/tags/list 2>/dev/null)
 if echo "$REGISTRY_CHECK" | grep -q '"latest"'; then
     broadcast "  ✅ Image found in registry."
@@ -34,7 +34,7 @@ else
 fi
 
 # --- CHECK 2: Size ---
-broadcast "\n[2/5] Checking image size..."
+broadcast "\n[2/9] Checking image size..."
 docker pull localhost:30500/sleigh-telemetry:latest > /dev/null 2>&1
 IMAGE_SIZE_BYTES=$(docker inspect localhost:30500/sleigh-telemetry:latest --format '{{.Size}}' 2>/dev/null)
 if [ -z "$IMAGE_SIZE_BYTES" ]; then
@@ -51,17 +51,17 @@ else
 fi
 
 # --- CHECK 3: Non-Root ---
-broadcast "\n[3/5] Checking non-root user..."
+broadcast "\n[3/9] Checking OpenShift SCC non-root compliance..."
 CONTAINER_USER=$(docker inspect localhost:30500/sleigh-telemetry:latest --format '{{.Config.User}}' 2>/dev/null)
-if [ -z "$CONTAINER_USER" ] || [ "$CONTAINER_USER" = "root" ] || [ "$CONTAINER_USER" = "0" ]; then
-    broadcast "  ❌ Container runs as root."
-    FAIL=1
+if [[ "$CONTAINER_USER" =~ ^[1-9][0-9]+:0$ ]] || [ "$CONTAINER_USER" = "1001:0" ]; then
+    broadcast "  ✅ Container runs as strictly compliant user '${CONTAINER_USER}'."
 else
-    broadcast "  ✅ Container runs as user '${CONTAINER_USER}'."
+    broadcast "  ❌ Container runs as '${CONTAINER_USER}'. Must be SCC compliant (e.g. 1001:0)."
+    FAIL=1
 fi
 
 # --- CHECK 4: Runtime ---
-broadcast "\n[4/5] Checking application response..."
+broadcast "\n[4/9] Checking application response..."
 docker rm -f verify-test-app > /dev/null 2>&1
 docker run --rm -d --name verify-test-app -p 8000:8000 localhost:30500/sleigh-telemetry:latest > /dev/null 2>&1
 sleep 5
@@ -75,12 +75,52 @@ fi
 docker rm -f verify-test-app > /dev/null 2>&1
 
 # --- CHECK 5: Multi-Stage ---
-broadcast "\n[5/5] Checking build strategy..."
+broadcast "\n[5/9] Checking build strategy..."
 FROM_COUNT=$(grep -ci '^FROM ' /root/bloated-app/Dockerfile 2>/dev/null)
 if [ "$FROM_COUNT" -ge 2 ]; then
     broadcast "  ✅ Multi-stage build detected (${FROM_COUNT} stages)."
 else
     broadcast "  ❌ Dockerfile is not using a multi-stage build."
+    FAIL=1
+fi
+
+# --- CHECK 6: HEALTHCHECK ---
+broadcast "\n[6/9] Checking HEALTHCHECK..."
+if grep -qi '^HEALTHCHECK' /root/bloated-app/Dockerfile 2>/dev/null; then
+    broadcast "  ✅ HEALTHCHECK instruction found."
+else
+    broadcast "  ❌ Dockerfile is missing a HEALTHCHECK instruction."
+    FAIL=1
+fi
+
+# --- CHECK 7: Metadata (LABEL) ---
+broadcast "\n[7/9] Checking metadata LABELS..."
+if grep -qi '^LABEL' /root/bloated-app/Dockerfile 2>/dev/null; then
+    broadcast "  ✅ LABEL instruction found."
+else
+    broadcast "  ❌ Dockerfile is missing a LABEL instruction."
+    FAIL=1
+fi
+
+# --- CHECK 8: Parameterization (ARG) ---
+broadcast "\n[8/9] Checking build parameterization..."
+if grep -qi '^ARG' /root/bloated-app/Dockerfile 2>/dev/null; then
+    broadcast "  ✅ ARG instruction found."
+else
+    broadcast "  ❌ Dockerfile is missing an ARG instruction."
+    FAIL=1
+fi
+
+# --- CHECK 9: Layer Caching ---
+broadcast "\n[9/9] Checking layer caching..."
+# Ensure requirements.txt is copied before src/
+REQ_LINE=$(grep -n 'COPY .*requirements.txt' /root/bloated-app/Dockerfile | head -1 | cut -d: -f1)
+SRC_LINE=$(grep -n 'COPY .*src/' /root/bloated-app/Dockerfile | tail -1 | cut -d: -f1)
+
+if [ -n "$REQ_LINE" ] && [ -n "$SRC_LINE" ] && [ "$REQ_LINE" -lt "$SRC_LINE" ]; then
+    broadcast "  ✅ Dependency installation cached before source code copy."
+else
+    broadcast "  ❌ Layer caching failed. Copy requirements.txt before copying src/."
     FAIL=1
 fi
 

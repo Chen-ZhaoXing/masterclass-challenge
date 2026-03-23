@@ -1,5 +1,14 @@
 # --- Stage 1: Build Stage ---
-FROM python:3.13-slim AS builder
+ARG PYTHON_VERSION=3.13
+FROM python:${PYTHON_VERSION}-slim AS builder
+
+# [Golden Rule: Explicit root for installation]
+USER 0
+
+# [Golden Rule: Label metadata]
+LABEL maintainer="security-elf@northpole.com" \
+      version="1.0" \
+      description="Sleigh Telemetry Service"
 
 # Set environment variables to optimize Python for containers
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -13,35 +22,41 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies into a specific directory
+# [Golden Rule: Layer caching optimization]
 COPY requirements.txt .
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+RUN pip install --no-cache-dir --target=/install -r requirements.txt
 
 # --- Stage 2: Production Stage ---
-FROM python:3.13-slim
+ARG PYTHON_VERSION=3.13
+FROM python:${PYTHON_VERSION}-slim
+
+# [Golden Rule: Explicit root for setup]
+USER 0
 
 WORKDIR /app
 
-# Create a non-root user and group for security
-RUN groupadd -g 10001 elf && \
-    useradd -u 10001 -g elf -m -s /sbin/nologin northpole
-
-# Copy only the installed site-packages from the builder stage
+# [Golden Rule: Layer caching optimization]
+# Copy dependencies before source code
 COPY --from=builder /install /usr/local
 
-# Copy only the application source code (ignoring junk via .dockerignore)
+# Copy application source code last
 COPY src/ /app/src/
 
-# Set ownership of the app directory to our new user
-RUN chown -R northpole:elf /app
-
-# Switch to the non-root user
-USER northpole
+# [Golden Rule: OpenShift SCC compliance (USER 1001:0)]
+# Ensures the application directory can be read/written by group 0
+RUN chown -R 1001:0 /app && chmod -R g=u /app
 
 # FastAPI environment variables
-ENV PATH="/home/northpole/.local/bin:${PATH}"
+ENV PATH="/usr/local/bin:${PATH}"
 
 EXPOSE 8000
+
+# [Golden Rule: Healthchecks]
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/')" || exit 1
+
+# [Golden Rule: Run as non-root]
+USER 1001:0
 
 # Start the application
 CMD ["fastapi", "run", "src/app.py", "--host", "0.0.0.0", "--port", "8000"]
