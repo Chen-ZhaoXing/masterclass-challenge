@@ -29,7 +29,7 @@ if [ $? -eq 0 ]; then
     # We use recursive JSONPath '..automountServiceAccountToken' so it works for both Pods and Deployments
     TOKEN_MOUNT=$(kubectl get -f ~/app.yaml -o jsonpath='{..automountServiceAccountToken}')
     TOKEN_SA_MOUNT=$(kubectl get sa gift-tracking-sa -o jsonpath='{..automountServiceAccountToken}')
-    if [ "$TOKEN_MOUNT" = "false" || "$TOKEN_SA_MOUNT" = "false" ]; then
+    if [[ "$TOKEN_MOUNT" = "false" || "$TOKEN_SA_MOUNT" = "false" ]]; then
         broadcast "🌟 BONUS ACHIEVED: Service account token automount disabled!"
     else
         broadcast "❌ Almost there! The bonus requires you to disable automountServiceAccountToken."
