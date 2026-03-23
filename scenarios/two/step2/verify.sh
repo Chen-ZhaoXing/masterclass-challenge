@@ -7,7 +7,7 @@ broadcast() {
 }
 kubectl delete clusterpolicies --all
 sleep 5
-kubectl apply -f /var/kyverno-policies/require-http-probes.yaml -n kyverno > /dev/null 2>&1
+kubectl apply -f /var/kyverno-policies/require-http-probes.yaml > /dev/null 2>&1
 APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 if [ $? -eq 0 ]; then
     broadcast "✅ North Pole approves of your HTTP probes!"
