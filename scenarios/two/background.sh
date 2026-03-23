@@ -19,7 +19,7 @@ kubectl config set-context --current --namespace=gift-tracking
 
 
 # Give Kyverno webhooks a moment to fully register
-sleep 15
+sleep 60
 
 # Apply Kyverno cluster policies to enforce rules
 touch /tmp/setup-finished
