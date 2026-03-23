@@ -23,7 +23,7 @@
             "description": "• Topics: Kubernetes Secrets, Helm, Volume Mounts — The Sleigh Routing API is leaking the Master Guidance Coordinates through a plaintext env var. Refactor the Helm chart to securely mount the secret as a file."
         },
         {
-            "path": "four",
+            "path": "frozen-handshake",
             "title": "The Frozen Handshake",
             "description": "• Topics: Kubernetes TLS, Secrets, Helm, Volume Mounts — The telemetry client cannot reach a secure endpoint because the CA certificate is missing. Mount the cert from a Secret so TLS validation succeeds."
         }
