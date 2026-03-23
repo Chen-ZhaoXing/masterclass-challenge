@@ -10,6 +10,5 @@ broadcast() {
 broadcast "Setting up the environment..."
 while [ ! -f /tmp/setup-finished ]; do
   sleep 2
-  broadcast "."
 done
-broadcast "\n✅ The Lab is now ready!"
+broadcast "✅ The Lab is now ready!"
