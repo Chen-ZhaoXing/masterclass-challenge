@@ -9,9 +9,10 @@ kubectl apply -f /var/kyverno-policies/require-resource-limits.yaml >/dev/null 2
 APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 if [ $? -eq 0 ]; then
     broadcast "✅ North Pole approves of your resource requests and limits!"
+    sleep 5
     exit 0
 else
     broadcast "❌ North Pole needs you to set the resource requests and limits"
+    sleep 5
     exit 1
 fi
-sleep 15
