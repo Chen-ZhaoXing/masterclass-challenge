@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gift-tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gift-tracker
+  template:
+    metadata:
+      labels:
+        app: gift-tracker
+    spec:
+      containers:
+        - name: tracker
+          image: touching/gift-tracking:latest
+          envFrom:
+            - configMapRef:
+                name: gift-tracker-config
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
+          # TASK: Add the volumeMounts section here to mount the volume to /app/data

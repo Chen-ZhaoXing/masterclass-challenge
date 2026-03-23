@@ -1,6 +1,6 @@
 ![Security alert banner showing a best practices warning](./assets/banner.png)
 
-> **Difficulty:** 🔴 Hard  |  **Points:** 300
+> **Points:** 300
 >
 > **Prerequisites:** Kubernetes deployment manifests, Kubernetes security contexts, basic understanding of admission controllers
 >

@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: sleigh-telemetry
-          image: localhost:30500/sleigh-telemetry:latest
+          image: nginx:latest
           ports:
             - containerPort: 8000

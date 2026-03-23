@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gift-tracker-config
+data:
+  BACKUP_DIR: "/app/data"
+  MONGO_HOST: "mongodb-service"
+  MONGO_PORT: "27017"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongodb-secret
+type: Opaque
+stringData:
+  MONGO_INITDB_ROOT_USERNAME: admin
+  MONGO_INITDB_ROOT_PASSWORD: supersecurepassword123

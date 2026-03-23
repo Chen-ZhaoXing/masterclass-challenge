@@ -1,6 +1,6 @@
 {
     "title": "Challenge 3: The Trojan Manifest",
-    "description": "Kyverno, Security Context, RBAC, Probes — The rogue elves submitted a misconfigured Kubernetes application manifest. Debug Kyverno policy violations and refactor the manifest to meet all 6+ production security standards.",
+    "description": "Security Context, RBAC, Probes — The rogue elves submitted a misconfigured ( or lack thereof ) Kubernetes application manifest. Debug policy violations and refactor the manifest to meet all security standards.",
     "time": "40 minutes",
     "details": {
         "intro": {

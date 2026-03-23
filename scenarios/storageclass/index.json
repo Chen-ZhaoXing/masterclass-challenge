@@ -1,0 +1,57 @@
+{
+    "title": "Challenge: The Missing Storage Classes",
+    "description": "Security Context, RBAC, Probes — The rogue elves submitted a misconfigured ( or lack thereof ) Kubernetes application manifest. Debug policy violations and refactor the manifest to meet all security standards.",
+    "time": "40 minutes",
+    "details": {
+        "intro": {
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "The Missing StorageClass",
+                "text": "step1/readme.md",
+                "verify": "step1/verify.sh"
+            },
+            {
+                "title": "The missing App connectivity",
+                "text": "step2/readme.md",
+                "verify": "step2/verify.sh"
+            }
+        ],
+        "assets": {
+            "host01": [
+                {
+                    "file": "statefulset.yaml",
+                    "target": "~/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "deployment.yaml",
+                    "target": "~/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "local-path-storage.yaml",
+                    "target": "/var/local-path-storage.yaml",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "config.yaml",
+                    "target": "/var/config.yaml",
+                    "chmod": "+rw"
+                }
+            ]
+        },
+        "finish": {
+            "text": "finish.md"
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    },
+    "interface": {
+        "layout": "ide"
+    }
+}
