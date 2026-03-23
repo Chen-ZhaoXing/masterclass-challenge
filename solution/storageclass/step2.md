@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
         - name: tracker
-          image: localhost:30500/gift-tracker:latest
+          image: touching/gift-tracker:latest
           envFrom:
             - configMapRef:
                 name: gift-tracker-config

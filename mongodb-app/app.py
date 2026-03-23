@@ -1,5 +1,14 @@
 import os
+import sys
 import time
+import logging
+
+# Configure basic logging to stream directly to standard output/error (unbuffered)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(message)s", datefmt="%H:%M:%S"
+)
+logger = logging.getLogger(__name__)
+
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
@@ -13,21 +22,21 @@ MONGO_URI = (
     f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/?authSource=admin"
 )
 
-
 BACKUP_DIR = os.getenv("BACKUP_DIR", "/app/data")
 
+
 def connect_to_mongo():
-    print(f"Attempting to connect to MongoDB at {MONGO_HOST}:{MONGO_PORT}...")
+    logger.info(f"Attempting to connect to MongoDB at {MONGO_HOST}:{MONGO_PORT}...")
     client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
 
     while True:
         try:
             # The ismaster command is cheap and does not require auth.
             client.admin.command("ping")
-            print("✅ Successfully connected to MongoDB!")
+            logger.info("✅ Successfully connected to MongoDB!")
             break
         except ConnectionFailure:
-            print("❌ MongoDB not available yet, retrying in 5 seconds...")
+            logger.warning("❌ MongoDB not available yet, retrying in 5 seconds...")
             time.sleep(5)
 
     return client
@@ -35,9 +44,11 @@ def connect_to_mongo():
 
 def main():
     if not os.path.exists(BACKUP_DIR):
-        print(f"⚠️ WARNING: Backup directory {BACKUP_DIR} does not exist! Is the volume mounted?")
+        logger.warning(
+            f"⚠️ WARNING: Backup directory {BACKUP_DIR} does not exist! Is the volume mounted?"
+        )
     else:
-        print(f"✅ Backup directory {BACKUP_DIR} exists! Data will be backed up.")
+        logger.info(f"✅ Backup directory {BACKUP_DIR} exists! Data will be backed up.")
 
     client = connect_to_mongo()
     db = client["northpole"]
@@ -53,26 +64,27 @@ def main():
                 "timestamp": time.time(),
             }
             result = gifts_collection.insert_one(gift)
-            print(f"🎁 Inserted gift record with ID: {result.inserted_id}")
+            logger.info(f"🎁 Inserted gift record with ID: {result.inserted_id}")
 
             # Backup to the persistent volume
             if os.path.exists(BACKUP_DIR):
                 try:
                     import json
+
                     backup_file = os.path.join(BACKUP_DIR, "gifts_backup.jsonl")
                     with open(backup_file, "a") as f:
                         gift_copy = gift.copy()
                         gift_copy["_id"] = str(result.inserted_id)
                         f.write(json.dumps(gift_copy) + "\n")
                 except Exception as e:
-                    print(f"⚠️ Error writing to backup volume: {e}")
+                    logger.error(f"⚠️ Error writing to backup volume: {e}")
 
             # Count records
             count = gifts_collection.count_documents({})
-            print(f"📊 Total gifts in database: {count}")
+            logger.info(f"📊 Total gifts in database: {count}")
 
         except Exception as e:
-            print(f"⚠️ Error interacting with database: {e}")
+            logger.error(f"⚠️ Error interacting with database: {e}")
 
         time.sleep(10)
 
