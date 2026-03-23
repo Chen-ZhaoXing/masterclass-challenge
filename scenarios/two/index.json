@@ -19,29 +19,25 @@
                 "title": "HTTP GET Probes",
                 "text": "step2/readme.md",
                 "verify": "step2/verify.sh",
-                "background": "step2/background.sh",
-                "foreground": "step2/foreground.sh"
+                "background": "step2/background.sh"
             },
             {
                 "title": "Require Labels",
                 "text": "step3/readme.md",
                 "verify": "step3/verify.sh",
-                "background": "step3/background.sh",
-                "foreground": "step3/foreground.sh"
+                "background": "step3/background.sh"
             },
             {
                 "title": "Require Service Account",
                 "text": "step4/readme.md",
                 "verify": "step4/verify.sh",
-                "background": "step4/background.sh",
-                "foreground": "step4/foreground.sh"
+                "background": "step4/background.sh"
             },
             {
                 "title": "Require Non-Root Container",
                 "text": "step5/readme.md",
                 "verify": "step5/verify.sh",
-                "background": "step5/background.sh",
-                "foreground": "step5/foreground.sh"
+                "background": "step5/background.sh"
             }
         ],
         "assets": {

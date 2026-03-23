@@ -11,6 +11,8 @@ spec:
     metadata:
       labels:
         app: sleigh-telemetry
+        app.kubernetes.io/name: "gift-tracking-app"
+        app.kubernetes.io/instance: "gift-tracking-app"
     spec:
       containers:
         - name: sleigh-telemetry
