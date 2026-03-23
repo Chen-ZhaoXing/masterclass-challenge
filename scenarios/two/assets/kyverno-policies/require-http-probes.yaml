@@ -12,7 +12,6 @@ spec:
           - resources:
               kinds:
                 - Pod
-                - Deployment
       validate:
         message: "Liveness and readiness probes are required."
         anyPattern:
@@ -24,19 +23,3 @@ spec:
                   readinessProbe:
                     httpGet:
                       path: "?*"
-          # - spec:
-          #     containers:
-          #       - livenessProbe:
-          #           tcpSocket:
-          #             port: "?*"
-          #         readinessProbe:
-          #           tcpSocket:
-          #             port: "?*"
-          # - spec:
-          #     containers:
-          #       - livenessProbe:
-          #           exec:
-          #             command: "?*"
-          #         readinessProbe:
-          #           exec:
-          #             command: "?*"

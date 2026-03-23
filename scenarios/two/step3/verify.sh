@@ -14,3 +14,4 @@ else
     broadcast "❌ North Pole needs you to set the HTTP probes!"
     exit 1
 fi
+sleep 15

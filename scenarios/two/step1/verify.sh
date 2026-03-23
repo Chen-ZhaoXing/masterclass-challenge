@@ -14,3 +14,4 @@ else
     broadcast "❌ North Pole needs you to set the resource requests and limits"
     exit 1
 fi
+sleep 15

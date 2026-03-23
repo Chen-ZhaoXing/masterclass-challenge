@@ -13,14 +13,20 @@ spec:
         app: sleigh-telemetry
     spec:
       containers:
-      - name: sleigh-telemetry
-        image: localhost:30500/sleigh-telemetry:latest
-        ports:
-        - containerPort: 8000
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
+        - name: sleigh-telemetry
+          image: localhost:30500/sleigh-telemetry:latest
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
