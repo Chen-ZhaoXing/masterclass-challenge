@@ -5,8 +5,7 @@ broadcast() {
         fi
     done
 }
-kubectl delete clusterpolicies --all
-sleep 5
+kubectl delete clusterpolicies --all --force
 kubectl apply -f /var/kyverno-policies/require-http-probes.yaml > /dev/null 2>&1
 APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 if [ $? -eq 0 ]; then
