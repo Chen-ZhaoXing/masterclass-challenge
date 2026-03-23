@@ -33,12 +33,6 @@
                 "verify": "step4/verify.sh",
                 "background": "step4/background.sh"
             }
-            // {
-            //     "title": "Require Non-Root Container",
-            //     "text": "step5/readme.md",
-            //     "verify": "step5/verify.sh",
-            //     "background": "step5/background.sh"
-            // }
         ],
         "assets": {
             "host01": [
