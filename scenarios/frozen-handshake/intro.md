@@ -1,4 +1,4 @@
-> **Difficulty:** 🟢 Easy  |  **Time:** ~15 minutes  |  **Points:** 100
+> **Points:** 100
 >
 > **Prerequisites:** Basic Kubernetes (Deployments, Services, Secrets), basic Helm templating
 >

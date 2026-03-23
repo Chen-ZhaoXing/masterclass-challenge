@@ -1,6 +1,6 @@
 ![Security alert banner showing an oversized container image warning](./assets/banner.png)
 
-> **Difficulty:** 🟡 Medium  |  **Time:** ~25 minutes  |  **Points:** 200
+> **Points:** 200
 >
 > **Prerequisites:** Basic Docker/Dockerfile knowledge, understanding of container images and layers
 >

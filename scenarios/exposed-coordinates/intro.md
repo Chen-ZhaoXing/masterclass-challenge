@@ -1,6 +1,6 @@
 ![Security alert banner showing a breach detection warning for the Sleigh Routing API](./assets/banner.svg)
 
-> **Difficulty:** 🟢 Easy  |  **Time:** ~15 minutes  |  **Points:** 100
+> **Points:** 100
 >
 > **Prerequisites:** Basic Kubernetes knowledge (Pods, Deployments, Secrets), basic Helm usage
 >
