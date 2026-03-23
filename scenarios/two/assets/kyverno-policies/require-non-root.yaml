@@ -11,7 +11,6 @@ spec:
         any:
           - resources:
               kinds:
-                - Deployment
                 - Pod
       validate:
         message: "Running containers as root is not allowed. Set securityContext.runAsNonRoot to true."

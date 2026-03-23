@@ -15,3 +15,6 @@ Your next mission is to enforce security restrictions by ensuring the applicatio
 3. Set `runAsNonRoot` to `true` within the `securityContext`.
 4. Save the file and verify your solution with `k apply -f app.yaml`!
 5. Click the `Check` button!
+
+## Bonus
+🌟 Drop all the `capabilities` in the `securityContext` to give yourself a boost! 

@@ -11,14 +11,20 @@ spec:
     metadata:
       labels:
         app: sleigh-telemetry
+        ## Step 3
         app.kubernetes.io/name: "gift-tracking-app"
         app.kubernetes.io/instance: "gift-tracking-app"
     spec:
+      ## Step 4
+      serviceAccountName: gift-tracking-sa
+      ## Step 4 Bonus
+      automountServiceAccountToken: false
       containers:
         - name: sleigh-telemetry
           image: localhost:30500/sleigh-telemetry:latest
           ports:
             - containerPort: 8000
+          ##Step 1
           resources:
             requests:
               memory: "128Mi"
@@ -26,6 +32,7 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "200m"
+          ## Step 2
           livenessProbe:
             httpGet:
               path: /

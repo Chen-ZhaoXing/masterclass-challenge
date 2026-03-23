@@ -1,5 +1,7 @@
+## Step 4 SA 
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: gift-tracking-sa
+## Step 4 Bonus
 automountServiceAccountToken: false
