@@ -1,6 +1,6 @@
 # Scenario Objective: Thwarting the Insecure Deployment
 
-To pass Kyverno's checks and secure the North Pole cluster, you must identify and fix the intentional misconfigurations left by the rogue elves in their manifest. 
+To pass the checks and secure the North Pole cluster, you must identify and fix the intentional misconfigurations or lack of configurations left by the rogue elves in their manifest. 
 
 A well-configured manifest is essential for reliable, scalable, and secure operations during the holiday rush.
 
