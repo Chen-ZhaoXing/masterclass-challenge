@@ -22,6 +22,9 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          # TODO: The app has been updated to read credentials from a file.
+          #       It expects the path in APP_TOKEN_PATH (e.g. /app/token/credentials.key)
+          #       Mount the secret as a volume and point APP_TOKEN_PATH to the file.
           env:
             - name: MODE
               value: {{ .Values.env.mode }}

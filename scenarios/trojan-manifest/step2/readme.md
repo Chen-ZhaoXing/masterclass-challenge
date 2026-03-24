@@ -1,4 +1,4 @@
-# Scenario Objective: HTTP GET Probes
+# Scenario Objective: Health Probes
 
 The rogue elves' "gift-tracking" API is now resource-bound, but they forgot something critical: how does the North Pole orchestration engine know if the app is actually ready to receive requests or if it has frozen out in the cold?
 
@@ -8,9 +8,11 @@ The Chief Holiday Officer has once again rejected this deployment until it can p
 
 ## Your Task
 
-Your next mission is to define `livenessProbe` and `readinessProbe` using the `httpGet` action on the application container.
+A new cluster policy is now active that requires the deployment to declare how Kubernetes should check if the application is alive and ready.
 
-1. Open the `app.yaml` manifests.
-2. Add appropriate `livenessProbe` and `readinessProbe` configurations using `httpGet` (for example, pointing to the `/healthz` path on port `8000`).
-3. Save the file and verify your solution with `k apply -f app.yaml`!
+1. Try deploying the manifest and read the policy violation.
+2. The error message will tell you what type of health checks the policy requires.
+3. Fix the manifest and redeploy.
 4. Click the `Check` button!
+
+> 💡 If you're stuck, purchase hints from the challenge portal for guidance.

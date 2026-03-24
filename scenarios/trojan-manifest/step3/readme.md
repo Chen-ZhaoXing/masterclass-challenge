@@ -1,4 +1,4 @@
-# Scenario Objective: Require Labels
+# Scenario Objective: Standard Labels
 
 The rogue elves' "gift-tracking" API is now resource-bound and proving its health, but they slipped up again. They deployed their application without any identifying metadata!
 
@@ -8,8 +8,11 @@ The Chief Holiday Officer has firmly rejected this deployment. All applications 
 
 ## Your Task
 
-Your next mission is to add appropriate `labels`: `app.kubernetes.io/name` and `app.kubernetes.io/instance` to the application's metadata to satisfy the North Pole's strict governance rules. Set the value of both labels to `gift-tracking-app`.
+A new cluster policy is now active that requires standard Kubernetes labels on the pod template.
 
-1. Open the `app.yaml` manifest.
-2. Add the required `labels`.
-3. Click the `Check` button!
+1. Try deploying the manifest and read the policy violation.
+2. The error message will tell you which labels are required and where they should be applied.
+3. Fix the manifest and redeploy.
+4. Click the `Check` button!
+
+> 💡 If you're stuck, purchase hints from the challenge portal for guidance.

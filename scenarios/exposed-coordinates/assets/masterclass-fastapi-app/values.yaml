@@ -9,6 +9,8 @@ service:
 
 env:
   mode: "production"
-  # appToken is intentionally left empty: this is the insecure starting state
-  # that participants must replace with a proper Kubernetes Secret volume mount.
+  # INSECURE: appToken is passed as a plaintext env var.
+  # Replace this with a volume-mounted Secret.
+  # Hint: kubectl get secrets -n challenge1
+  # The secret key "legacy-sys-token" should be mapped to filename "credentials.key"
   appToken: ""
