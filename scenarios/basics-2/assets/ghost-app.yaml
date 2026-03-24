@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gift-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gift-registry
+  template:
+    metadata:
+      labels:
+        app: gift-registry
+    spec:
+      containers:
+        - name: registry
+          image: nignx:1.25
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

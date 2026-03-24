@@ -11,6 +11,5 @@ The Chief Holiday Officer has firmly rejected this deployment. All applications 
 Your next mission is to add appropriate `labels`: `app.kubernetes.io/name` and `app.kubernetes.io/instance` to the application's metadata to satisfy the North Pole's strict governance rules. Set the value of both labels to `gift-tracking-app`.
 
 1. Open the `app.yaml` manifest.
-2. Add the required `labels` under the `metadata` section.
-3. Save the file and verify your solution with `k apply -f app.yaml`!
-4. Click the `Check` button!
+2. Add the required `labels`.
+3. Click the `Check` button!

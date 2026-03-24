@@ -1,0 +1,57 @@
+{
+    "title": "Challenge: Trainee Elf OJT",
+    "description": "Kubernetes Debugging — Learn to diagnose ImagePullBackOff, CrashLoopBackOff, and hardcoded secrets using kubectl describe, logs, and Secrets.",
+    "time": "20 minutes",
+    "details": {
+        "intro": {
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "The Ghost Container",
+                "text": "step1/readme.md",
+                "verify": "step1/verify.sh"
+            },
+            {
+                "title": "The Crash Loop",
+                "text": "step2/readme.md",
+                "verify": "step2/verify.sh"
+            },
+            {
+                "title": "The Hardcoded Password",
+                "text": "step3/readme.md",
+                "verify": "step3/verify.sh"
+            }
+        ],
+        "assets": {
+            "host01": [
+                {
+                    "file": "assets/ghost-app.yaml",
+                    "target": "~/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "assets/crash-app.yaml",
+                    "target": "~/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "assets/hardcoded-app.yaml",
+                    "target": "~/",
+                    "chmod": "+rw"
+                }
+            ]
+        },
+        "finish": {
+            "text": "finish.md"
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    },
+    "interface": {
+        "layout": "ide"
+    }
+}

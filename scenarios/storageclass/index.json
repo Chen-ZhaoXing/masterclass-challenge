@@ -12,12 +12,14 @@
             {
                 "title": "The Missing StorageClass",
                 "text": "step1/readme.md",
-                "verify": "step1/verify.sh"
+                "verify": "step1/verify.sh",
+                "finish": "step1/finish.md"
             },
             {
                 "title": "The missing App connectivity",
                 "text": "step2/readme.md",
-                "verify": "step2/verify.sh"
+                "verify": "step2/verify.sh",
+                "finish": "step2/finish.md"
             }
         ],
         "assets": {
