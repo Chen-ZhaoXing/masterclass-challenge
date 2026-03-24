@@ -24,7 +24,7 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "200m"
-          readinessProbe:
+           readinessProbe:
             httpGet:
               path: /
               port: 80
