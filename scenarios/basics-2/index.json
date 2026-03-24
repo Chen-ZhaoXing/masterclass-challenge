@@ -29,17 +29,17 @@
             "host01": [
                 {
                     "file": "assets/ghost-app.yaml",
-                    "target": "~/ghost-app.yaml",
+                    "target": "~/",
                     "chmod": "+rw"
                 },
                 {
                     "file": "assets/crash-app.yaml",
-                    "target": "~/crash-app.yaml",
+                    "target": "~/",
                     "chmod": "+rw"
                 },
                 {
                     "file": "assets/hardcoded-app.yaml",
-                    "target": "~/hardcoded-app.yaml",
+                    "target": "~/",
                     "chmod": "+rw"
                 }
             ]
