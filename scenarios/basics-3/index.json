@@ -1,7 +1,7 @@
 {
-    "title": "Challenge: Trainee Elf OJT",
-    "description": "Kubernetes Debugging — Learn to diagnose ImagePullBackOff, CrashLoopBackOff, and hardcoded secrets using kubectl describe, logs, and Secrets.",
-    "time": "20 minutes",
+    "title": "Challenge: Trainee Elf Graduation",
+    "description": "Basic Kubernetes networking and configuration — Expose a deployment with a Service and configure an app with ConfigMaps. Your final test before the intermediate tier!",
+    "time": "15 minutes",
     "details": {
         "intro": {
             "text": "intro.md",
@@ -10,35 +10,25 @@
         },
         "steps": [
             {
-                "title": "The Ghost Container",
+                "title": "The Invisible App",
                 "text": "step1/readme.md",
                 "verify": "step1/verify.sh"
             },
             {
-                "title": "The Crash Loop",
+                "title": "The Missing Config",
                 "text": "step2/readme.md",
                 "verify": "step2/verify.sh"
-            },
-            {
-                "title": "The Hardcoded Password",
-                "text": "step3/readme.md",
-                "verify": "step3/verify.sh"
             }
         ],
         "assets": {
             "host01": [
                 {
-                    "file": "ghost-app.yaml",
+                    "file": "invisible-app.yaml",
                     "target": "~/",
                     "chmod": "+rw"
                 },
                 {
-                    "file": "crash-app.yaml",
-                    "target": "~/",
-                    "chmod": "+rw"
-                },
-                {
-                    "file": "hardcoded-app.yaml",
+                    "file": "noconfig-app.yaml",
                     "target": "~/",
                     "chmod": "+rw"
                 }
