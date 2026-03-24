@@ -1,4 +1,4 @@
-# Scenario Objective: Request and limits
+# Scenario Objective: Resource Boundaries
 
 The rogue elves tried to sneak in their "gift-tracking" API without specifying any CPU or Memory boundaries! 
 
@@ -8,9 +8,11 @@ The Chief Holiday Officer has instantly rejected this deployment.
 
 ## Your Task
 
-Your first mission is to define `resources`, specifically `requests` and `limits` for both `cpu` and `memory`, on the application container.
+The cluster's policy engine enforcing this requirement is already active. Try deploying the manifest and read the error message — it will tell you exactly which resource fields the policy expects.
 
-1. Open the `app.yaml` manifests.
-2. Add appropriate `requests` and `limits` (for example, `100m` CPU and `128Mi` memory).
-3. Save the file and verify your solution with `k apply -f app.yaml`!
+1. Open `app.yaml` and attempt to deploy it.
+2. Read the policy violation carefully.
+3. Fix the manifest to satisfy the policy.
 4. Click the `Check` button!
+
+> 💡 If you're stuck, purchase hints from the challenge portal for guidance.

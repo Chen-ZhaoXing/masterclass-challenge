@@ -4,7 +4,7 @@
 >
 > **Prerequisites:** Kubernetes deployment manifests, Kubernetes security contexts, basic understanding of admission controllers
 >
-> **Learning Objectives:** Kyverno policy enforcement, Manifest debugging, container security context (non-root, drop capabilities), resource requests/limits, health probes, standard labeling, ServiceAccount isolation
+> **Learning Objectives:** Policy enforcement, Manifest debugging, container security context (non-root, drop capabilities), resource requests/limits, health probes, standard labeling, ServiceAccount isolation
 
 # The Trojan Manifest
 
@@ -16,16 +16,16 @@ They've managed to submit a basic Kubernetes deployment manifest (located at `~/
 
 ## The Countermeasure
 
-Anticipating this, the Chief Holiday Officer has deployed **Kyverno**, a Kubernetes policy engine, across the cluster. Kyverno is armed with `ClusterPolicies` that will outright reject any resources that do not meet the North Pole's production standards.
+Anticipating this, the Chief Holiday Officer has deployed a **Kubernetes policy engine** across the cluster. It is armed with admission policies that will outright reject any resources that do not meet the North Pole's production standards.
 
-Your role as Senior Security Elf is to analyze the rogue elves' manifest, identify the misconfigurations blocking its deployment, and refactor it to meet Kyverno's standards.
+Your role as Senior Security Elf is to analyze the rogue elves' manifest, identify the misconfigurations blocking its deployment, and refactor it to meet the cluster's security standards.
 
 ## Your Mission
 
 1. **Deploy the Manifest:** Attempt to apply the manifest to the cluster to see what happens.
-2. **Find the Errors:** When Kyverno blocks the deployment, use the feedback to identify which policies the manifest violates.
+2. **Find the Errors:** When the policy engine blocks the deployment, use the feedback to identify which policies the manifest violates.
 3. **Fix the Manifest:** Modify the configuration within `~/app.yaml` so it adheres to all security requirements.
-4. **Verify:** You are done when you can successfully deploy the manifest without Kyverno rejecting it.
+4. **Verify:** You are done when you can successfully deploy the manifest without being rejected.
 
 The cluster has all the information you need. Investigate, debug, and fix.
 

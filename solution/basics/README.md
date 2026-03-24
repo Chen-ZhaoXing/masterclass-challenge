@@ -5,7 +5,7 @@
 The broken `typo-app.yaml` has 3 errors:
 
 1. **`apiVersion: app/v1`** → Should be **`apps/v1`**
-2. **`containerPort: "8080"`** → Should be integer **`containerPort: 8080`** (no quotes)
+2. **`kind: Deplyoment`** → Should be **`kind: Deployment`** (spelling error)
 3. **`readinessProbe` indentation** → Misaligned by 1 extra space, needs to match `resources` indentation
 
 ## Step 2: The Untagged Shipment

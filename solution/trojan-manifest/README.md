@@ -1,10 +1,10 @@
 # Challenge 3: The Trojan Manifest - Solution
 
 ## The Vulnerability
-The elves tried to sneak in raw YAML manifests (`app.yaml`) that violated numerous security postures defined by the North Pole's `Kyverno` admission controller. Without fixing these, Kyverno strictly blocks deployment.
+The elves tried to sneak in raw YAML manifests (`app.yaml`) that violated numerous security postures defined by the North Pole's admission controller. Without fixing these, the policy engine strictly blocks deployment.
 
 ## The Solution
-We updated `app.yaml` to pass all 6 Kyverno validations:
+We updated `app.yaml` to pass all validations:
 
 1. **Resource Guardrails:** Added `resources.requests` and `resources.limits` (e.g., 100m CPU, 128Mi Memory) preventing the pod from executing a denial-of-service attack on the underlying node.
 2. **Probes:** Added `livenessProbe` and `readinessProbe` to assure traffic isn't routed to dead containers.

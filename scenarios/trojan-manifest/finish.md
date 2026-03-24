@@ -1,6 +1,6 @@
 ## Challenge Complete: The Trojan Manifest Defeated!
 
-You have successfully remediated the rogue elves' insecure manifest and passed Kyverno's strict policies! 
+You have successfully remediated the rogue elves' insecure manifest and passed the cluster's strict admission policies! 
 
 By enforcing these standards, you've built a rock-solid workload:
 

@@ -8,51 +8,116 @@ This document defines the point allocation, hint costs, and configuration for ho
 
 **Type:** Static Scoring with Completion Bonus
 
-| # | Challenge | Killercoda Scenario | Difficulty | Base Points |
-|---|-----------|---------------------|------------|-------------|
-| 1 | The Exposed Coordinates | `scenarios/one` | 🟢 Easy | **100** |
-| 2 | The Bloated Sleigh Image | `scenarios/three` | 🟡 Medium | **200** |
-| 3 | The Trojan Helm Chart | `scenarios/two` | 🔴 Hard | **300** |
-| — | **Completion Bonus** | *All 3 solved* | — | **+50** |
-| | | | **Max Total** | **650** |
+| # | Challenge | Killercoda Scenario | Difficulty | Base Points | Steps | Est. Time |
+|---|-----------|---------------------|------------|-------------|-------|-----------|
+| 1 | Trainee Elf Orientation | `scenarios/basics` | 🟢 Beginner | **50** | 3 | ~10 min |
+| 2 | Trainee Elf OJT | `scenarios/basics-2` | 🟢 Beginner | **50** | 3 | ~10 min |
+| 3 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | **100** | 1 | ~15 min |
+| 4 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
+| 5 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
+| 6 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
+| 7 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
+| — | **Completion Bonus** | *All 7 solved* | — | **+100** | — | — |
+| | | | **Max Total** | **1200** | | **~145 min** |
 
 ---
 
 ## Hints Per Challenge
 
-Hints are the **primary guidance mechanism** for participants. The scenario pages intentionally provide only the narrative context and high-level goal — all technical guidance must be purchased here.
+Hints are tiered from vague to specific. The first hint per challenge is **free** to orient participants. Subsequent hints cost a percentage of the challenge's base points.
 
-Hints are tiered from vague to specific. The first hint per challenge is **free** to orient participants.
+---
 
-### Challenge 1: The Exposed Coordinates (100 pts)
-
-| Hint # | Cost | Hint Text |
-|--------|------|-----------|
-| 1 | **Free** | The secret you need already exists in the cluster. Use `kubectl` to explore the `challenge1` namespace and find it. Look at what keys it contains. |
-| 2 | 15 pts | The application expects a new environment variable called `APP_TOKEN_PATH` that points to a file. The secret key `legacy-sys-token` must be mounted as a file named `credentials.key`. |
-| 3 | 25 pts | In your Helm deployment template, add a `volumes[]` entry with `secret.secretName` pointing to the secret, using `items[]` to map the key to a filename. Add a `volumeMounts[]` entry in the container spec. Set `APP_TOKEN_PATH` to `{mountPath}/credentials.key`. Remove the old `APP_TOKEN` env var completely. |
-
-**Minimum achievable score:** 60 pts (if all hints unlocked)
-
-### Challenge 2: The Bloated Sleigh Image (200 pts)
+### Challenge 1: Trainee Elf Orientation (50 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
-| 1 | **Free** | Look at the existing Dockerfile. What base image is it using? How big is that image? Research smaller Python base images. Also check: who is the container running as? |
-| 2 | 25 pts | You need a **multi-stage build**: one `FROM` stage to install dependencies, and a second `FROM` stage with a minimal base image (like `python:3.13-slim`) for the final runtime image. Copy only the installed packages from the builder. |
-| 3 | 40 pts | In the build stage, use `pip install --no-cache-dir --prefix=/install -r requirements.txt`. In the runtime stage, `COPY --from=builder /install /usr/local` to bring only the installed packages. Create a non-root user with `addgroup`/`adduser` and add a `USER` directive before the `CMD`. |
+| 1 | **Free** | Try running `kubectl apply -f ~/typo-app.yaml` and read the error message. It tells you exactly what's wrong. Fix, save, repeat. |
+| 2 | 10 pts | There are 3 errors: a misspelled `apiVersion`, a misspelled `kind`, and a YAML indentation problem on the `readinessProbe`. |
 
-**Minimum achievable score:** 135 pts (if all hints unlocked)
+**Minimum achievable score:** 40 pts
 
-### Challenge 3: The Trojan Helm Chart (300 pts)
+---
+
+### Challenge 2: Trainee Elf OJT (50 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
-| 1 | **Free** | Run `kubectl get clusterpolicies` to see what Kyverno enforces. Try deploying the chart with `helm template release-name . \| kubectl apply --dry-run=server -f -` and read the error messages carefully. |
-| 2 | 30 pts | You need to fix ALL of: standard `app.kubernetes.io/name` and `app.kubernetes.io/instance` labels (check the `_helpers.tpl` for existing label templates), resource limits (not just requests), liveness and readiness probes, a non-default ServiceAccount, and proper security context. |
-| 3 | 60 pts | **Watch out:** The deployment template hardcodes `runAsNonRoot: false` even though `values.yaml` says `true` — fix the template. Add `livenessProbe` and `readinessProbe` with `httpGet` on port 8000. Add `limits:` alongside `requests:` in values.yaml. Include `{{ include "app-chart.labels" . }}` in metadata labels for Deployment, Pod template, AND Service. |
+| 1 | **Free** | These manifests will `kubectl apply` successfully — but the pods will fail. Use `kubectl get pods`, then `kubectl describe pod <name>` or `kubectl logs <name>` to see what's actually wrong inside the cluster. |
+| 2 | 10 pts | Step 1: The image name has a typo. Step 2: The `command` references a binary that doesn't exist. Step 3: Create a Secret with `kubectl create secret generic db-credentials --from-literal=DB_PASSWORD=NorthPole2025!` and change the env to use `secretKeyRef`. |
 
-**Minimum achievable score:** 210 pts (if all hints unlocked)
+**Minimum achievable score:** 40 pts
+
+---
+
+### Challenge 3: The Exposed Coordinates (100 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | The secret you need already exists in the cluster. Use `kubectl get secrets -n challenge1` to find it, then `kubectl describe secret <name> -n challenge1` to see its keys. |
+| 2 | 15 pts | The application expects `APP_TOKEN_PATH` to point to a file. The secret key `legacy-sys-token` must be mounted as a file named `credentials.key`. Check the TODO comments in `deployment.yaml` for the expected path format. |
+| 3 | 25 pts | In your Helm deployment template, add a `volumes[]` entry backed by the Secret with `items[]` mapping the key to the filename. Add a `volumeMounts[]` entry in the container spec with `readOnly: true`. Set `APP_TOKEN_PATH` to `<mountPath>/credentials.key`. Remove the old `APP_TOKEN` env var completely. |
+
+**Minimum achievable score:** 60 pts
+
+---
+
+### Challenge 4: The Frozen Handshake (100 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | The intro tells you everything: a Secret called `northpole-ca` exists with file key `ca.crt`. You need to mount it and set `TLS_CERT_PATH`. Check `deployment.yaml` in the Helm chart for the TODO. |
+| 2 | 15 pts | Add a `volumes[]` entry with `secret.secretName: northpole-ca`. Add a `volumeMounts[]` entry pointing to a directory like `/etc/tls`. Set `TLS_CERT_PATH` to `/etc/tls/ca.crt`. Then run `helm upgrade --install challenge4 ~/tls-client-chart -n challenge4`. |
+
+**Minimum achievable score:** 85 pts
+
+---
+
+### Challenge 5: The Bloated Sleigh Image (200 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Look at the existing Dockerfile. What base image is it using? How big is that image? Run `docker images` to see. Check: who is the container running as? Research multi-stage Docker builds and slim base images. |
+| 2 | 25 pts | You need a **multi-stage build**: a `builder` stage to install dependencies, and a production stage with `python:3.13-slim`. Copy only pip packages from the builder with `COPY --from=builder`. Use `ARG` for the Python version, add `LABEL` for metadata, and add `HEALTHCHECK`. |
+| 3 | 40 pts | Builder: `pip install --no-cache-dir --prefix=/install -r requirements.txt`. Production: `COPY --from=builder /install /usr/local`, then `COPY src/ /app/src/`. Copy `requirements.txt` before `src/` for layer caching. Set `USER 1001:0` (SCC-compliant) before `CMD`. Push to `localhost:30500/sleigh-telemetry:latest`. |
+
+**Minimum achievable score:** 135 pts
+
+---
+
+### Challenge 6: The Trojan Manifest (300 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Try `kubectl apply -f ~/app.yaml` and read the error. Each step introduces one new policy. Use the error message to identify which field is missing, then fix it in `app.yaml`. |
+| 2 | 30 pts | The 5 policies enforce: (1) `resources.requests` and `resources.limits`, (2) `livenessProbe` and `readinessProbe` with `httpGet`, (3) `app.kubernetes.io/name` and `app.kubernetes.io/instance` labels on `pod.metadata.labels`, (4) a non-default `serviceAccountName`, (5) `securityContext.runAsNonRoot: true`. |
+| 3 | 60 pts | For probes, use `httpGet` on path `/` port `8000`. Create a ServiceAccount with `kubectl create sa gift-tracking-sa` and set `serviceAccountName: gift-tracking-sa`. Add `automountServiceAccountToken: false` for bonus points. For security, set `securityContext: { runAsNonRoot: true }` at the container level. |
+
+**Minimum achievable score:** 210 pts
+
+---
+
+### Challenge 7: The Phantom Storage (300 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Step 1: Open `statefulset.yaml` and look at the `volumeClaimTemplates` section. The `storageClassName` and `accessModes` fields are missing. The StorageClass is called `local-path` and the access mode should be `ReadWriteOnce`. |
+| 2 | 30 pts | Step 2: Create a PVC named `backup-pvc` with `storageClassName: local-path`, `accessModes: [ReadWriteOnce]`, and `storage: 1Gi`. In `deployment.yaml`, add a `volumes[]` entry referencing your PVC and a `volumeMounts[]` entry mounting it at `/app/data` inside the `tracker` container. |
+| 3 | 60 pts | Step 2 (continued): Create a Service named `mongodb-service` targeting the MongoDB pods. Use `selector: { app: mongodb }` and `port: 27017 / targetPort: 27017`. Apply both the PVC, the updated deployment, and the Service with `kubectl apply -f`. |
+
+**Minimum achievable score:** 210 pts
+
+---
+
+## Scoring Summary by Difficulty
+
+| Tier | Challenges | Points Available | Target Audience |
+|------|-----------|-----------------|-----------------|
+| 🟢 Beginner | Orientation + OJT | 100 pts | First-timers, students |
+| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image | 400 pts | Workshop graduates |
+| 🔴 Advanced | Trojan Manifest + Phantom Storage | 600 pts | Daily practitioners |
+| 🏆 Bonus | All 7 completed | +100 pts | Completionists |
+| | **Grand Total** | **1200 pts** | |
 
 ---
 
@@ -62,7 +127,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 1. **Challenge Type:** Standard (Static)
 2. **Category:** Kubernetes Security
-3. **Tags:** Per challenge — e.g., `secrets`, `helm`, `kyverno`, `dockerfile`, `multi-stage`, `non-root`
+3. **Tags:** Per challenge — e.g., `yaml-debugging`, `secrets`, `helm`, `policy-engine`, `dockerfile`, `multi-stage`, `non-root`, `storage`, `pvc`
 4. **State:** Visible (all challenges visible from start; no unlocking required)
 5. **Max Attempts:** Unlimited (learning-focused)
 
@@ -76,9 +141,9 @@ Flags are **not** traditional CTF text flags. Instead, participants are validate
 
 ### Completion Bonus
 
-The 50-point completion bonus for solving all 3 challenges can be implemented as:
-- A separate hidden challenge that auto-unlocks when all 3 are solved (requires CTFd plugin), or
-- A manual award given by admins after verifying all 3 are complete
+The 100-point completion bonus for solving all 7 challenges can be implemented as:
+- A separate hidden challenge that auto-unlocks when all 7 are solved (requires CTFd plugin), or
+- A manual award given by admins after verifying all 7 are complete
 
 ### Anti-Cheat Considerations
 

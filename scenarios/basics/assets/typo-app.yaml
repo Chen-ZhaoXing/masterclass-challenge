@@ -1,5 +1,5 @@
 apiVersion: app/v1
-kind: Deployment
+kind: Deplyoment
 metadata:
   name: gift-tracker
 spec:
@@ -16,7 +16,7 @@ spec:
         - name: tracker
           image: nginx:1.25
           ports:
-            - containerPort: "8080"
+            - containerPort: 8080
           resources:
             requests:
               memory: "128Mi"

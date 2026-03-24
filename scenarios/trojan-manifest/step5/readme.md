@@ -1,18 +1,19 @@
-# Scenario Objective: Require Non-Root Container
+# Scenario Objective: Container Security Context
 
-The rogue elves' "gift-tracking" API is now properly labeled, but they've left a glaring security hole. They configured their application to run as the `root` user!
+The rogue elves' "gift-tracking" API is almost production-ready, but they've left the worst security hole of all. They configured their application to run with elevated privileges!
 
-If a mischievous Grinch manages to exploit a vulnerability in the application, running as root would give them complete control over the container, posing a severe threat to the North Pole's infrastructure and the Naughty/Nice database.
+If a mischievous Grinch manages to exploit a vulnerability in the application, running with full privileges would give them complete control over the container, posing a severe threat to the North Pole's infrastructure and the Naughty/Nice database.
 
-The Chief Information Security Elf (CISE) has firmly rejected this deployment. To maintain a secure holiday environment, all containers must run as a non-root user.
+The Chief Information Security Elf (CISE) has firmly rejected this deployment. To maintain a secure holiday environment, all containers must run with restricted privileges.
 
 ## Your Task
 
-Your next mission is to enforce security restrictions by ensuring the application container does not run as root.
+A new cluster policy is now active that enforces a restricted security posture for all containers.
 
-1. Open the `app.yaml` manifest.
-2. Set `runAsNonRoot` to `true`.
-3. Click the `Check` button!
+1. Try deploying the manifest and read the policy violation.
+2. The error message will tell you which security setting is required.
+3. Fix the manifest and redeploy.
+4. Click the `Check` button!
 
 ## Bonus
-🌟 Drop all the `capabilities` in the `securityContext` to give yourself a boost! 
+🌟 Drop all unnecessary Linux capabilities in the `securityContext` to give yourself a boost!

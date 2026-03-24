@@ -7,8 +7,8 @@ broadcast() {
 }
 
 kubectl delete clusterpolicies --all --force
-kubectl apply -f /var/kyverno/policiesrequire-sa.yaml -n kyverno >/dev/null 2>&1
-APPLY_OUT=$(kubectl apply -f ~/app.yaml 2>&1)
+kubectl apply -f /var/kyverno-policies/require-non-default-sa.yaml >/dev/null 2>&1
+APPLY_OUT=$(kubectl apply -f ~/app.yaml --dry-run=server 2>&1)
 
 APPLY_OUT_EXIT=$?
 
@@ -19,18 +19,17 @@ if [ $APPLY_OUT_EXIT -eq 0 ]; then
         exit 1
     fi
 
-    SA_NAME=$(kubectl get -f ~/app.yaml -o jsonpath='{..serviceAccountName}')
-    if [[ ! "$SA_NAME" =~ "gift-tracking-sa" ]]; then
+    SA_NAME=$(grep 'serviceAccountName' ~/app.yaml | awk '{print $2}')
+    if [[ "$SA_NAME" != "gift-tracking-sa" ]]; then
         broadcast "❌ North Pole needs you to set the gift-tracking-sa Service Account in your manifest!"
         exit 1
     fi
 
     broadcast "✅ North Pole approves of your Service Account!"
     
-    # Bonus Check: Look for automountServiceAccountToken in the applied manifest
-    # We use recursive JSONPath '..automountServiceAccountToken' so it works for both Pods and Deployments
-    TOKEN_MOUNT=$(kubectl get -f ~/app.yaml -o jsonpath='{..automountServiceAccountToken}')
-    TOKEN_SA_MOUNT=$(kubectl get sa gift-tracking-sa -o jsonpath='{..automountServiceAccountToken}')
+    # Bonus Check: Look for automountServiceAccountToken in the manifest or on the SA
+    TOKEN_MOUNT=$(grep 'automountServiceAccountToken' ~/app.yaml | awk '{print $2}')
+    TOKEN_SA_MOUNT=$(kubectl get sa gift-tracking-sa -o jsonpath='{.automountServiceAccountToken}' 2>/dev/null)
     if [[ "$TOKEN_MOUNT" = "false" || "$TOKEN_SA_MOUNT" = "false" ]]; then
         broadcast "🌟 BONUS ACHIEVED: Service account token automount disabled!"
     else
