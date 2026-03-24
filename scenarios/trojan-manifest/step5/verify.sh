@@ -28,4 +28,9 @@ else
     broadcast "❌ North Pole needs you to set the Drop All Capabilities Configuration!"
 fi
 
+broadcast " Here is the flag! "
+broadcast "============================================================\n"
+broadcast "        rpSfRGkcco6/wFV9XcMNR+boN8EQ0k2mVN9p06cSqfc=        \n"
+broadcast "============================================================\n"
+
 exit 0
