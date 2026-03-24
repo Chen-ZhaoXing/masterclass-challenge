@@ -99,8 +99,8 @@ if [ $? -ne 0 ] || ! echo "$WITH_CA_OUTPUT" | grep -q "north-pole-secure-endpoin
 fi
 
 broadcast "✅ [PASS] TLS trust is restored. Certificate is mounted correctly and the secure endpoint is reachable."
-broadcast " Here is the flag! "
 broadcast "============================================================\n"
+broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
 broadcast "        n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg=        \n"
 broadcast "============================================================\n"
 exit 0
