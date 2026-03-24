@@ -1,0 +1,57 @@
+{
+    "title": "Challenge: Trainee Elf Tier",
+    "description": "Basic Kubernetes debugging — Fix common YAML errors, pin mutable image tags, and learn namespace scoping. Perfect for your first day as a Security Elf!",
+    "time": "20 minutes",
+    "details": {
+        "intro": {
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "The Elf's Typo",
+                "text": "step1/readme.md",
+                "verify": "step1/verify.sh"
+            },
+            {
+                "title": "The Untagged Shipment",
+                "text": "step2/readme.md",
+                "verify": "step2/verify.sh"
+            },
+            {
+                "title": "The Lost Namespace",
+                "text": "step3/readme.md",
+                "verify": "step3/verify.sh"
+            }
+        ],
+        "assets": {
+            "host01": [
+                {
+                    "file": "assets/typo-app.yaml",
+                    "target": "~/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "assets/untagged-app.yaml",
+                    "target": "~/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "assets/namespace-app.yaml",
+                    "target": "~/",
+                    "chmod": "+rw"
+                }
+            ]
+        },
+        "finish": {
+            "text": "finish.md"
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    },
+    "interface": {
+        "layout": "ide"
+    }
+}

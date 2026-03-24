@@ -3,6 +3,16 @@
     "description": "A series of hands-on, Kubernetes/Docker challenges. Take on the role of the Senior Security Elf and defend the North Pole cluster against the rogue elf faction!",
     "items": [
         {
+            "path": "basics",
+            "title": "The Trainee Elf Orientation",
+            "description": "• Topics: YAML Debugging, Image Pinning, Namespace Scoping — Fix 3 simple but critical manifest errors left behind by the rogue elves. Perfect for your first day!"
+        },
+        {
+            "path": "basics-2",
+            "title": "The Trainee Elf OJT",
+            "description": "• Topics: kubectl describe, kubectl logs, Kubernetes Secrets — Debug ImagePullBackOff, CrashLoopBackOff, and extract hardcoded passwords into Secrets."
+        },
+        {
             "path": "bloated-docker-image",
             "title": "The Bloated Sleigh Image",
             "description": "• Topics: Dockerfile, Multi-Stage Builds, Non-Root Containers — The rogue elves shipped a 1GB+ container image running as root. Rewrite the Dockerfile to produce a secure, slim (<250MB) image using multi-stage builds."

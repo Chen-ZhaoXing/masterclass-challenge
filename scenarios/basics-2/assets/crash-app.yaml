@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: naughty-nice-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: naughty-nice-api
+  template:
+    metadata:
+      labels:
+        app: naughty-nice-api
+    spec:
+      containers:
+        - name: api
+          image: python:3.13-slim
+          command: ["pythn", "-m", "http.server", "8000"]
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

@@ -11,10 +11,8 @@ The Chief Information Security Elf (CISE) has firmly rejected this deployment. T
 Your next mission is to enforce security restrictions by ensuring the application container does not run as root.
 
 1. Open the `app.yaml` manifest.
-2. Add a `securityContext` block under the application container.
-3. Set `runAsNonRoot` to `true` within the `securityContext`.
-4. Save the file and verify your solution with `k apply -f app.yaml`!
-5. Click the `Check` button!
+2. Set `runAsNonRoot` to `true`.
+3. Click the `Check` button!
 
 ## Bonus
 🌟 Drop all the `capabilities` in the `securityContext` to give yourself a boost! 

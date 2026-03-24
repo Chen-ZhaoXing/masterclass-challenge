@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parcel-sorter
+  namespace: north-pole-logistics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: parcel-sorter
+  template:
+    metadata:
+      labels:
+        app: parcel-sorter
+    spec:
+      containers:
+        - name: sorter
+          image: busybox:1.36
+          command: ["sh", "-c", "echo 'Sorting parcels for the North Pole...' && sleep 3600"]
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "25m"
+            limits:
+              memory: "64Mi"
+              cpu: "50m"

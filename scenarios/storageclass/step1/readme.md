@@ -8,11 +8,12 @@ The Chief Holiday Officer has instantly rejected this deployment.
 
 ## Your Task
 
-Your first mission in securing the storage layer is to explicitly define `accessModes` and `storageClassName` within the MongoDB StatefulSet's `volumeClaimTemplates`.
+Your first mission in securing the storage layer is to explicitly define `accessModes` and `storageClassName` within the MongoDB.
 
-1. Open the `statefulset.yaml` manifest.
-2. Locate the `volumeClaimTemplates` section for `mongodb-data`.
-3. Add `accessModes: ["ReadWriteOnce"]` to ensure safe, exclusive access to the database volume.
-4. Add `storageClassName: "local-path"` to explicitly request the North Pole's storage provisioner.
-5. Save the file and verify your solution! (Usually `kubectl apply -f statefulset.yaml` helps spot indentation errors!)
-6. Click the `Check` button!
+## What You Have
+
+1. A `statefulset.yaml` manifest for the MongoDB.
+2. A `StorageClass` named `local-path`.
+3. Requirement for `accessModes` to be `ReadWriteOnce`.
+4. Requirement for a 5Gi storage.
+5. Click the `Check` button!
