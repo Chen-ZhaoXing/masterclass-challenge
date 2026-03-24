@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gift-dashboard
+  labels:
+    app: gift-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gift-dashboard
+  template:
+    metadata:
+      labels:
+        app: gift-dashboard
+    spec:
+      containers:
+        - name: dashboard
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80

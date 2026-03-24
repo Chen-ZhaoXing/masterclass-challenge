@@ -13,6 +13,11 @@
             "description": "• Topics: kubectl describe, kubectl logs, Kubernetes Secrets — Debug ImagePullBackOff, CrashLoopBackOff, and extract hardcoded passwords into Secrets."
         },
         {
+            "path": "basics-3",
+            "title": "The Trainee Elf Graduation",
+            "description": "• Topics: Services, ConfigMaps — Expose a deployment with a ClusterIP Service and provide application configuration via ConfigMaps."
+        },
+        {
             "path": "bloated-docker-image",
             "title": "The Bloated Sleigh Image",
             "description": "• Topics: Dockerfile, Multi-Stage Builds, Non-Root Containers — The rogue elves shipped a 1GB+ container image running as root. Rewrite the Dockerfile to produce a secure, slim (<250MB) image using multi-stage builds."
@@ -20,7 +25,7 @@
         {
             "path": "trojan-manifest",
             "title": "The Trojan Manifest",
-            "description": "• Topics: Security Context, RBAC, Probes — The rogue elves submitted a misconfigured Helm chart. Fix all 6+ Kyverno policy violations to meet North Pole production standards."
+            "description": "• Topics: Security Context, RBAC, Probes — The rogue elves submitted a misconfigured manifest. Fix all policy violations to meet North Pole production standards."
         },
         {
             "path": "storageclass",

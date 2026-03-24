@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-api
+  labels:
+    app: weather-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather-api
+  template:
+    metadata:
+      labels:
+        app: weather-api
+    spec:
+      containers:
+        - name: weather
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          env:
+            - name: APP_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: weather-config
+                  key: APP_MODE
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: weather-config
+                  key: LOG_LEVEL

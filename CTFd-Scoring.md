@@ -12,13 +12,14 @@ This document defines the point allocation, hint costs, and configuration for ho
 |---|-----------|---------------------|------------|-------------|-------|-----------|
 | 1 | Trainee Elf Orientation | `scenarios/basics` | 🟢 Beginner | **50** | 3 | ~10 min |
 | 2 | Trainee Elf OJT | `scenarios/basics-2` | 🟢 Beginner | **50** | 3 | ~10 min |
-| 3 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | **100** | 1 | ~15 min |
-| 4 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
-| 5 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
-| 6 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
-| 7 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
-| — | **Completion Bonus** | *All 7 solved* | — | **+100** | — | — |
-| | | | **Max Total** | **1200** | | **~145 min** |
+| 3 | Trainee Elf Graduation | `scenarios/basics-3` | 🟢 Beginner | **50** | 2 | ~15 min |
+| 4 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | **100** | 1 | ~15 min |
+| 5 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
+| 6 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
+| 7 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
+| 8 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
+| — | **Completion Bonus** | *All 8 solved* | — | **+100** | — | — |
+| | | | **Max Total** | **1250** | | **~160 min** |
 
 ---
 
@@ -50,7 +51,18 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 3: The Exposed Coordinates (100 pts)
+### Challenge 3: Trainee Elf Graduation (50 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Step 1: The pod is running fine but nothing can reach it. What Kubernetes resource makes a deployment reachable by other pods via DNS? Step 2: The pod can't start because it's missing external configuration — check the Events section of `kubectl describe pod`. |
+| 2 | 10 pts | Step 1: Run `kubectl expose deployment gift-dashboard --port=80 --target-port=80` to create a Service. Step 2: Run `kubectl create configmap weather-config --from-literal=APP_MODE=production --from-literal=LOG_LEVEL=info` to create the ConfigMap. |
+
+**Minimum achievable score:** 40 pts
+
+---
+
+### Challenge 4: The Exposed Coordinates (100 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -62,7 +74,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 4: The Frozen Handshake (100 pts)
+### Challenge 5: The Frozen Handshake (100 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -73,7 +85,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 5: The Bloated Sleigh Image (200 pts)
+### Challenge 6: The Bloated Sleigh Image (200 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -85,7 +97,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 6: The Trojan Manifest (300 pts)
+### Challenge 7: The Trojan Manifest (300 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -97,7 +109,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 7: The Phantom Storage (300 pts)
+### Challenge 8: The Phantom Storage (300 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -113,11 +125,11 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 | Tier | Challenges | Points Available | Target Audience |
 |------|-----------|-----------------|-----------------|
-| 🟢 Beginner | Orientation + OJT | 100 pts | First-timers, students |
+| 🟢 Beginner | Orientation + OJT + Graduation | 150 pts | First-timers, students |
 | 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image | 400 pts | Workshop graduates |
 | 🔴 Advanced | Trojan Manifest + Phantom Storage | 600 pts | Daily practitioners |
-| 🏆 Bonus | All 7 completed | +100 pts | Completionists |
-| | **Grand Total** | **1200 pts** | |
+| 🏆 Bonus | All 8 completed | +100 pts | Completionists |
+| | **Grand Total** | **1250 pts** | |
 
 ---
 
