@@ -33,6 +33,16 @@ The deployment references a ConfigMap `weather-config` that doesn't exist, causi
 
 **Fix:** Create the ConfigMap with the required keys:
 
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weather-config
+data:
+  APP_MODE: "production"
+  LOG_LEVEL: "info"
+```
+
 ```bash
 kubectl create configmap weather-config --from-literal=APP_MODE=production --from-literal=LOG_LEVEL=info
 ```
