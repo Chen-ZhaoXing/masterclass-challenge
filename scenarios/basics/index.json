@@ -29,17 +29,17 @@
             "host01": [
                 {
                     "file": "assets/typo-app.yaml",
-                    "target": "~/",
+                    "target": "~/typo-app.yaml",
                     "chmod": "+rw"
                 },
                 {
                     "file": "assets/untagged-app.yaml",
-                    "target": "~/",
+                    "target": "~/untagged-app.yaml",
                     "chmod": "+rw"
                 },
                 {
                     "file": "assets/namespace-app.yaml",
-                    "target": "~/",
+                    "target": "~/namespace-app.yaml",
                     "chmod": "+rw"
                 }
             ]
