@@ -9,5 +9,5 @@ The North Pole Container Standard demands that all images use a **pinned, immuta
 ## Your Task
 
 1. Open `~/untagged-app.yaml`.
-2. Edit & Apply the manifest: `kubectl apply -f ~/untagged-app.yaml{{exec}}`
+2. Edit & Apply the manifest: `kubectl apply -f ~/untagged-app.yaml`{{exec}}
 3. Click the `Check` button!
