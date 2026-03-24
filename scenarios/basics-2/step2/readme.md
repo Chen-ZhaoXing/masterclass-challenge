@@ -6,7 +6,7 @@ This means the container starts, crashes immediately, and Kubernetes keeps tryin
 
 ## Your Task
 
-1. Apply the manifest: `kubectl apply -f ~/crash-app.yaml`
+1. Apply the manifest: `kubectl apply -f ~/crash-app.yaml`{{exec}}
 2. Check the pod status: `kubectl get pods` — you'll see `CrashLoopBackOff` or `Error`.
 3. Read the container logs: `kubectl logs <pod-name>`
 4. The logs will tell you exactly what command failed and why.
