@@ -114,7 +114,10 @@ fi
 broadcast "\n========================================"
 if [ "$FAIL" -eq 0 ]; then
     broadcast "  🎉 ALL CHECKS PASSED!"
-    broadcast "========================================\n"
+    broadcast " Here is the flag! "
+    broadcast "============================================================\n"
+    broadcast "        NOr3CpaqLxxTQ0W3iGyPHbki3Gf1bJntY9rEryyCE20=        \n"
+    broadcast "============================================================\n"
     exit 0
 else
     broadcast "  ❌ STANDARDS CHECK FAILED"
