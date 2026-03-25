@@ -1,0 +1,21 @@
+{{- if .Values.route.enabled -}}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "ctfd-intropage.fullname" . }}
+  labels:
+    {{- include "ctfd-intropage.labels" . | nindent 4 }}
+spec:
+  {{- if .Values.route.host }}
+  host: {{ .Values.route.host | quote }}
+  {{- end }}
+  port:
+    targetPort: http
+  tls:
+    {{- toYaml .Values.route.tls | nindent 4 }}
+  to:
+    kind: Service
+    name: {{ include "ctfd-intropage.fullname" . }}
+    weight: 100
+  wildcardPolicy: None
+{{- end }}

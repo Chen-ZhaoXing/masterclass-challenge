@@ -8,9 +8,9 @@ The deployment manifest references external configuration that doesn't exist in 
 
 ## Your Task
 
-1. Apply the manifest: `kubectl apply -f ~/noconfig-app.yaml`{{exec}}
-2. Check the pod status: `kubectl get pods`{{exec}}
-3. Investigate the error: `kubectl describe pod <pod-name>`{{exec}}
+1. Apply the manifest: `kubectl apply -f ~/noconfig-app.yaml`
+2. Check the pod status: `kubectl get pods`
+3. Investigate the error: `kubectl describe pod <pod-name>`
 4. Read the **Events** section — it tells you exactly what's missing.
 5. Look at `noconfig-app.yaml` to understand what configuration the app expects.
 6. Create the missing resource and wait for the pod to become `Running`. Use the name `weather-config`.

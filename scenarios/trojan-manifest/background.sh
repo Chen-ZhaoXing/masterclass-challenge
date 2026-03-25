@@ -14,6 +14,7 @@ sleep 15
 # Wait for Kyverno to be ready
 kubectl wait --for=condition=ready pod -l app=admission -n kyverno --timeout=300s
 kubectl create ns gift-tracking
+kubectl apply -f /var/kyverno-policies/require-resource-limits.yaml
 kubectl config set-context --current --namespace=gift-tracking
 
 

@@ -43,6 +43,7 @@ h1 {
     margin-bottom: 1rem;
     background: linear-gradient(135deg, #fff, #94a3b8);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: -1px;
 }
@@ -133,6 +134,115 @@ footer {
     color: var(--text-secondary);
     font-weight: 500;
 }
+
+/* Tier Sections */
+.tiers-section {
+    margin-top: 6rem;
+    animation: fadeInUp 1s ease-out backwards;
+    animation-delay: 1.1s;
+}
+
+.tiers-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.tiers-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #f1f5f9;
+}
+
+.tiers-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.tier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.tier-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.tier-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.tier-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+}
+
+.tier-card.trainee::before { background: #10b981; }
+.tier-card.workshop::before { background: #3b82f6; }
+.tier-card.senior::before { background: #ef4444; }
+
+.tier-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tier-card.trainee .tier-badge { color: #10b981; background: rgba(16, 185, 129, 0.1); }
+.tier-card.workshop .tier-badge { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+.tier-card.senior .tier-badge { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+
+.tier-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #f8fafc;
+}
+
+.tier-card p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.challenge-list {
+    list-style: none;
+}
+
+.challenge-list li {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    position: relative;
+    padding-left: 1.25rem;
+}
+
+.challenge-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+}
+
+.tier-card.trainee .challenge-list li::before { color: #10b981; }
+.tier-card.workshop .challenge-list li::before { color: #3b82f6; }
+.tier-card.senior .challenge-list li::before { color: #ef4444; }
 
 /* Animations */
 @keyframes fadeInUp {
