@@ -6,7 +6,7 @@ Your job is simple: read the error messages, fix the syntax, and get this deploy
 
 ## Your Task
 
-1. Try applying the manifest: `kubectl apply -f ~/typo-app.yaml{{exec}}`
+1. Try applying the manifest: `kubectl apply -f ~/typo-app.yaml`{{exec}}
 2. Read the error message carefully — it tells you exactly what's wrong.
 3. Fix the error, save the file, and try again.
 4. Repeat until the deployment is successfully created!
