@@ -43,9 +43,6 @@
                     "chmod": "+rw"
                 }
             ]
-        },
-        "finish": {
-            "text": "finish.md"
         }
     },
     "backend": {
