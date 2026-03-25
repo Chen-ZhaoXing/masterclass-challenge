@@ -25,5 +25,5 @@ This is a critical vulnerability. Anyone with access to the manifest (or `kubect
            name: db-credentials
            key: DB_PASSWORD
    ```
-3. Apply the updated manifest: `kubectl apply -f ~/hardcoded-app.yaml`
+3. Apply the updated manifest: `kubectl apply -f ~/hardcoded-app.yaml`{{exec}}
 4. Click the `Check` button!

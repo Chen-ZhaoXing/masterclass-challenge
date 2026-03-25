@@ -59,4 +59,10 @@ else
 fi
 
 broadcast "✅ North Pole approves of your solution!"
+
+broadcast "============================================================\n"
+broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
+broadcast "        o7Jrk5xXl7qLjoMouolMrPpywiXnmNnfwe54MbuRRx4=        \n"
+broadcast "============================================================\n"
+
 exit 0

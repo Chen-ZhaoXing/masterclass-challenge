@@ -111,11 +111,10 @@ else
 fi
 
 # --- FINAL RESULT ---
-broadcast "\n========================================"
+broadcast "\n============================================================"
 if [ "$FAIL" -eq 0 ]; then
-    broadcast "  🎉 ALL CHECKS PASSED!"
-    broadcast " Here is the flag! "
     broadcast "============================================================\n"
+    broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
     broadcast "        NOr3CpaqLxxTQ0W3iGyPHbki3Gf1bJntY9rEryyCE20=        \n"
     broadcast "============================================================\n"
     exit 0
