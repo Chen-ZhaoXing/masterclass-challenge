@@ -1,6 +1,6 @@
 {
     "title": "Challenge: The Missing Storage Classes",
-    "description": "Security Context, RBAC, Probes — The rogue elves submitted a misconfigured ( or lack thereof ) Kubernetes application manifest. Debug policy violations and refactor the manifest to meet all security standards.",
+    "description": "Security Context, RBAC, Probes - The rogue elves submitted a misconfigured ( or lack thereof ) Kubernetes application manifest. Debug policy violations and refactor the manifest to meet all security standards.",
     "time": "40 minutes",
     "details": {
         "intro": {

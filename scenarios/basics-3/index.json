@@ -1,6 +1,6 @@
 {
     "title": "Challenge: Trainee Elf Graduation",
-    "description": "Basic Kubernetes networking and configuration — Expose a deployment with a Service and configure an app with ConfigMaps. Your final test before the intermediate tier!",
+    "description": "Basic Kubernetes networking and configuration - Expose a deployment with a Service and configure an app with ConfigMaps. Your final test before the intermediate tier!",
     "time": "15 minutes",
     "details": {
         "intro": {

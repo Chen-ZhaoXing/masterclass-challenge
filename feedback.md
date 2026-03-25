@@ -19,7 +19,7 @@ Team Gamma (3 Members: 1 Advanced, 1 Intermediate, 1 Beginner)
 Logistics: 5 challenges. Advanced takes 2, Intermediate takes 2, Beginner takes 1.
 
 Feedback from Gamma Team Lead (Advanced)
-"We were under intense pressure. I breezed through the Dockerfile and Storage challenges. The Intermediate handled the Helm Secrets ('Exposed Coordinates', 'Frozen Handshake'). The Beginner attempted 'Trojan Manifest' and gave up after 15 minutes. Pain Points: The Beginner contributed almost nothing to the final score because everything was too 'all-or-nothing'. They needed a stepping-stone challenge—like just fixing simple linting errors before jumping into cluster admission controllers."
+"We were under intense pressure. I breezed through the Dockerfile and Storage challenges. The Intermediate handled the Helm Secrets ('Exposed Coordinates', 'Frozen Handshake'). The Beginner attempted 'Trojan Manifest' and gave up after 15 minutes. Pain Points: The Beginner contributed almost nothing to the final score because everything was too 'all-or-nothing'. They needed a stepping-stone challenge-like just fixing simple linting errors before jumping into cluster admission controllers."
 
 Consolidated Issues & Pain Points
 Lack of "Quick Wins" for Beginners: If a beginner gets assigned to a Helm/Volume Mount challenge or a 6-policy Kyverno failure, they freeze. There are no "Level 1" tasks to just build confidence (e.g., fixing a simple typo in a manifest) before attacking a multi-stage challenge.

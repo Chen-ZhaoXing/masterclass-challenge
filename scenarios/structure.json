@@ -5,42 +5,42 @@
         {
             "path": "basics",
             "title": "The Trainee Elf Orientation",
-            "description": "• Topics: YAML Debugging, Image Pinning, Namespace Scoping — Fix 3 simple but critical manifest errors left behind by the rogue elves. Perfect for your first day!"
+            "description": "• Topics: YAML Debugging, Image Pinning, Namespace Scoping - Fix 3 simple but critical manifest errors left behind by the rogue elves. Perfect for your first day!"
         },
         {
             "path": "basics-2",
             "title": "The Trainee Elf OJT",
-            "description": "• Topics: kubectl describe, kubectl logs, Kubernetes Secrets — Debug ImagePullBackOff, CrashLoopBackOff, and extract hardcoded passwords into Secrets."
+            "description": "• Topics: kubectl describe, kubectl logs, Kubernetes Secrets - Debug ImagePullBackOff, CrashLoopBackOff, and extract hardcoded passwords into Secrets."
         },
         {
             "path": "basics-3",
             "title": "The Trainee Elf Graduation",
-            "description": "• Topics: Services, ConfigMaps — Expose a deployment with a ClusterIP Service and provide application configuration via ConfigMaps."
+            "description": "• Topics: Services, ConfigMaps - Expose a deployment with a ClusterIP Service and provide application configuration via ConfigMaps."
         },
         {
             "path": "frozen-handshake",
             "title": "The Frozen Handshake",
-            "description": "• Topics: Kubernetes TLS, Secrets, Helm, Volume Mounts — The telemetry client cannot reach a secure endpoint because the CA certificate is missing. Mount the cert from a Secret so TLS validation succeeds."
+            "description": "• Topics: Kubernetes TLS, Secrets, Helm, Volume Mounts - The telemetry client cannot reach a secure endpoint because the CA certificate is missing. Mount the cert from a Secret so TLS validation succeeds."
         },
         {
             "path": "exposed-coordinates",
             "title": "The Exposed Coordinates",
-            "description": "• Topics: Kubernetes Secrets, Helm, Volume Mounts — The Sleigh Routing API is leaking the Master Guidance Coordinates through a plaintext env var. Refactor the Helm chart to securely mount the secret as a file."
+            "description": "• Topics: Kubernetes Secrets, Helm, Volume Mounts - The Sleigh Routing API is leaking the Master Guidance Coordinates through a plaintext env var. Refactor the Helm chart to securely mount the secret as a file."
         },
         {
             "path": "bloated-docker-image",
             "title": "The Bloated Sleigh Image",
-            "description": "• Topics: Dockerfile, Multi-Stage Builds, Non-Root Containers — The rogue elves shipped a 1GB+ container image running as root. Rewrite the Dockerfile to produce a secure, slim (<250MB) image using multi-stage builds."
+            "description": "• Topics: Dockerfile, Multi-Stage Builds, Non-Root Containers - The rogue elves shipped a 1GB+ container image running as root. Rewrite the Dockerfile to produce a secure, slim (<250MB) image using multi-stage builds."
         },
         {
             "path": "trojan-manifest",
             "title": "The Trojan Manifest",
-            "description": "• Topics: Security Context, RBAC, Probes — The rogue elves submitted a misconfigured manifest. Fix all policy violations to meet North Pole production standards."
+            "description": "• Topics: Security Context, RBAC, Probes - The rogue elves submitted a misconfigured manifest. Fix all policy violations to meet North Pole production standards."
         },
         {
             "path": "storageclass",
             "title": "The Phantom Storage",
-            "description": "• Topics: Deployment, StatefulSet, Storage Classes, PVCs, Services — The rogue elves intentionally wiped the storage and network configurations from the gift-tracking application. Restore the Persistent Volumes and internal Services to reconnect the application!"
+            "description": "• Topics: Deployment, StatefulSet, Storage Classes, PVCs, Services - The rogue elves intentionally wiped the storage and network configurations from the gift-tracking application. Restore the Persistent Volumes and internal Services to reconnect the application!"
         }
     ]
 }

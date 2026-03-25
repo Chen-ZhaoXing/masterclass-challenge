@@ -8,7 +8,7 @@ The Chief Holiday Officer has instantly rejected this deployment.
 
 ## Your Task
 
-The cluster's policy engine enforcing this requirement is already active. Try deploying the manifest and read the error message — it will tell you exactly which resource fields the policy expects.
+The cluster's policy engine enforcing this requirement is already active. Try deploying the manifest and read the error message - it will tell you exactly which resource fields the policy expects.
 
 1. Open `app.yaml` and attempt to deploy it.
 2. Read the policy violation carefully.

@@ -1,6 +1,6 @@
 {
     "title": "Challenge: Trainee Elf Tier",
-    "description": "Basic Kubernetes debugging — Fix common YAML errors, pin mutable image tags, and learn namespace scoping. Perfect for your first day as a Security Elf!",
+    "description": "Basic Kubernetes debugging - Fix common YAML errors, pin mutable image tags, and learn namespace scoping. Perfect for your first day as a Security Elf!",
     "time": "20 minutes",
     "details": {
         "intro": {

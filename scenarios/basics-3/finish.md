@@ -1,4 +1,4 @@
-## Trainee Elf Graduation — Complete!
+## Trainee Elf Graduation - Complete!
 
 Congratulations, Elf! You've proven you can handle Kubernetes networking and configuration:
 

@@ -8,7 +8,7 @@
 
 ## The Situation
 
-This is it, Trainee Elf — your final assessment before the Chief Holiday Officer clears you for the intermediate security missions.
+This is it, Trainee Elf - your final assessment before the Chief Holiday Officer clears you for the intermediate security missions.
 
 The rogue elves left behind two more sabotaged deployments. These ones are trickier than anything you've seen so far: the pods run fine, but the **infrastructure around them** is broken. A running pod is useless if nothing can reach it, and an app is useless if it doesn't have its configuration.
 

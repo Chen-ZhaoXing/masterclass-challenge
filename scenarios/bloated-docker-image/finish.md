@@ -11,21 +11,21 @@ You just corrected several real-world container image anti-patterns that plague 
 #### Problem 1: Using a Full OS Base Image
 
 ```dockerfile
-# ❌ BAD — The full python:3.13 image is ~1 GB
+# ❌ BAD - The full python:3.13 image is ~1 GB
 FROM python:3.13
 ```
 
 The full Python image is based on Debian and includes compilers, build tools, man pages, and hundreds of packages your application does not need. Every extra package is additional attack surface.
 
 ```dockerfile
-# ✅ GOOD — python:3.13-slim is ~150 MB, containing only the essentials
+# ✅ GOOD - python:3.13-slim is ~150 MB, containing only the essentials
 FROM python:3.13-slim
 ```
 
 #### Problem 2: No Multi-Stage Build
 
 ```dockerfile
-# ❌ BAD — Build deps, pip cache, and source all in one layer
+# ❌ BAD - Build deps, pip cache, and source all in one layer
 FROM python:3.13
 RUN pip install -r requirements.txt
 COPY . .
@@ -34,7 +34,7 @@ COPY . .
 Without multi-stage builds, all the build-time dependencies (compilers, headers, cached wheels) remain in the final image, adding hundreds of megabytes of unnecessary bloat.
 
 ```dockerfile
-# ✅ GOOD — Build stage installs deps, final stage only copies the runtime
+# ✅ GOOD - Build stage installs deps, final stage only copies the runtime
 FROM python:3.13 AS builder
 WORKDIR /app
 COPY requirements.txt .
@@ -48,7 +48,7 @@ COPY src/ /app/src/
 #### Problem 3: Running as Root
 
 ```dockerfile
-# ❌ BAD — No USER directive means the process runs as root (UID 0)
+# ❌ BAD - No USER directive means the process runs as root (UID 0)
 FROM python:3.13
 WORKDIR /app
 CMD ["python", "app.py"]
@@ -57,14 +57,14 @@ CMD ["python", "app.py"]
 If an attacker exploits a vulnerability in the application, running as root gives them full control over the container, potentially enabling container escapes to the host.
 
 ```dockerfile
-# ✅ GOOD — Create and switch to a non-root user
+# ✅ GOOD - Create and switch to a non-root user
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 USER appuser
 ```
 
 #### Problem 4: No .dockerignore
 
-Without a `.dockerignore`, Docker sends everything in the build context to the daemon — including `.git/`, `__pycache__/`, virtual environments, test fixtures, and secrets that may be lying around.
+Without a `.dockerignore`, Docker sends everything in the build context to the daemon - including `.git/`, `__pycache__/`, virtual environments, test fixtures, and secrets that may be lying around.
 
 ```
 # .dockerignore
@@ -91,9 +91,9 @@ __pycache__
 
 For even smaller and more secure images, consider:
 
-- **Distroless images** (`gcr.io/distroless/python3`) — No shell, no package manager, just the language runtime. Dramatically reduces attack surface.
-- **Alpine-based images** (`python:3.13-alpine`) — Very small (~50 MB) but uses musl libc instead of glibc, which can cause compatibility issues with some Python packages.
-- **Image scanning** — Tools like Trivy, Grype, or Docker Scout can scan your images for known CVEs. Smaller images have fewer packages and therefore fewer vulnerabilities.
-- **Read-only root filesystem** — Set `readOnlyRootFilesystem: true` in your Kubernetes `securityContext` to prevent runtime writes.
+- **Distroless images** (`gcr.io/distroless/python3`) - No shell, no package manager, just the language runtime. Dramatically reduces attack surface.
+- **Alpine-based images** (`python:3.13-alpine`) - Very small (~50 MB) but uses musl libc instead of glibc, which can cause compatibility issues with some Python packages.
+- **Image scanning** - Tools like Trivy, Grype, or Docker Scout can scan your images for known CVEs. Smaller images have fewer packages and therefore fewer vulnerabilities.
+- **Read-only root filesystem** - Set `readOnlyRootFilesystem: true` in your Kubernetes `securityContext` to prevent runtime writes.
 
 The OWASP Docker Security Cheat Sheet and the CIS Docker Benchmark both strongly recommend minimal base images, multi-stage builds, and non-root execution for all production containers.

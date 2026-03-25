@@ -1,6 +1,6 @@
 {
     "title": "Challenge 2: The Bloated Sleigh Image",
-    "description": "🟡 Medium • ~25 min • Dockerfile, Best Practices — The rogue elves shipped a 1GB+ container image running as root. Rewrite the Dockerfile to produce a secure, slim (<250MB) image with ARG, LABELS, HEALTHCHECK, layer caching, and OpenShift SCC compliance.",
+    "description": "🟡 Medium • ~25 min • Dockerfile, Best Practices - The rogue elves shipped a 1GB+ container image running as root. Rewrite the Dockerfile to produce a secure, slim (<250MB) image with ARG, LABELS, HEALTHCHECK, layer caching, and OpenShift SCC compliance.",
     "time": "25 minutes",
     "details": {
         "intro": {

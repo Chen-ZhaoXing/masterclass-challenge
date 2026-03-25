@@ -1,6 +1,6 @@
 {
     "title": "Challenge 4: The Frozen Handshake",
-    "description": "🟡 Medium • ~20 min • Kubernetes TLS, Secrets, Helm Volume Mounts — The telemetry client cannot reach the secure endpoint because the CA certificate is missing. Mount the certificate secret correctly so TLS validation succeeds.",
+    "description": "🟡 Medium • ~20 min • Kubernetes TLS, Secrets, Helm Volume Mounts - The telemetry client cannot reach the secure endpoint because the CA certificate is missing. Mount the certificate secret correctly so TLS validation succeeds.",
     "time": "20 minutes",
     "details": {
         "intro": {
