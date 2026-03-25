@@ -83,8 +83,4 @@ if [ "$APP_TOKEN_PATH_VALUE" != "${TOKEN_MOUNT_PATH}/credentials.key" ]; then
 fi
 
 broadcast "✅ [PASS] The Master Guidance Coordinates are secured. All validation checks passed."
-broadcast "============================================================\n"
-broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
-broadcast "        2gpnodAUgjJsAM62URfY1WsDEDC9yvfgmLkjtliyP8I=        \n"
-broadcast "============================================================\n"
 exit 0

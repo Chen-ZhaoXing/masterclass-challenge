@@ -13,10 +13,6 @@ APPLY_OUT_EXIT=$?
 
 if [ $APPLY_OUT_EXIT -eq 0 ]; then
     broadcast "✅ North Pole approves of your resource requests and limits!"
-    broadcast "============================================================\n"
-    broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
-    broadcast "        X5LeUhAIG41t66sZ5rCXSb86J4jhNXBxUU//EOs1iqs=        \n"
-    broadcast "============================================================\n"
     exit 0
 else
     broadcast "❌ North Pole needs you to set the resource requests and limits"

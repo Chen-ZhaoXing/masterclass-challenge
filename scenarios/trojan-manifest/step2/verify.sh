@@ -13,10 +13,6 @@ APPLY_OUT_EXIT=$?
 
 if [ $APPLY_OUT_EXIT -eq 0 ]; then
     broadcast "✅ North Pole approves of your HTTP probes!"
-    broadcast "============================================================\n"
-    broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
-    broadcast "        oFQR8lFYiwAIWZtvK6ueR4ece9bIVCUfetfz2Gu/nOs=        \n"
-    broadcast "============================================================\n"
     exit 0
 else
     broadcast "❌ North Pole needs you to set the HTTP probes!"

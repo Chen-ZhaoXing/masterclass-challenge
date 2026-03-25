@@ -44,9 +44,4 @@ fi
 
 broadcast "✅ The Hardcoded Password has been secured! No more plaintext secrets!"
 
-broadcast "============================================================\n"
-broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
-broadcast "        LJhPsjLJ/qho+Y+tKgb4g8posKPyR3M4j/cA73QW96k=        \n"
-broadcast "============================================================\n"
-
 exit 0
