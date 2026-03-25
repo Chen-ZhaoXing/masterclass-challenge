@@ -5,6 +5,7 @@ broadcast() {
         fi
     done
 }
+
 kubectl delete clusterpolicies --all --force
 kubectl apply -f /var/kyverno-policies/require-non-root.yaml > /dev/null 2>&1
 
