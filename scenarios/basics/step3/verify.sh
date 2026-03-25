@@ -27,10 +27,4 @@ else
 fi
 
 broadcast "✅ The Lost Namespace has been found! Well done, Trainee Elf!"
-
-broadcast "============================================================\n"
-broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
-broadcast "        alHIIxAToQa+1W/S1ghPB4Ud4WW8yv7FZy29JNYj+pY=        \n"
-broadcast "============================================================\n"
-
 exit 0

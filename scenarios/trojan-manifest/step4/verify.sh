@@ -19,7 +19,7 @@ if [ $APPLY_OUT_EXIT -eq 0 ]; then
         exit 1
     fi
 
-    SA_NAME=$(grep 'serviceAccountName' ~/app.yaml | awk '{print $2}' | tr -d '\r')
+    SA_NAME=$(grep 'serviceAccountName' ~/app.yaml | awk '{print $2}')
     if [[ "$SA_NAME" != "gift-tracking-sa" ]]; then
         broadcast "❌ North Pole needs you to set the gift-tracking-sa Service Account in your manifest!"
         exit 1
@@ -28,7 +28,7 @@ if [ $APPLY_OUT_EXIT -eq 0 ]; then
     broadcast "✅ North Pole approves of your Service Account!"
     
     # Bonus Check: Look for automountServiceAccountToken in the manifest or on the SA
-    TOKEN_MOUNT=$(grep 'automountServiceAccountToken' ~/app.yaml | awk '{print $2}' | tr -d '\r')
+    TOKEN_MOUNT=$(grep 'automountServiceAccountToken' ~/app.yaml | awk '{print $2}')
     TOKEN_SA_MOUNT=$(kubectl get sa gift-tracking-sa -o jsonpath='{.automountServiceAccountToken}' 2>/dev/null)
     if [[ "$TOKEN_MOUNT" = "false" || "$TOKEN_SA_MOUNT" = "false" ]]; then
         broadcast "🌟 BONUS ACHIEVED: Service account token automount disabled!"

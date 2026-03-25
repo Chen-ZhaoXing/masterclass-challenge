@@ -6,7 +6,7 @@ When you try to apply the manifest, Kubernetes will reject it because it can't f
 
 ## Your Task
 
-1. Try applying the manifest: `kubectl apply -f ~/namespace-app.yaml`{{exec}}
+1. Try applying the manifest: `kubectl apply -f ~/namespace-app.yaml{{exec}}`
 2. Read the error message.
 3. Re-apply the manifest.
 4. Click the `Check` button!

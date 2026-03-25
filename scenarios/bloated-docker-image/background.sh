@@ -5,9 +5,6 @@ if ! command -v docker &> /dev/null; then
     apt-get update && apt-get install -y docker.io
 fi
 
-# Allow students to use 'podman' as an alias for 'docker'
-echo 'alias podman=docker' >> ~/.bashrc
-
 # Deploy a Docker Registry inside the cluster
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
