@@ -27,4 +27,8 @@ else
 fi
 
 broadcast "✅ Well done, Trainee! You've fixed the Elf's Typo!"
+broadcast "============================================================\n"
+broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
+broadcast "        7yYOmqPGc68kDReiZgSANhqOCB0f/soqXtDjIZ/BhWc=        \n"
+broadcast "============================================================\n"
 exit 0

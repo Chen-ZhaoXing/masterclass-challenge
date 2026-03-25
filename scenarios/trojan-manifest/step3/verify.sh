@@ -13,6 +13,10 @@ APPLY_OUT_EXIT=$?
 
 if [ $APPLY_OUT_EXIT -eq 0 ]; then
     broadcast "✅ North Pole approves of your Labels!"
+    broadcast "============================================================\n"
+    broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
+    broadcast "        W6Kll+uI3Hgfx0S59mS962Juvzo6SPSqjdlDYxc8Kcc=        \n"
+    broadcast "============================================================\n"
     exit 0
 else
     broadcast "❌ North Pole needs you to set the Labels!"

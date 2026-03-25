@@ -32,6 +32,10 @@ if [ $APPLY_OUT_EXIT -eq 0 ]; then
     TOKEN_SA_MOUNT=$(kubectl get sa gift-tracking-sa -o jsonpath='{.automountServiceAccountToken}' 2>/dev/null)
     if [[ "$TOKEN_MOUNT" = "false" || "$TOKEN_SA_MOUNT" = "false" ]]; then
         broadcast "🌟 BONUS ACHIEVED: Service account token automount disabled!"
+        broadcast "============================================================\n"
+        broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
+        broadcast "        1T3y+RliBAik98KX7jz7ftIhq28ZM1FWcl3Yzg4pfjM=        \n"
+        broadcast "============================================================\n"
     else
         broadcast "❌ Almost there! The bonus requires you to disable automountServiceAccountToken."
     fi

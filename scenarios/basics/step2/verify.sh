@@ -30,4 +30,8 @@ fi
 
 broadcast "✅ Image is pinned to: $IMAGE"
 broadcast "✅ The Untagged Shipment has been secured!"
+broadcast "============================================================\n"
+broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
+broadcast "        lZpF1E5vz1g2HtAEaBVW/lASnyEJ6BfewJjADJ5dJXg=        \n"
+broadcast "============================================================\n"
 exit 0
