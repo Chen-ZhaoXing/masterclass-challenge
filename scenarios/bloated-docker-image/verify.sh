@@ -45,7 +45,7 @@ else
     if [ "$IMAGE_SIZE_MB" -lt 250 ]; then
         broadcast "  ✅ Image size is ${IMAGE_SIZE_MB} MB (limit: 250 MB)."
     else
-        broadcast "  ❌ Image size is ${IMAGE_SIZE_MB} MB — too large!"
+        broadcast "  ❌ Image size is ${IMAGE_SIZE_MB} MB - too large!"
         FAIL=1
     fi
 fi

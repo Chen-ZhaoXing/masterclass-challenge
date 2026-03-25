@@ -18,6 +18,6 @@ To pass this challenge, participants must fix a deliberately bad Dockerfile to m
 
 ## What's Wrong With the Starting Dockerfile
 
-The provided Dockerfile commits several cardinal sins of container image building, leading to a massive image size and critical security vulnerabilities. Your objective is to identify and resolve these anti-patterns—implementing the "Golden Rules of Dockerfiles"—without breaking the application logic.
+The provided Dockerfile commits several cardinal sins of container image building, leading to a massive image size and critical security vulnerabilities. Your objective is to identify and resolve these anti-patterns-implementing the "Golden Rules of Dockerfiles"-without breaking the application logic.
 
 > 💡 **Tip:** If you need specific actionable guidance on identifying the anti-patterns or implementing the fixes, refer to the available hints on the challenge portal.

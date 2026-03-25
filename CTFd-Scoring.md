@@ -18,7 +18,7 @@ This document defines the point allocation, hint costs, and configuration for ho
 | 6 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
 | 7 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
 | 8 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
-| — | **Completion Bonus** | *All 8 solved* | — | **+100** | — | — |
+| - | **Completion Bonus** | *All 8 solved* | - | **+100** | - | - |
 | | | | **Max Total** | **1250** | | **~160 min** |
 
 ---
@@ -44,7 +44,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
-| 1 | **Free** | These manifests will `kubectl apply` successfully — but the pods will fail. Use `kubectl get pods`, then `kubectl describe pod <name>` or `kubectl logs <name>` to see what's actually wrong inside the cluster. |
+| 1 | **Free** | These manifests will `kubectl apply` successfully - but the pods will fail. Use `kubectl get pods`, then `kubectl describe pod <name>` or `kubectl logs <name>` to see what's actually wrong inside the cluster. |
 | 2 | 10 pts | Step 1: The image name has a typo. Step 2: The `command` references a binary that doesn't exist. Step 3: Create a Secret with `kubectl create secret generic db-credentials --from-literal=DB_PASSWORD=NorthPole2025!` and change the env to use `secretKeyRef`. |
 
 **Minimum achievable score:** 40 pts
@@ -55,7 +55,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
-| 1 | **Free** | Step 1: The pod is running fine but nothing can reach it. What Kubernetes resource makes a deployment reachable by other pods via DNS? Step 2: The pod can't start because it's missing external configuration — check the Events section of `kubectl describe pod`. |
+| 1 | **Free** | Step 1: The pod is running fine but nothing can reach it. What Kubernetes resource makes a deployment reachable by other pods via DNS? Step 2: The pod can't start because it's missing external configuration - check the Events section of `kubectl describe pod`. |
 | 2 | 10 pts | Step 1: Run `kubectl expose deployment gift-dashboard --port=80 --target-port=80` to create a Service. Step 2: Run `kubectl create configmap weather-config --from-literal=APP_MODE=production --from-literal=LOG_LEVEL=info` to create the ConfigMap. |
 
 **Minimum achievable score:** 40 pts
@@ -139,7 +139,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 1. **Challenge Type:** Standard (Static)
 2. **Category:** Kubernetes Security
-3. **Tags:** Per challenge — e.g., `yaml-debugging`, `secrets`, `helm`, `policy-engine`, `dockerfile`, `multi-stage`, `non-root`, `storage`, `pvc`
+3. **Tags:** Per challenge - e.g., `yaml-debugging`, `secrets`, `helm`, `policy-engine`, `dockerfile`, `multi-stage`, `non-root`, `storage`, `pvc`
 4. **State:** Visible (all challenges visible from start; no unlocking required)
 5. **Max Attempts:** Unlimited (learning-focused)
 
@@ -159,7 +159,7 @@ The 100-point completion bonus for solving all 7 challenges can be implemented a
 
 ### Anti-Cheat Considerations
 
-- **AI-Resistance:** The scenario pages intentionally contain only narrative context — no commands, no exact technical specs, no step-by-step guides. Participants cannot simply paste the intro.md into an AI and get a solution.
+- **AI-Resistance:** The scenario pages intentionally contain only narrative context - no commands, no exact technical specs, no step-by-step guides. Participants cannot simply paste the intro.md into an AI and get a solution.
 - **Verify.sh Hardening:** Error messages describe WHAT failed, not HOW to fix it. Participants must understand the technology to interpret failures.
 - **Hint Tiering:** Only purchased CTFd hints contain actionable technical guidance. This creates a clear value proposition for hint purchases.
 - **Killercoda Isolation:** Environments are ephemeral, making flag-sharing less useful since each participant must complete the scenario independently.

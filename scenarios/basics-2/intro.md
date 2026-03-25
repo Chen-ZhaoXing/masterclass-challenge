@@ -8,9 +8,9 @@
 
 ## The Situation
 
-You survived the orientation — impressive! But the Chief Holiday Officer isn't convinced yet. Before you're cleared for the advanced security missions, you need to prove you can **diagnose** problems, not just fix typos.
+You survived the orientation - impressive! But the Chief Holiday Officer isn't convinced yet. Before you're cleared for the advanced security missions, you need to prove you can **diagnose** problems, not just fix typos.
 
-The rogue elves have left behind three more sabotaged deployments. This time, the manifests will `kubectl apply` just fine — but the pods themselves will fail in different ways. You'll need to use `kubectl describe`, `kubectl logs`, and `kubectl get` to figure out what's actually going wrong inside the cluster.
+The rogue elves have left behind three more sabotaged deployments. This time, the manifests will `kubectl apply` just fine - but the pods themselves will fail in different ways. You'll need to use `kubectl describe`, `kubectl logs`, and `kubectl get` to figure out what's actually going wrong inside the cluster.
 
 ## Your Mission
 

@@ -9,7 +9,7 @@ Run `kubectl get pods` and you'll see the pod is stuck in a state called `ImageP
 1. Apply the manifest: `kubectl apply -f ~/ghost-app.yaml`{{exec}}
 2. Check the pod status: `kubectl get pods`{{exec}}
 3. Investigate the failure: `kubectl describe pod <pod-name>`
-4. Read the **Events** section at the bottom — it tells you exactly which image failed to pull.
+4. Read the **Events** section at the bottom - it tells you exactly which image failed to pull.
 5. Fix the image name in `ghost-app.yaml`, re-apply, and wait for the pod to become `Running`.
 6. Click the `Check` button!
 

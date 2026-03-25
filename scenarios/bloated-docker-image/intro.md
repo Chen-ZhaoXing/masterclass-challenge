@@ -10,7 +10,7 @@
 
 ## The Situation
 
-The rogue elves are at it again. This time they have targeted the North Pole's container build pipeline. Their latest sabotage? A monstrously oversized Docker image for the **Sleigh Telemetry Service** — a simple FastAPI application that should be small and lean, but the rogue elves have inflated it to over **1 GB** by using terrible Dockerfile practices.
+The rogue elves are at it again. This time they have targeted the North Pole's container build pipeline. Their latest sabotage? A monstrously oversized Docker image for the **Sleigh Telemetry Service** - a simple FastAPI application that should be small and lean, but the rogue elves have inflated it to over **1 GB** by using terrible Dockerfile practices.
 
 Even worse, the container runs as **root**. If the rogue elves manage to exploit the application, they would have full control over the container's filesystem, processes, and potentially the host node itself.
 

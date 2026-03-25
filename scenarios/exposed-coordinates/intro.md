@@ -24,7 +24,7 @@ Your role as Senior Security Elf is to update the cluster's deployment configura
 
 - **The Helm Chart:** Located at `~/masterclass-fastapi-app/`
 - **A Kubernetes Secret** already exists in the cluster containing the coordinates.
-- **The updated application image** is already deployed — it just needs a proper configuration.
+- **The updated application image** is already deployed - it just needs a proper configuration.
 
 Investigate the cluster, the Helm chart, and the application to understand how everything fits together. Then make the necessary changes.
 

@@ -30,10 +30,10 @@ Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is
 | 6 | The Bloated Sleigh Image | 🟡 Intermediate | 200 | ~25 min | Dockerfile, Multi-Stage Builds, Non-Root |
 | 7 | The Trojan Manifest | 🔴 Advanced | 300 | ~40 min | Security Context, Probes, Policy Enforcement |
 | 8 | The Phantom Storage | 🔴 Advanced | 300 | ~30 min | PVCs, StorageClasses, Services |
-| — | Completion Bonus | — | +100 | — | Complete all 8 challenges |
+| - | Completion Bonus | - | +100 | - | Complete all 8 challenges |
 | | | | **1250** | **~160 min** | |
 
-Each challenge has **layered hints** — the first hint is free, with subsequent hints costing 10–20% of the challenge points. See [CTFd-Scoring.md](CTFd-Scoring.md) for full hint definitions and CTFd configuration details.
+Each challenge has **layered hints** - the first hint is free, with subsequent hints costing 10–20% of the challenge points. See [CTFd-Scoring.md](CTFd-Scoring.md) for full hint definitions and CTFd configuration details.
 
 ---
 
@@ -47,7 +47,7 @@ The rogue elves left behind three sabotaged manifests during their last raid. Ea
 - **Learning Objectives:** Reading Kubernetes error messages, image tag best practices, namespace scoping.
 
 #### Trainee Elf OJT
-Three more sabotaged deployments — but this time `kubectl apply` succeeds. The pods themselves fail in different ways.
+Three more sabotaged deployments - but this time `kubectl apply` succeeds. The pods themselves fail in different ways.
 - **Challenges:** Diagnose `ImagePullBackOff`, debug `CrashLoopBackOff`, extract hardcoded credentials into a Secret.
 - **Learning Objectives:** `kubectl describe`, `kubectl logs`, Kubernetes Secrets management.
 
@@ -93,16 +93,16 @@ The rogue elves completely wiped the storage boundaries and network services for
 
 ## 🛠 Project Structure
 
-- `scenarios/basics/` — Trainee Elf Orientation (YAML, images, namespaces)
-- `scenarios/basics-2/` — Trainee Elf OJT (diagnostics, Secrets)
-- `scenarios/basics-3/` — Trainee Elf Graduation (Services, ConfigMaps)
-- `scenarios/exposed-coordinates/` — The Exposed Coordinates (Helm, Secrets, volume mounts)
-- `scenarios/frozen-handshake/` — The Frozen Handshake (TLS, certs, volume mounts)
-- `scenarios/bloated-docker-image/` — The Bloated Sleigh Image (Dockerfile, multi-stage)
-- `scenarios/trojan-manifest/` — The Trojan Manifest (policy enforcement, security context)
-- `scenarios/storageclass/` — The Phantom Storage (PVCs, StorageClasses, Services)
-- `solution/` — Reference solutions for each challenge
-- `CTFd-Scoring.md` — Full CTFd scoring configuration with point values, hint costs, and setup guide
+- `scenarios/basics/` - Trainee Elf Orientation (YAML, images, namespaces)
+- `scenarios/basics-2/` - Trainee Elf OJT (diagnostics, Secrets)
+- `scenarios/basics-3/` - Trainee Elf Graduation (Services, ConfigMaps)
+- `scenarios/exposed-coordinates/` - The Exposed Coordinates (Helm, Secrets, volume mounts)
+- `scenarios/frozen-handshake/` - The Frozen Handshake (TLS, certs, volume mounts)
+- `scenarios/bloated-docker-image/` - The Bloated Sleigh Image (Dockerfile, multi-stage)
+- `scenarios/trojan-manifest/` - The Trojan Manifest (policy enforcement, security context)
+- `scenarios/storageclass/` - The Phantom Storage (PVCs, StorageClasses, Services)
+- `solution/` - Reference solutions for each challenge
+- `CTFd-Scoring.md` - Full CTFd scoring configuration with point values, hint costs, and setup guide
 
 ---
 

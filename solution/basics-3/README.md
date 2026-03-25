@@ -1,4 +1,4 @@
-# Trainee Elf Graduation — Solution Guide
+# Trainee Elf Graduation - Solution Guide
 
 ## Step 1: The Invisible App (Services)
 

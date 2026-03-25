@@ -8,7 +8,7 @@ env:
     value: "NorthPole2025!"
 ```
 
-This is a critical vulnerability. Anyone with access to the manifest (or `kubectl get deployment -o yaml`) can read the password in plaintext. In production, secrets should **never** appear directly in manifests — they must be stored in Kubernetes **Secrets** and referenced using `secretKeyRef`.
+This is a critical vulnerability. Anyone with access to the manifest (or `kubectl get deployment -o yaml`) can read the password in plaintext. In production, secrets should **never** appear directly in manifests - they must be stored in Kubernetes **Secrets** and referenced using `secretKeyRef`.
 
 ## Your Task
 
