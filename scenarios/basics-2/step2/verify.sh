@@ -34,4 +34,8 @@ else
 fi
 
 broadcast "✅ The Crash Loop has been broken!"
+broadcast "============================================================\n"
+broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
+broadcast "        PznVw0jlt50G6ELBFObMVxWDu/ROSw6/2hoB7AV0XUM=        \n"
+broadcast "============================================================\n"
 exit 0

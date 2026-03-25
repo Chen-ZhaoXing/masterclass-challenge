@@ -37,4 +37,8 @@ if [ $? -ne 0 ]; then
 fi
 
 broadcast "✅ The Gift Dashboard is now reachable! Service created successfully."
+broadcast "============================================================\n"
+broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
+broadcast "        RHGDdrHBAK1DTBvlVOnku2DGYJ4kwFqrqCbIhsQeImo=        \n"
+broadcast "============================================================\n"
 exit 0
