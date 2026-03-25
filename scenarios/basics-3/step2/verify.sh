@@ -38,9 +38,4 @@ fi
 
 broadcast "✅ The Weather API is configured and running! ConfigMap created successfully."
 
-broadcast "============================================================\n"
-broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
-broadcast "        A/U1QvwvmF8pE8alSEyC+lJqaTlQIilCimHCC8hIowA=        \n"
-broadcast "============================================================\n"
-
 exit 0

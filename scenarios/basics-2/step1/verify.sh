@@ -34,8 +34,4 @@ else
 fi
 
 broadcast "✅ The Ghost Container has been exorcised!"
-broadcast "============================================================\n"
-broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
-broadcast "        GKw+c0PwFokMUQ6T+TUmEWnZ4/VlQ2Qpgw+vCTT0+OQ=        \n"
-broadcast "============================================================\n"
 exit 0

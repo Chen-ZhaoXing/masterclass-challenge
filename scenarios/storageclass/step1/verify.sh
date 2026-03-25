@@ -29,10 +29,6 @@ ACCESS_MODES=$(kubectl get -f ~/"$TARGET" -o jsonpath='{..volumeClaimTemplates[*
 
 if [[ "${STORAGE_CLASS,,}" == *"local-path"* ]] && [[ "${ACCESS_MODES,,}" == *"readwriteonce"* ]]; then
     broadcast "✅ North Pole approves of your Storage Configuration!"
-    broadcast "============================================================\n"
-    broadcast "          🎉 ALL CHECKS PASSED! Here is the flag!\n           "
-    broadcast "        /4DYxhnFSRwHumwwIs0be+rKbKGAaaHqwmQe8423SpQ=        \n"
-    broadcast "============================================================\n"
     exit 0
 else
     broadcast "❌ North Pole needs you to correctly set the accessModes to [ReadWriteOnce] and storageClassName to local-path under volumeClaimTemplates."

@@ -1,11 +1,74 @@
-# Challenge 4: The Frozen Handshake - Solution
+# The Frozen Handshake - Solution Guide
 
 ## The Vulnerability
-The elves successfully routed internal traffic to a TLS-enabled endpoint, but neglected to configure the client application to trust the Certificate Authority. Because the client couldn't verify the TLS handshake, it crashed safely, isolating itself.
 
-## The Solution
-We updated the frontend `deployment.yaml` to retrieve the correct certificates and provide them to the application logic:
+The telemetry client needs to communicate with a TLS-enabled internal endpoint, but the rogue elves never mounted the Certificate Authority (CA) certificate into the client container. Without the CA cert, the client can't verify the server's identity, and the TLS handshake fails.
 
-1. **Certificate Volumes:** Included a `volumes` block mapping to the secret `northpole-ca`.
-2. **VolumeMounts:** Mapped the certificate into the container at `/etc/tls`.
-3. **Application Configuration:** Set the `TLS_CERT_PATH` environment variable so the Curl operations inside the container knew exactly where to find and load the internal CA certificate (`/etc/tls/ca.crt`) to complete the handshake securely.
+## How to Diagnose
+
+```bash
+# Check the pod status - it will be in CrashLoopBackOff
+kubectl get pods -n challenge4
+
+# Check the logs for the TLS error
+kubectl logs <pod-name> -n challenge4
+# Output: "SSL certificate problem: unable to get local issuer certificate"
+
+# Find the CA cert Secret
+kubectl get secrets -n challenge4
+kubectl describe secret northpole-ca -n challenge4
+# Shows key: ca.crt
+```
+
+The application expects the `TLS_CERT_PATH` environment variable to point to the CA certificate file.
+
+## The Fix
+
+Three changes are needed in the Helm chart's `deployment.yaml`:
+
+### 1. Add a Volume backed by the CA Secret
+
+```yaml
+volumes:
+  - name: tls-certs
+    secret:
+      secretName: northpole-ca
+```
+
+This makes all keys in the `northpole-ca` Secret available as files.
+
+### 2. Mount the Volume into the container
+
+```yaml
+volumeMounts:
+  - name: tls-certs
+    mountPath: /etc/tls
+    readOnly: true
+```
+
+The `ca.crt` key from the Secret becomes the file `/etc/tls/ca.crt`.
+
+### 3. Set the environment variable
+
+```yaml
+env:
+  - name: TLS_CERT_PATH
+    value: "/etc/tls/ca.crt"
+```
+
+This tells the application where to find the CA certificate for TLS verification.
+
+### Deploy
+
+```bash
+helm upgrade --install challenge4 ~/tls-client-chart -n challenge4
+```
+
+## Why It Matters
+
+**TLS trust chains** are fundamental to secure communication:
+
+- **CA Certificates** establish trust. The client needs the CA cert to verify that the server's certificate is legitimate and hasn't been forged.
+- **Without CA verification**, the connection is vulnerable to man-in-the-middle attacks where an attacker could intercept and modify traffic between services.
+- **In Kubernetes**, internal CAs are commonly used for service mesh communication (mTLS), webhook endpoints, and custom API servers.
+- **Never skip TLS verification** (`--insecure` / `verify=False`) in production. Instead, properly distribute the CA cert via Secrets and volume mounts.
