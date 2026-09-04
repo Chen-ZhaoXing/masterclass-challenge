@@ -1,0 +1,45 @@
+{
+    "title": "Challenge: The Skeleton Key",
+    "description": "🟡 Intermediate • ~20 min • RBAC, ServiceAccounts, Least Privilege - The rogue elves handed the gift-tracking workload the keys to the entire North Pole cluster. Revoke the skeleton key and grant back only what the workload actually needs.",
+    "time": "20 minutes",
+    "details": {
+        "intro": {
+            "title": "Intro",
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "Revoke the Skeleton Key",
+                "text": "step1/readme.md",
+                "verify": "step1/verify.sh"
+            },
+            {
+                "title": "Grant Only What Is Needed",
+                "text": "step2/readme.md",
+                "verify": "step2/verify.sh"
+            }
+        ],
+        "finish": {
+            "title": "Finish",
+            "text": "finish.md"
+        },
+        "assets": {
+            "host01": [
+                {
+                    "file": "rbac.yaml",
+                    "target": "~/",
+                    "chmod": "+rw"
+                }
+            ]
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    },
+    "interface": {
+        "layout": "ide",
+        "root": "/root"
+    }
+}

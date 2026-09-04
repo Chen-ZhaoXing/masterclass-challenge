@@ -38,6 +38,11 @@
             "description": "• Topics: Security Context, RBAC, Probes - The rogue elves submitted a misconfigured manifest. Fix all policy violations to meet North Pole production standards."
         },
         {
+            "path": "skeleton-key",
+            "title": "The Skeleton Key",
+            "description": "• Topics: RBAC, ServiceAccounts, Least Privilege - The gift-tracking workload was handed cluster-admin \"temporarily\" and never had it revoked. Destroy the skeleton key and grant back only what the workload actually needs."
+        },
+        {
             "path": "storageclass",
             "title": "The Phantom Storage",
             "description": "• Topics: Deployment, StatefulSet, Storage Classes, PVCs, Services - The rogue elves intentionally wiped the storage and network configurations from the gift-tracking application. Restore the Persistent Volumes and internal Services to reconnect the application!"
