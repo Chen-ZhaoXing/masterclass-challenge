@@ -4,6 +4,11 @@ broadcast() {
     for pts in /dev/pts/[0-9]*; do
         if [ -w "$pts" ]; then
             echo -e "\n$1\n" > "$pts" 2>/dev/null
+            rows=$(stty -F "$pts" size 2>/dev/null | cut -d' ' -f1)
+            if [ -n "$rows" ]; then
+                stty -F "$pts" rows $((rows + 1)) 2>/dev/null
+                stty -F "$pts" rows "$rows" 2>/dev/null
+            fi
         fi
     done
 }

@@ -56,6 +56,28 @@ Step 2 re-checks `* *` so a student cannot re-add the skeleton key after passing
 
 Validated locally against a kind cluster: 11/11 cases correct, including every escape above.
 
+## The `broadcast()` prompt nudge
+
+`broadcast()` writes to `/dev/pts/*` from outside the student's shell, so bash's readline never
+learns the screen changed and the prompt is not redrawn — the terminal looks frozen until the
+student presses Enter. This affects every scenario in this repo that uses `broadcast()`.
+
+The `stty rows` lines in `broadcast()` fix it: bumping the row count and restoring it raises
+SIGWINCH, which makes readline redraw. The current value is read and restored, so nothing is
+hardcoded, and every call is failure-silent.
+
+Measured in a pty harness:
+
+| Approach | Prompt redrawn |
+|---|---|
+| Plain `echo > /dev/pts/N` (the old behaviour) | no |
+| `SIGWINCH` sent directly to the shell | no — readline needs a *real* size change |
+| `stty rows N+1` then restore, via the pts | **yes** |
+
+⚠️ Verified in a local pty only. Killercoda's terminal is xterm.js, which manages its own sizing
+and may override or visibly reflow. **Confirm there before copying this into the other scenarios.**
+To revert, delete the four `stty`/`rows` lines from `broadcast()` in both verify scripts.
+
 ## Wiring Checklist
 
 - [x] `scenarios/structure.json` — course ordering entry added
