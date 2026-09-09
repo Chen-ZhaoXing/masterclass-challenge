@@ -18,8 +18,9 @@ This document defines the point allocation, hint costs, and configuration for ho
 | 6 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
 | 7 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
 | 8 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
-| - | **Completion Bonus** | *All 8 solved* | - | **+100** | - | - |
-| | | | **Max Total** | **1250** | | **~160 min** |
+| 9 | The Impatient Elf | `scenarios/impatient-elf` | 🟡 Intermediate | **150** | 2 | ~25 min |
+| - | **Completion Bonus** | *All 9 solved* | - | **+100** | - | - |
+| | | | **Max Total** | **1400** | | **~185 min** |
 
 ---
 
@@ -121,15 +122,27 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
+### Challenge 9: The Impatient Elf (150 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Look at the Pod from the inside out: `kubectl -n workshop describe pod -l app=gift-registry`, `kubectl -n workshop logs -l app=gift-registry --all-containers --previous`, and `kubectl -n workshop get deployment gift-registry -o yaml`. Notice *when* each container does its work — and compare how `wait-for-db` is declared in the Pod spec versus how `elf` is declared. |
+| 2 | 20 pts | Kubernetes has two container lists in a Pod spec: `initContainers` run one by one and must exit 0 before the app starts, while `containers` all start at the same instant, in parallel. The elf is declared in the wrong list — it belongs in `initContainers`, after `wait-for-db`. |
+| 3 | 30 pts | Edit `~/app.yaml`: move the entire `elf` container block from `containers:` into `initContainers:` (keep it after `wait-for-db`), leaving only `gift-registry` under `containers:`. Then `kubectl apply -f ~/app.yaml` and wait for a fresh Pod — the elf's restock takes a few seconds. Verify with `kubectl -n workshop get pods` (1/1 Running, 0 restarts) and the `/healthz` check from step 2. |
+
+**Minimum achievable score:** 100 pts
+
+---
+
 ## Scoring Summary by Difficulty
 
 | Tier | Challenges | Points Available | Target Audience |
 |------|-----------|-----------------|-----------------|
 | 🟢 Beginner | Orientation + OJT + Graduation | 150 pts | First-timers, students |
-| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image | 400 pts | Workshop graduates |
+| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image + Impatient Elf | 550 pts | Workshop graduates |
 | 🔴 Advanced | Trojan Manifest + Phantom Storage | 600 pts | Daily practitioners |
-| 🏆 Bonus | All 8 completed | +100 pts | Completionists |
-| | **Grand Total** | **1250 pts** | |
+| 🏆 Bonus | All 9 completed | +100 pts | Completionists |
+| | **Grand Total** | **1400 pts** | |
 
 ---
 
@@ -153,9 +166,9 @@ Flags are **not** traditional CTF text flags. Instead, participants are validate
 
 ### Completion Bonus
 
-The 100-point completion bonus for solving all 7 challenges can be implemented as:
-- A separate hidden challenge that auto-unlocks when all 7 are solved (requires CTFd plugin), or
-- A manual award given by admins after verifying all 7 are complete
+The 100-point completion bonus for solving all 9 challenges can be implemented as:
+- A separate hidden challenge that auto-unlocks when all 9 are solved (requires CTFd plugin), or
+- A manual award given by admins after verifying all 9 are complete
 
 ### Anti-Cheat Considerations
 

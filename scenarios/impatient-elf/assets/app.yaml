@@ -1,0 +1,88 @@
+# The gift-registry Deployment, as shipped by the release crew.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gift-registry
+  namespace: workshop
+  labels:
+    app: gift-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gift-registry
+  template:
+    metadata:
+      labels:
+        app: gift-registry
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: postgres:16-alpine
+          command: ["sh", "-c"]
+          args:
+            - |
+              until pg_isready -h workshop-db -p 5432 -q; do
+                echo "waiting for workshop-db:5432"; sleep 2
+              done
+      containers:
+        - name: gift-registry
+          image: touching/gift-registry:2.4.1
+          ports:
+            - containerPort: 8000
+          env:
+            - name: POSTGRES_HOST
+              value: workshop-db
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef: { name: workshop-db, key: database }
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef: { name: workshop-db, key: user }
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: workshop-db, key: password }
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+        - name: elf
+          image: touching/elf:1.7.0
+          env:
+            - name: POSTGRES_HOST
+              value: workshop-db
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef: { name: workshop-db, key: database }
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef: { name: workshop-db, key: user }
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: workshop-db, key: password }
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

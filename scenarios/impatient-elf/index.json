@@ -1,0 +1,70 @@
+{
+    "title": "Challenge 9: The Impatient Elf",
+    "description": "🟡 Intermediate • ~25 min • initContainers, Pod Startup Ordering, CrashLoopBackOff - The rogue elves moved the catalog-restocking elf out of the prep shift. The shop opens before the shelves are stocked and crash-loops. Diagnose the race and put the elf back in line.",
+    "time": "25 minutes",
+    "details": {
+        "intro": {
+            "title": "Intro",
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "Diagnose the Crash Loop",
+                "text": "step1/readme.md",
+                "verify": "step1/verify.sh"
+            },
+            {
+                "title": "Put the Elf Back in Line",
+                "text": "step2/readme.md",
+                "verify": "step2/verify.sh"
+            }
+        ],
+        "finish": {
+            "title": "Finish",
+            "text": "finish.md"
+        },
+        "assets": {
+            "host01": [
+                {
+                    "file": "app.yaml",
+                    "target": "~/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "setup/namespace.yaml",
+                    "target": "/var/impatient-elf/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "setup/db-secret.yaml",
+                    "target": "/var/impatient-elf/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "setup/postgres.yaml",
+                    "target": "/var/impatient-elf/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "setup/app-service.yaml",
+                    "target": "/var/impatient-elf/",
+                    "chmod": "+rw"
+                },
+                {
+                    "file": "setup/local-path-storage.yaml",
+                    "target": "/var/impatient-elf/",
+                    "chmod": "+rw"
+                }
+            ]
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    },
+    "interface": {
+        "layout": "ide",
+        "root": "/root"
+    }
+}

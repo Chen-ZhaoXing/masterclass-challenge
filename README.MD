@@ -18,7 +18,7 @@ As the **Senior Security Elf**, it is your job to stop them. The Chief Holiday O
 
 ## 🏆 Scoring Overview
 
-Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is awarded for completing all eight challenges.
+Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is awarded for completing all nine challenges.
 
 | # | Challenge | Difficulty | Points | Time | Key Topics |
 |---|-----------|------------|--------|------|------------|
@@ -30,8 +30,9 @@ Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is
 | 6 | The Bloated Sleigh Image | 🟡 Intermediate | 200 | ~25 min | Dockerfile, Multi-Stage Builds, Non-Root |
 | 7 | The Trojan Manifest | 🔴 Advanced | 300 | ~40 min | Security Context, Probes, Policy Enforcement |
 | 8 | The Phantom Storage | 🔴 Advanced | 300 | ~30 min | PVCs, StorageClasses, Services |
-| - | Completion Bonus | - | +100 | - | Complete all 8 challenges |
-| | | | **1250** | **~160 min** | |
+| 9 | The Impatient Elf | 🟡 Intermediate | 150 | ~25 min | initContainers, Pod Startup Ordering, CrashLoopBackOff |
+| - | Completion Bonus | - | +100 | - | Complete all 9 challenges |
+| | | | **1400** | **~185 min** | |
 
 Each challenge has **layered hints** - the first hint is free, with subsequent hints costing 10–20% of the challenge points. See [CTFd-Scoring.md](CTFd-Scoring.md) for full hint definitions and CTFd configuration details.
 
@@ -75,6 +76,11 @@ The rogue elves have sabotaged the container build pipeline with a 1GB+ Docker i
 - **Your Mission:** Rewrite the Dockerfile using multi-stage builds, a slim base image, and a non-root user.
 - **Learning Objectives:** Multi-stage Docker builds, image size optimization, non-root containers, layer caching.
 
+#### The Impatient Elf
+The new Gift Registry build crash-loops every time it boots: the shop opens *before* the shelves are stocked, because the restocking elf was moved out of the prep shift and now races the app as a sibling container.
+- **Your Mission:** Diagnose why the Pod crash-loops (write the root cause down), then fix the Deployment so the elf's catalog rebuild is guaranteed to finish before the shop container starts.
+- **Learning Objectives:** initContainers vs. regular containers, Pod startup ordering, diagnosing `CrashLoopBackOff` with `kubectl describe` / per-container logs.
+
 ---
 
 ### 🔴 Advanced Tier
@@ -99,6 +105,7 @@ The rogue elves completely wiped the storage boundaries and network services for
 - `scenarios/exposed-coordinates/` - The Exposed Coordinates (Helm, Secrets, volume mounts)
 - `scenarios/frozen-handshake/` - The Frozen Handshake (TLS, certs, volume mounts)
 - `scenarios/bloated-docker-image/` - The Bloated Sleigh Image (Dockerfile, multi-stage)
+- `scenarios/impatient-elf/` - The Impatient Elf (initContainers, pod startup ordering)
 - `scenarios/trojan-manifest/` - The Trojan Manifest (policy enforcement, security context)
 - `scenarios/storageclass/` - The Phantom Storage (PVCs, StorageClasses, Services)
 - `solution/` - Reference solutions for each challenge
@@ -113,4 +120,5 @@ If you want to test or modify the challenges locally before pushing to Killercod
 1. You will need a local Kubernetes cluster (e.g., Minikube, kind, or Docker Desktop).
 2. For The Trojan Manifest challenge, install a policy engine such as [Kyverno](https://kyverno.io/docs/installation/) and apply the policies found in `scenarios/trojan-manifest/assets/kyverno-policies/`.
 3. For The Phantom Storage challenge, ensure a local volume provisioner like `local-path-provisioner` exists.
-4. Read the `intro.md` in each scenario's directory and follow the steps. You can run the `verify.sh` scripts to automatically check your solutions.
+4. For The Impatient Elf challenge, build the two app images from `gift-registry-app/` (`make docker`, or the build steps in `scenarios/impatient-elf/local-test/test.sh`) and load them into your cluster, e.g. with `kind load docker-image`.
+5. Read the `intro.md` in each scenario's directory and follow the steps. You can run the `verify.sh` scripts to automatically check your solutions.
