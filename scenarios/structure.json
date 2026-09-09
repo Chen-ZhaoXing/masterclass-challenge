@@ -33,6 +33,11 @@
             "description": "• Topics: Dockerfile, Multi-Stage Builds, Non-Root Containers - The rogue elves shipped a 1GB+ container image running as root. Rewrite the Dockerfile to produce a secure, slim (<250MB) image using multi-stage builds."
         },
         {
+            "path": "poisoned-present",
+            "title": "The Poisoned Present",
+            "description": "• Topics: Trivy, Supply Chain, CVE Remediation - The rogue elves reintroduced ancient, vulnerable dependencies into the Sleigh Telemetry image. Bump versions, swap the base image, and track down the findings that requirements.txt never mentions, until the vulnerability scan comes back clean."
+        },
+        {
             "path": "impatient-elf",
             "title": "The Impatient Elf",
             "description": "• Topics: initContainers, Pod Startup Ordering, CrashLoopBackOff - The rogue elves moved the catalog-restocking elf out of the prep shift: the shop now opens before the shelves are stocked and crash-loops. Diagnose the race and put the elf back in line."

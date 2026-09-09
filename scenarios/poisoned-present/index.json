@@ -1,0 +1,38 @@
+{
+    "title": "The Poisoned Present",
+    "description": "🟡 Intermediate • ~25 min • Trivy, Supply Chain, CVE Remediation - The rogue elves reintroduced ancient, vulnerable dependencies into the Sleigh Telemetry image. Bump versions, swap the base image, and track down the findings that requirements.txt never mentions, until the vulnerability scan comes back clean.",
+    "time": "25 minutes",
+    "details": {
+        "intro": {
+            "text": "intro.md",
+            "foreground": "foreground.sh",
+            "background": "background.sh"
+        },
+        "steps": [
+            {
+                "title": "Cleanse the Supply Chain",
+                "text": "step1/readme.md",
+                "verify": "step1/verify.sh"
+            }
+        ],
+        "finish": {
+            "text": "finish.md"
+        },
+        "assets": {
+            "host01": [
+                {
+                    "file": "sleigh-telemetry/**/*",
+                    "target": "~/",
+                    "chmod": "+rw"
+                }
+            ]
+        }
+    },
+    "backend": {
+        "imageid": "kubernetes-kubeadm-1node"
+    },
+    "interface": {
+        "layout": "ide",
+        "root": "/root/sleigh-telemetry"
+    }
+}

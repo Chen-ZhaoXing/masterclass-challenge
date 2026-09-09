@@ -18,7 +18,7 @@ As the **Senior Security Elf**, it is your job to stop them. The Chief Holiday O
 
 ## 🏆 Scoring Overview
 
-Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is awarded for completing all nine challenges.
+Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is awarded for completing all ten challenges.
 
 | # | Challenge | Difficulty | Points | Time | Key Topics |
 |---|-----------|------------|--------|------|------------|
@@ -28,11 +28,12 @@ Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is
 | 4 | The Exposed Coordinates | 🟡 Intermediate | 100 | ~15 min | Kubernetes Secrets, Helm, Volume Mounts |
 | 5 | The Frozen Handshake | 🟡 Intermediate | 100 | ~15 min | TLS trust chains, Volume Mounts, Secret certs |
 | 6 | The Bloated Sleigh Image | 🟡 Intermediate | 200 | ~25 min | Dockerfile, Multi-Stage Builds, Non-Root |
-| 7 | The Trojan Manifest | 🔴 Advanced | 300 | ~40 min | Security Context, Probes, Policy Enforcement |
-| 8 | The Phantom Storage | 🔴 Advanced | 300 | ~30 min | PVCs, StorageClasses, Services |
-| 9 | The Impatient Elf | 🟡 Intermediate | 150 | ~25 min | initContainers, Pod Startup Ordering, CrashLoopBackOff |
-| - | Completion Bonus | - | +100 | - | Complete all 9 challenges |
-| | | | **1400** | **~185 min** | |
+| 7 | The Poisoned Present | 🟡 Intermediate | 200 | ~25 min | Trivy, Supply Chain, CVE Remediation |
+| 8 | The Impatient Elf | 🟡 Intermediate | 150 | ~25 min | initContainers, Pod Startup Ordering, CrashLoopBackOff |
+| 9 | The Trojan Manifest | 🔴 Advanced | 300 | ~40 min | Security Context, Probes, Policy Enforcement |
+| 10 | The Phantom Storage | 🔴 Advanced | 300 | ~30 min | PVCs, StorageClasses, Services |
+| - | Completion Bonus | - | +100 | - | Complete all 10 challenges |
+| | | | **1600** | **~210 min** | |
 
 Each challenge has **layered hints** - the first hint is free, with subsequent hints costing 10–20% of the challenge points. See [CTFd-Scoring.md](CTFd-Scoring.md) for full hint definitions and CTFd configuration details.
 
@@ -76,6 +77,11 @@ The rogue elves have sabotaged the container build pipeline with a 1GB+ Docker i
 - **Your Mission:** Rewrite the Dockerfile using multi-stage builds, a slim base image, and a non-root user.
 - **Learning Objectives:** Multi-stage Docker builds, image size optimization, non-root containers, layer caching.
 
+#### The Poisoned Present
+The Sleigh Telemetry Service was just fixed in the prior challenge — it's slim now, and it no longer runs as root. But a routine scan turns up something the size fix never touched: the base image is years past end-of-life, and half the pinned dependencies predate published fixes for known HIGH/CRITICAL CVEs.
+- **Your Mission:** Investigate the image with Trivy, patch the EOL base image and the stale dependency pins, rebuild, and push until the scan comes back clean of fixable HIGH/CRITICAL findings.
+- **Learning Objectives:** Reading a Trivy vulnerability report, fixed vs. unfixed CVEs, base image freshness vs. size, dependency-pinning hygiene, transitive version caps.
+
 #### The Impatient Elf
 The new Gift Registry build crash-loops every time it boots: the shop opens *before* the shelves are stocked, because the restocking elf was moved out of the prep shift and now races the app as a sibling container.
 - **Your Mission:** Diagnose why the Pod crash-loops (write the root cause down), then fix the Deployment so the elf's catalog rebuild is guaranteed to finish before the shop container starts.
@@ -105,6 +111,7 @@ The rogue elves completely wiped the storage boundaries and network services for
 - `scenarios/exposed-coordinates/` - The Exposed Coordinates (Helm, Secrets, volume mounts)
 - `scenarios/frozen-handshake/` - The Frozen Handshake (TLS, certs, volume mounts)
 - `scenarios/bloated-docker-image/` - The Bloated Sleigh Image (Dockerfile, multi-stage)
+- `scenarios/poisoned-present/` - The Poisoned Present (Trivy, supply chain, CVE remediation)
 - `scenarios/impatient-elf/` - The Impatient Elf (initContainers, pod startup ordering)
 - `scenarios/trojan-manifest/` - The Trojan Manifest (policy enforcement, security context)
 - `scenarios/storageclass/` - The Phantom Storage (PVCs, StorageClasses, Services)

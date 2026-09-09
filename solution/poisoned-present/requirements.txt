@@ -1,0 +1,12 @@
+# Every pin here is a floor (>=), never a ceiling. An upper cap is what made the
+# original set unfixable: fastapi==0.115.6 capped starlette below its patched
+# release, so no amount of editing the four obviously-stale lines could clear
+# the scan. Floors let pip resolve to whatever is current at build time, which
+# is what keeps this solution passing as the CVE feed moves.
+fastapi>=0.122.0
+uvicorn>=0.32.1
+python-dotenv>=1.0.1
+urllib3>=2.2.2
+Pillow>=10.3.0
+PyYAML>=6.0.1
+requests>=2.32.0
