@@ -16,11 +16,12 @@ This document defines the point allocation, hint costs, and configuration for ho
 | 4 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | **100** | 1 | ~15 min |
 | 5 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
 | 6 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
-| 7 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
-| 8 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
-| 9 | The Impatient Elf | `scenarios/impatient-elf` | 🟡 Intermediate | **150** | 2 | ~25 min |
-| - | **Completion Bonus** | *All 9 solved* | - | **+100** | - | - |
-| | | | **Max Total** | **1400** | | **~185 min** |
+| 7 | The Poisoned Present | `scenarios/poisoned-present` | 🟡 Intermediate | **200** | 1 | ~25 min |
+| 8 | The Impatient Elf | `scenarios/impatient-elf` | 🟡 Intermediate | **150** | 2 | ~25 min |
+| 9 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
+| 10 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
+| - | **Completion Bonus** | *All 10 solved* | - | **+100** | - | - |
+| | | | **Max Total** | **1600** | | **~210 min** |
 
 ---
 
@@ -98,31 +99,20 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 7: The Trojan Manifest (300 pts)
+### Challenge 7: The Poisoned Present (200 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
-| 1 | **Free** | Try `kubectl apply -f ~/app.yaml` and read the error. Each step introduces one new policy. Use the error message to identify which field is missing, then fix it in `app.yaml`. |
-| 2 | 30 pts | The 5 policies enforce: (1) `resources.requests` and `resources.limits`, (2) `livenessProbe` and `readinessProbe` with `httpGet`, (3) `app.kubernetes.io/name` and `app.kubernetes.io/instance` labels on `pod.metadata.labels`, (4) a non-default `serviceAccountName`, (5) `securityContext.runAsNonRoot: true`. |
-| 3 | 60 pts | For probes, use `httpGet` on path `/` port `8000`. Create a ServiceAccount with `kubectl create sa gift-tracking-sa` and set `serviceAccountName: gift-tracking-sa`. Add `automountServiceAccountToken: false` for bonus points. For security, set `securityContext: { runAsNonRoot: true }` at the container level. |
+| 1 | **Free** | Run `trivy image --severity HIGH,CRITICAL --ignore-unfixed <your-image>` and read both tables it prints. The top table is the OS layer — that one is about your `FROM` line. The bottom table is Python packages. Fix the obvious ones, then scan again: the second scan is where the real lesson is. |
+| 2 | 25 pts | Base image: `python:3.9` is end-of-life and gets no patches — move to a currently-supported release. Dependencies: `urllib3`, `Pillow`, `PyYAML` and `requests` are all years behind their patched versions. Bump all four. |
+| 3 | 40 pts | Still failing on `starlette`? It isn't in `requirements.txt` — FastAPI pulls it in, and `fastapi==0.115.6` pins it *below* its patched release. An `==` pin caps that package's dependencies too. Bump `fastapi` and prefer `>=` over `==` throughout. |
+| 4 | 40 pts | Still failing on `msgpack` and `setuptools`? Neither is installed — Trivy reads them from pip's own vendored dependency list. A runtime image doesn't need a package manager: add `python -m pip uninstall -y pip` to the end of your `pip install` layer. `gcc` can go too once PyYAML is current, since modern PyYAML ships prebuilt wheels. |
 
-**Minimum achievable score:** 210 pts
-
----
-
-### Challenge 8: The Phantom Storage (300 pts)
-
-| Hint # | Cost | Hint Text |
-|--------|------|-----------|
-| 1 | **Free** | Step 1: Open `statefulset.yaml` and look at the `volumeClaimTemplates` section. The `storageClassName` and `accessModes` fields are missing. The StorageClass is called `local-path` and the access mode should be `ReadWriteOnce`. |
-| 2 | 30 pts | Step 2: Create a PVC named `backup-pvc` with `storageClassName: local-path`, `accessModes: [ReadWriteOnce]`, and `storage: 1Gi`. In `deployment.yaml`, add a `volumes[]` entry referencing your PVC and a `volumeMounts[]` entry mounting it at `/app/data` inside the `tracker` container. |
-| 3 | 60 pts | Step 2 (continued): Create a Service named `mongodb-service` targeting the MongoDB pods. Use `selector: { app: mongodb }` and `port: 27017 / targetPort: 27017`. Apply both the PVC, the updated deployment, and the Service with `kubectl apply -f`. |
-
-**Minimum achievable score:** 210 pts
+**Minimum achievable score:** 95 pts
 
 ---
 
-### Challenge 9: The Impatient Elf (150 pts)
+### Challenge 8: The Impatient Elf (150 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -134,15 +124,39 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
+### Challenge 9: The Trojan Manifest (300 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Try `kubectl apply -f ~/app.yaml` and read the error. Each step introduces one new policy. Use the error message to identify which field is missing, then fix it in `app.yaml`. |
+| 2 | 30 pts | The 5 policies enforce: (1) `resources.requests` and `resources.limits`, (2) `livenessProbe` and `readinessProbe` with `httpGet`, (3) `app.kubernetes.io/name` and `app.kubernetes.io/instance` labels on `pod.metadata.labels`, (4) a non-default `serviceAccountName`, (5) `securityContext.runAsNonRoot: true`. |
+| 3 | 60 pts | For probes, use `httpGet` on path `/` port `8000`. Create a ServiceAccount with `kubectl create sa gift-tracking-sa` and set `serviceAccountName: gift-tracking-sa`. Add `automountServiceAccountToken: false` for bonus points. For security, set `securityContext: { runAsNonRoot: true }` at the container level. |
+
+**Minimum achievable score:** 210 pts
+
+---
+
+### Challenge 10: The Phantom Storage (300 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Step 1: Open `statefulset.yaml` and look at the `volumeClaimTemplates` section. The `storageClassName` and `accessModes` fields are missing. The StorageClass is called `local-path` and the access mode should be `ReadWriteOnce`. |
+| 2 | 30 pts | Step 2: Create a PVC named `backup-pvc` with `storageClassName: local-path`, `accessModes: [ReadWriteOnce]`, and `storage: 1Gi`. In `deployment.yaml`, add a `volumes[]` entry referencing your PVC and a `volumeMounts[]` entry mounting it at `/app/data` inside the `tracker` container. |
+| 3 | 60 pts | Step 2 (continued): Create a Service named `mongodb-service` targeting the MongoDB pods. Use `selector: { app: mongodb }` and `port: 27017 / targetPort: 27017`. Apply both the PVC, the updated deployment, and the Service with `kubectl apply -f`. |
+
+**Minimum achievable score:** 210 pts
+
+---
+
 ## Scoring Summary by Difficulty
 
 | Tier | Challenges | Points Available | Target Audience |
 |------|-----------|-----------------|-----------------|
 | 🟢 Beginner | Orientation + OJT + Graduation | 150 pts | First-timers, students |
-| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image + Impatient Elf | 550 pts | Workshop graduates |
+| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image + Poisoned Present + Impatient Elf | 750 pts | Workshop graduates |
 | 🔴 Advanced | Trojan Manifest + Phantom Storage | 600 pts | Daily practitioners |
-| 🏆 Bonus | All 9 completed | +100 pts | Completionists |
-| | **Grand Total** | **1400 pts** | |
+| 🏆 Bonus | All 10 completed | +100 pts | Completionists |
+| | **Grand Total** | **1600 pts** | |
 
 ---
 
@@ -152,7 +166,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 1. **Challenge Type:** Standard (Static)
 2. **Category:** Kubernetes Security
-3. **Tags:** Per challenge - e.g., `yaml-debugging`, `secrets`, `helm`, `policy-engine`, `dockerfile`, `multi-stage`, `non-root`, `storage`, `pvc`
+3. **Tags:** Per challenge - e.g., `yaml-debugging`, `secrets`, `helm`, `policy-engine`, `dockerfile`, `multi-stage`, `non-root`, `storage`, `pvc`, `trivy`, `supply-chain`, `cve`, `dependency-management`, `container-security`
 4. **State:** Visible (all challenges visible from start; no unlocking required)
 5. **Max Attempts:** Unlimited (learning-focused)
 
@@ -166,9 +180,9 @@ Flags are **not** traditional CTF text flags. Instead, participants are validate
 
 ### Completion Bonus
 
-The 100-point completion bonus for solving all 9 challenges can be implemented as:
-- A separate hidden challenge that auto-unlocks when all 9 are solved (requires CTFd plugin), or
-- A manual award given by admins after verifying all 9 are complete
+The 100-point completion bonus for solving all 10 challenges can be implemented as:
+- A separate hidden challenge that auto-unlocks when all 10 are solved (requires CTFd plugin), or
+- A manual award given by admins after verifying all 10 are complete
 
 ### Anti-Cheat Considerations
 
