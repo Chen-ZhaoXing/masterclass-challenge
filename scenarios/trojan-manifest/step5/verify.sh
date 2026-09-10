@@ -6,8 +6,25 @@ broadcast() {
     done
 }
 
-kubectl delete clusterpolicies --all --force
-kubectl apply -f /var/kyverno-policies/require-non-root.yaml > /dev/null 2>&1
+if [ -f /tmp/kyverno-setup-failed ]; then
+    broadcast "⚠️  The policy engine did not install correctly: $(cat /tmp/kyverno-setup-failed)"
+    broadcast "   This is an environment problem, not your manifest - please report it."
+    exit 1
+fi
+
+kubectl delete clusterpolicies --all >/dev/null 2>&1
+
+POLICY_APPLY_ERR=$(kubectl apply -f /var/kyverno-policies/require-non-root.yaml 2>&1)
+if [ $? -ne 0 ]; then
+    broadcast "⚠️  The policy could not be loaded, so your manifest was never actually checked:"
+    broadcast "$POLICY_APPLY_ERR"
+    exit 1
+fi
+
+# The admission webhook re-registers asynchronously after a policy change.
+# Grading before it is live would let any manifest through.
+kubectl wait --for=condition=Ready clusterpolicy/require-non-root --timeout=90s >/dev/null 2>&1
+sleep 5
 
 APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 APPLY_EXIT=$?
@@ -19,7 +36,18 @@ else
     exit 1
 fi
 
-kubectl apply -f /var/kyverno-policies/require-drop-all.yaml > /dev/null 2>&1
+# Bonus: layered on top of require-non-root, so both must hold. A silenced
+# apply here would award the bonus for free.
+BONUS_APPLY_ERR=$(kubectl apply -f /var/kyverno-policies/require-drop-all.yaml 2>&1)
+if [ $? -ne 0 ]; then
+    broadcast "⚠️  The bonus policy could not be loaded, so the bonus was not checked."
+    broadcast "$BONUS_APPLY_ERR"
+    exit 0
+fi
+
+kubectl wait --for=condition=Ready clusterpolicy/require-drop-all --timeout=90s >/dev/null 2>&1
+sleep 5
+
 BONUS_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 BONUS_EXIT=$?
 
