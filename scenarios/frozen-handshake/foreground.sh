@@ -21,5 +21,7 @@ else
   echo "The client deployment is intentionally broken right now (missing CA cert mount)."
   echo "Fix ~/tls-client-chart/templates/deployment.yaml and rerun verification."
 
-  cd ~/tls-client-chart || exit 1
+  # No `|| exit`: Killercoda types this script into the player's shell, so an
+  # exit here would close their terminal.
+  cd ~/tls-client-chart
 fi

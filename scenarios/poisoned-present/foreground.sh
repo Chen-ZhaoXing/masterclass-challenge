@@ -48,5 +48,7 @@ else
   echo "Good luck, Security Elf!"
   echo ""
 
-  cd ~/sleigh-telemetry || exit 1
+  # No `|| exit`: Killercoda types this script into the player's shell, so an
+  # exit here would close their terminal.
+  cd ~/sleigh-telemetry
 fi
