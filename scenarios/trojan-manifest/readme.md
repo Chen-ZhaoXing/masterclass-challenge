@@ -48,7 +48,21 @@ Each step's `background.sh` applies the next policy.
 
 ## Verification Notes
 
-- All verify scripts use `kubectl delete clusterpolicies --all` then apply ONLY the current step's policy before checking
+- Each verify script re-applies its own policy (normally a no-op, since the step's
+  `background.sh` applied it at step load) and then grades with `--dry-run=server`.
+- **Policies accumulate across steps and are never deleted.** An earlier version ran
+  `kubectl delete clusterpolicies --all` first, to grade each step against its own policy in
+  isolation. That tears down Kyverno's admission webhook, which is re-registered
+  asynchronously, so a dry-run fired immediately afterwards could execute with admission
+  control out of the path entirely and pass any manifest. Waiting for re-registration made
+  verification slow enough to exceed Killercoda's window, which surfaced to students as
+  "Validation system error" while the terminal printed a pass. Not deleting removes both
+  problems, and cumulative policies are the more faithful model anyway: a manifest has to keep
+  satisfying every requirement it already met.
+- Policies match `kinds: [Pod]`; Kyverno's **autogen** derives the Deployment/StatefulSet/Job
+  rules automatically (`status.autogen.rules`), which is what allows a Deployment to be graded
+  against Pod-shaped patterns. Verified in a live environment: a resource-less Deployment is
+  rejected by `autogen-check-memory-requests-limits`.
 - Uses `--dry-run=server` to validate without creating live resources
 - Step 4 has additional `grep` checks for `serviceAccountName` in the manifest (with `tr -d '\r'` for Windows line endings in app.yaml)
 - Step 5 always prints the flag on non-root pass, regardless of bonus result

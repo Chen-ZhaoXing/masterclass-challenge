@@ -11,8 +11,11 @@ if [ -f /tmp/kyverno-setup-failed ]; then
     exit 1
 fi
 
-kubectl delete clusterpolicies --all >/dev/null 2>&1
-
+# The step's background.sh already applied this policy when the step loaded, so
+# this is normally a no-op. Policies accumulate across steps on purpose: a
+# manifest has to keep satisfying everything it satisfied earlier, which is how
+# admission control behaves in reality. Nothing is deleted, so Kyverno's webhook
+# is never torn down and there is no re-registration race to wait out.
 POLICY_APPLY_ERR=$(kubectl apply -f /var/kyverno-policies/require-resource-limits.yaml 2>&1)
 if [ $? -ne 0 ]; then
     broadcast "⚠️  The policy could not be loaded, so your manifest was never actually checked:"
@@ -20,10 +23,11 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# The admission webhook re-registers asynchronously after a policy change.
-# Grading before it is live would let any manifest through.
-kubectl wait --for=condition=Ready clusterpolicy/require-resources --timeout=90s >/dev/null 2>&1
-sleep 5
+# Normally already True, so this exits on the first pass.
+for _ in $(seq 1 10); do
+    [ "$(kubectl get clusterpolicy require-resources -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null)" = "True" ] && break
+    sleep 1
+done
 APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 
 APPLY_OUT_EXIT=$?
