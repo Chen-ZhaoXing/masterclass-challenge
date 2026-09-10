@@ -1,0 +1,12 @@
+# Every scenario runs on Linux. A CRLF line ending in a shell script fails at
+# exec time with "/bin/bash^M: bad interpreter", and Windows clones introduce
+# them silently. Normalise line endings on checkout regardless of platform.
+* text=auto eol=lf
+
+# Binary assets must never be touched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
