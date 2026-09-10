@@ -1,5 +1,5 @@
 {
-    "title": "Challenge 3: The Trojan Manifest",
+    "title": "Challenge 10: The Trojan Manifest",
     "description": "Security Context, RBAC, Probes - The rogue elves submitted a misconfigured ( or lack thereof ) Kubernetes application manifest. Debug policy violations and refactor the manifest to meet all security standards.",
     "time": "40 minutes",
     "details": {

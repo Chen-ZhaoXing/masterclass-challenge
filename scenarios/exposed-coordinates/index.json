@@ -1,5 +1,5 @@
 {
-    "title": "Challenge 1: The Exposed Coordinates",
+    "title": "Challenge 5: The Exposed Coordinates",
     "description": "🟢 Easy • ~15 min • Kubernetes Secrets, Helm, Volume Mounts - The Sleigh Routing API is leaking the Master Guidance Coordinates through a plaintext env var. Refactor the deployment to securely mount the secret as a file.",
     "time": "15 minutes",
     "details": {

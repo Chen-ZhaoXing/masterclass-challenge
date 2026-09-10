@@ -105,7 +105,31 @@ This is a deliberate forcing function: pip itself teaches the floors-vs-ceilings
 
 This is the only scenario in the course graded against a **live vulnerability feed**. It can break with nobody touching the repo.
 
-The mitigation is structural: **every pin in the solution is a floor (`>=`), never a ceiling**, so a rebuild resolves to whatever is current. The retired starlette bug is the proof of why - the drift risk comes from upper caps, not from pinning as such.
+There are two mitigations, and it is worth being precise about what each one actually buys.
+
+**Floors in the solution's Python pins** mean a rebuild resolves to whatever is current, so the Python
+layer does not rot on its own. Note the earlier version of this note claimed "the drift risk comes from
+upper caps, not from pinning as such" - that does not hold. `==X` *is* an upper cap (`>=X,<=X`), so an
+exact pin carries the same rot risk. The real distinction is stale versus current, not floor versus exact.
+
+**The pre-cohort check below is the actual mitigation**, because floors do nothing for the larger half of
+the problem. `python:3.13-slim` accumulates fixable OS CVEs between Docker Hub rebuilds, and the OS layer
+was 55 of the 96 findings. If that base image picks up a fixable HIGH/CRITICAL, no edit to
+`requirements.txt` **or** to the `FROM` line clears it, and the scenario is unpassable until someone bumps
+the tag. Floors cannot help with that. Run the check before every cohort.
+
+### Teaching stance (do not "fix" this inconsistency)
+
+`finish.md` deliberately teaches that the production answer is **exact pins plus an automated updater**
+(Dependabot/Renovate), not floors - because an unconstrained floor ships whatever pip resolved on build
+day, with no reproducibility and no review of new upstream code. `step1/readme.md` no longer presents
+floors as a house standard; it just asks students to bump each stale pin past its patched release.
+
+The assets and the reference solution still use floors, and that is intentional: it keeps the scenario
+evergreen against a moving CVE feed. `verify.sh` scans the **built image**, not `requirements.txt`, so a
+student who writes `urllib3==2.2.2` passes exactly like one who writes `urllib3>=2.2.2`. If you are
+tempted to make the solution use exact pins for consistency with the debrief, don't - you would be trading
+a documentation nuance for a scenario that silently rots between cohorts.
 
 Pre-cohort check:
 

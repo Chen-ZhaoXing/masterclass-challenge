@@ -1,5 +1,5 @@
 {
-    "title": "The Poisoned Present",
+    "title": "Challenge 4: The Poisoned Present",
     "description": "🟢 Beginner • ~15 min • Trivy, Supply Chain, CVE Remediation - The Sleigh Telemetry image has been small and green on the dashboard for years. Nobody rebuilt it, so its base image reached end-of-life and its pins aged past their own patches. Read the Trivy report, bump the base image and the four stale pins, and push until the scan comes back clean.",
     "time": "15 minutes",
     "details": {

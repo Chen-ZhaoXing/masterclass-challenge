@@ -1,5 +1,5 @@
 {
-    "title": "Challenge: Trainee Elf OJT",
+    "title": "Challenge 2: Trainee Elf OJT",
     "description": "Kubernetes Debugging - Learn to diagnose ImagePullBackOff, CrashLoopBackOff, and hardcoded secrets using kubectl describe, logs, and Secrets.",
     "time": "20 minutes",
     "details": {

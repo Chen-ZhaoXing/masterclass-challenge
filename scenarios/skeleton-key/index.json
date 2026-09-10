@@ -1,5 +1,5 @@
 {
-    "title": "Challenge: The Skeleton Key",
+    "title": "Challenge 9: The Skeleton Key",
     "description": "🟡 Intermediate • ~20 min • RBAC, ServiceAccounts, Least Privilege - The rogue elves handed the gift-tracking workload the keys to the entire North Pole cluster. Revoke the skeleton key and grant back only what the workload actually needs.",
     "time": "20 minutes",
     "details": {

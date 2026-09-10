@@ -10,9 +10,9 @@ You don't need to change anything else in this file.
 
 ## 2. `requirements.txt` — the stale pins
 
-Four packages are pinned to exact versions that are years old and carry known, patched CVEs. Bump them.
+Four packages are pinned to exact versions that are years old. Bump each one past the release that patched it.
 
-The other pins in the file already use `>=` (a floor) rather than `==` (an exact version) — that's the North Pole standard, because a floor lets a rebuild pick up security patches. Match that style when you bump.
+Three of them carry known HIGH/CRITICAL findings of their own. The fourth looks innocent — it has no finding at all — but it still has to move. You'll find out why when you try to leave it alone.
 
 > If you bump some pins but not others, `pip` may refuse to install: an old package can hold a newer one back. Read the error — it names the conflict.
 

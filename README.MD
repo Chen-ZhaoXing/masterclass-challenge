@@ -25,14 +25,14 @@ Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is
 | 1 | Trainee Elf Orientation | 🟢 Beginner | 50 | ~10 min | YAML debugging, image pinning, namespace scoping |
 | 2 | Trainee Elf OJT | 🟢 Beginner | 50 | ~10 min | `kubectl describe`, `kubectl logs`, Secrets |
 | 3 | Trainee Elf Graduation | 🟢 Beginner | 50 | ~15 min | Services, ConfigMaps |
-| 4 | The Exposed Coordinates | 🟡 Intermediate | 100 | ~15 min | Kubernetes Secrets, Helm, Volume Mounts |
-| 5 | The Frozen Handshake | 🟡 Intermediate | 100 | ~15 min | TLS trust chains, Volume Mounts, Secret certs |
-| 6 | The Bloated Sleigh Image | 🟡 Intermediate | 200 | ~25 min | Dockerfile, Multi-Stage Builds, Non-Root |
-| 7 | The Poisoned Present | 🟢 Beginner | 100 | ~15 min | Trivy, Supply Chain, CVE Remediation |
-| 8 | The Impatient Elf | 🟡 Intermediate | 150 | ~25 min | initContainers, Pod Startup Ordering, CrashLoopBackOff |
-| 9 | The Trojan Manifest | 🔴 Advanced | 300 | ~40 min | Security Context, Probes, Policy Enforcement |
-| 10 | The Phantom Storage | 🔴 Advanced | 300 | ~30 min | PVCs, StorageClasses, Services |
-| 11 | The Skeleton Key | 🟡 Intermediate | 200 | ~20 min | RBAC, ServiceAccounts, Least Privilege |
+| 4 | The Poisoned Present | 🟢 Beginner | 100 | ~15 min | Trivy, Supply Chain, CVE Remediation |
+| 5 | The Exposed Coordinates | 🟡 Intermediate | 100 | ~15 min | Kubernetes Secrets, Helm, Volume Mounts |
+| 6 | The Frozen Handshake | 🟡 Intermediate | 100 | ~15 min | TLS trust chains, Volume Mounts, Secret certs |
+| 7 | The Impatient Elf | 🟡 Intermediate | 150 | ~25 min | initContainers, Pod Startup Ordering, CrashLoopBackOff |
+| 8 | The Bloated Sleigh Image | 🟡 Intermediate | 200 | ~25 min | Dockerfile, Multi-Stage Builds, Non-Root |
+| 9 | The Skeleton Key | 🟡 Intermediate | 200 | ~20 min | RBAC, ServiceAccounts, Least Privilege |
+| 10 | The Trojan Manifest | 🔴 Advanced | 300 | ~40 min | Security Context, Probes, Policy Enforcement |
+| 11 | The Phantom Storage | 🔴 Advanced | 300 | ~30 min | PVCs, StorageClasses, Services |
 | - | Completion Bonus | - | +100 | - | Complete all 11 challenges |
 | | | | **1700** | **~220 min** | |
 
@@ -78,6 +78,10 @@ The rogue elves turned on TLS for an internal endpoint, but intentionally neglec
 - **Your Mission:** Update the client deployment to mount the correct CA cert from a Secret so TLS validation succeeds.
 - **Learning Objectives:** TLS trust chains, CA certificate distribution, runtime verification.
 
+#### The Impatient Elf
+The new Gift Registry build crash-loops every time it boots: the shop opens *before* the shelves are stocked, because the restocking elf was moved out of the prep shift and now races the app as a sibling container.
+- **Your Mission:** Diagnose why the Pod crash-loops (write the root cause down), then fix the Deployment so the elf's catalog rebuild is guaranteed to finish before the shop container starts.
+- **Learning Objectives:** initContainers vs. regular containers, Pod startup ordering, diagnosing `CrashLoopBackOff` with `kubectl describe` / per-container logs.
 #### The Bloated Sleigh Image
 The rogue elves have sabotaged the container build pipeline with a 1GB+ Docker image running as root. The North Pole Container Standard demands images under 250 MB with non-root execution.
 - **Your Mission:** Rewrite the Dockerfile using multi-stage builds, a slim base image, and a non-root user.
@@ -88,10 +92,6 @@ The gift-tracking workload was handed `cluster-admin` during a deployment window
 - **Your Mission:** Establish what the workload's identity can currently do, revoke the grant that gives it cluster-wide power without taking the service down, then grant back only what it genuinely needs: read access to ConfigMaps in its own namespace.
 - **Learning Objectives:** Kubernetes RBAC, least-privilege authorization, Roles vs ClusterRoles, auditing effective permissions with `kubectl auth can-i --as`.
 
-#### The Impatient Elf
-The new Gift Registry build crash-loops every time it boots: the shop opens *before* the shelves are stocked, because the restocking elf was moved out of the prep shift and now races the app as a sibling container.
-- **Your Mission:** Diagnose why the Pod crash-loops (write the root cause down), then fix the Deployment so the elf's catalog rebuild is guaranteed to finish before the shop container starts.
-- **Learning Objectives:** initContainers vs. regular containers, Pod startup ordering, diagnosing `CrashLoopBackOff` with `kubectl describe` / per-container logs.
 
 ---
 
@@ -114,11 +114,12 @@ The rogue elves completely wiped the storage boundaries and network services for
 - `scenarios/basics/` - Trainee Elf Orientation (YAML, images, namespaces)
 - `scenarios/basics-2/` - Trainee Elf OJT (diagnostics, Secrets)
 - `scenarios/basics-3/` - Trainee Elf Graduation (Services, ConfigMaps)
+- `scenarios/poisoned-present/` - The Poisoned Present (Trivy, supply chain, CVE remediation)
 - `scenarios/exposed-coordinates/` - The Exposed Coordinates (Helm, Secrets, volume mounts)
 - `scenarios/frozen-handshake/` - The Frozen Handshake (TLS, certs, volume mounts)
-- `scenarios/bloated-docker-image/` - The Bloated Sleigh Image (Dockerfile, multi-stage)
-- `scenarios/poisoned-present/` - The Poisoned Present (Trivy, supply chain, CVE remediation)
 - `scenarios/impatient-elf/` - The Impatient Elf (initContainers, pod startup ordering)
+- `scenarios/bloated-docker-image/` - The Bloated Sleigh Image (Dockerfile, multi-stage)
+- `scenarios/skeleton-key/` - The Skeleton Key (RBAC, ServiceAccounts, least privilege)
 - `scenarios/trojan-manifest/` - The Trojan Manifest (policy enforcement, security context)
 - `scenarios/storageclass/` - The Phantom Storage (PVCs, StorageClasses, Services)
 - `solution/` - Reference solutions for each challenge

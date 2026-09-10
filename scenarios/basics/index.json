@@ -1,5 +1,5 @@
 {
-    "title": "Challenge: Trainee Elf Tier",
+    "title": "Challenge 1: Trainee Elf Orientation",
     "description": "Basic Kubernetes debugging - Fix common YAML errors, pin mutable image tags, and learn namespace scoping. Perfect for your first day as a Security Elf!",
     "time": "20 minutes",
     "details": {

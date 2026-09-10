@@ -18,9 +18,9 @@
             "description": "• Topics: Services, ConfigMaps - Expose a deployment with a ClusterIP Service and provide application configuration via ConfigMaps."
         },
         {
-            "path": "frozen-handshake",
-            "title": "The Frozen Handshake",
-            "description": "• Topics: Kubernetes TLS, Secrets, Helm, Volume Mounts - The telemetry client cannot reach a secure endpoint because the CA certificate is missing. Mount the cert from a Secret so TLS validation succeeds."
+            "path": "poisoned-present",
+            "title": "The Poisoned Present",
+            "description": "• Topics: Trivy, Supply Chain, CVE Remediation - The rogue elves reintroduced ancient, vulnerable dependencies into the Sleigh Telemetry image. Bump versions, swap the base image, and track down the findings that requirements.txt never mentions, until the vulnerability scan comes back clean."
         },
         {
             "path": "exposed-coordinates",
@@ -28,14 +28,9 @@
             "description": "• Topics: Kubernetes Secrets, Helm, Volume Mounts - The Sleigh Routing API is leaking the Master Guidance Coordinates through a plaintext env var. Refactor the Helm chart to securely mount the secret as a file."
         },
         {
-            "path": "bloated-docker-image",
-            "title": "The Bloated Sleigh Image",
-            "description": "• Topics: Dockerfile, Multi-Stage Builds, Non-Root Containers - The rogue elves shipped a 1GB+ container image running as root. Rewrite the Dockerfile to produce a secure, slim (<250MB) image using multi-stage builds."
-        },
-        {
-            "path": "poisoned-present",
-            "title": "The Poisoned Present",
-            "description": "• Topics: Trivy, Supply Chain, CVE Remediation - The rogue elves reintroduced ancient, vulnerable dependencies into the Sleigh Telemetry image. Bump versions, swap the base image, and track down the findings that requirements.txt never mentions, until the vulnerability scan comes back clean."
+            "path": "frozen-handshake",
+            "title": "The Frozen Handshake",
+            "description": "• Topics: Kubernetes TLS, Secrets, Helm, Volume Mounts - The telemetry client cannot reach a secure endpoint because the CA certificate is missing. Mount the cert from a Secret so TLS validation succeeds."
         },
         {
             "path": "impatient-elf",
@@ -43,14 +38,19 @@
             "description": "• Topics: initContainers, Pod Startup Ordering, CrashLoopBackOff - The rogue elves moved the catalog-restocking elf out of the prep shift: the shop now opens before the shelves are stocked and crash-loops. Diagnose the race and put the elf back in line."
         },
         {
-            "path": "trojan-manifest",
-            "title": "The Trojan Manifest",
-            "description": "• Topics: Security Context, RBAC, Probes - The rogue elves submitted a misconfigured manifest. Fix all policy violations to meet North Pole production standards."
+            "path": "bloated-docker-image",
+            "title": "The Bloated Sleigh Image",
+            "description": "• Topics: Dockerfile, Multi-Stage Builds, Non-Root Containers - The rogue elves shipped a 1GB+ container image running as root. Rewrite the Dockerfile to produce a secure, slim (<250MB) image using multi-stage builds."
         },
         {
             "path": "skeleton-key",
             "title": "The Skeleton Key",
             "description": "• Topics: RBAC, ServiceAccounts, Least Privilege - The gift-tracking workload was handed cluster-admin \"temporarily\" and never had it revoked. Destroy the skeleton key and grant back only what the workload actually needs."
+        },
+        {
+            "path": "trojan-manifest",
+            "title": "The Trojan Manifest",
+            "description": "• Topics: Security Context, RBAC, Probes - The rogue elves submitted a misconfigured manifest. Fix all policy violations to meet North Pole production standards."
         },
         {
             "path": "storageclass",

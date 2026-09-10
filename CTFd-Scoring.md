@@ -10,17 +10,17 @@ This document defines the point allocation, hint costs, and configuration for ho
 
 | # | Challenge | Killercoda Scenario | Difficulty | Base Points | Steps | Est. Time |
 |---|-----------|---------------------|------------|-------------|-------|-----------|
-| 1 | Trainee Elf Orientation | `scenarios/basics` | 🟢 Beginner | **50** | 3 | ~10 min |
+| 1 | Trainee Elf Orientation | `scenarios/basics` | 🟢 Beginner | Trainee Elf Orientation + Trainee Elf OJT + Trainee Elf Graduation + The Poisoned Present | 250 pts | ~10 min |
 | 2 | Trainee Elf OJT | `scenarios/basics-2` | 🟢 Beginner | **50** | 3 | ~10 min |
 | 3 | Trainee Elf Graduation | `scenarios/basics-3` | 🟢 Beginner | **50** | 2 | ~15 min |
-| 4 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | **100** | 1 | ~15 min |
-| 5 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
-| 6 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
-| 7 | The Poisoned Present | `scenarios/poisoned-present` | 🟢 Beginner | **100** | 1 | ~15 min |
-| 8 | The Impatient Elf | `scenarios/impatient-elf` | 🟡 Intermediate | **150** | 2 | ~25 min |
-| 9 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
-| 10 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
-| 11 | The Skeleton Key | `scenarios/skeleton-key` | 🟡 Intermediate | **200** | 2 | ~20 min |
+| 4 | The Poisoned Present | `scenarios/poisoned-present` | 🟢 Beginner | **100** | 1 | ~15 min |
+| 5 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | The Exposed Coordinates + The Frozen Handshake + The Impatient Elf + The Bloated Sleigh Image + The Skeleton Key | 750 pts | ~15 min |
+| 6 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
+| 7 | The Impatient Elf | `scenarios/impatient-elf` | 🟡 Intermediate | **150** | 2 | ~25 min |
+| 8 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
+| 9 | The Skeleton Key | `scenarios/skeleton-key` | 🟡 Intermediate | **200** | 2 | ~20 min |
+| 10 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | The Trojan Manifest + The Phantom Storage | 600 pts | ~40 min |
+| 11 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
 | - | **Completion Bonus** | *All 11 solved* | - | **+100** | - | - |
 | | | | **Max Total** | **1700** | | **~220 min** |
 
@@ -65,42 +65,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 4: The Exposed Coordinates (100 pts)
-
-| Hint # | Cost | Hint Text |
-|--------|------|-----------|
-| 1 | **Free** | The secret you need already exists in the cluster. Use `kubectl get secrets -n challenge1` to find it, then `kubectl describe secret <name> -n challenge1` to see its keys. |
-| 2 | 15 pts | The application expects `APP_TOKEN_PATH` to point to a file. The secret key `legacy-sys-token` must be mounted as a file named `credentials.key`. Check the TODO comments in `deployment.yaml` for the expected path format. |
-| 3 | 25 pts | In your Helm deployment template, add a `volumes[]` entry backed by the Secret with `items[]` mapping the key to the filename. Add a `volumeMounts[]` entry in the container spec with `readOnly: true`. Set `APP_TOKEN_PATH` to `<mountPath>/credentials.key`. Remove the old `APP_TOKEN` env var completely. |
-
-**Minimum achievable score:** 60 pts
-
----
-
-### Challenge 5: The Frozen Handshake (100 pts)
-
-| Hint # | Cost | Hint Text |
-|--------|------|-----------|
-| 1 | **Free** | The intro tells you everything: a Secret called `northpole-ca` exists with file key `ca.crt`. You need to mount it and set `TLS_CERT_PATH`. Check `deployment.yaml` in the Helm chart for the TODO. |
-| 2 | 15 pts | Add a `volumes[]` entry with `secret.secretName: northpole-ca`. Add a `volumeMounts[]` entry pointing to a directory like `/etc/tls`. Set `TLS_CERT_PATH` to `/etc/tls/ca.crt`. Then run `helm upgrade --install challenge4 ~/tls-client-chart -n challenge4`. |
-
-**Minimum achievable score:** 85 pts
-
----
-
-### Challenge 6: The Bloated Sleigh Image (200 pts)
-
-| Hint # | Cost | Hint Text |
-|--------|------|-----------|
-| 1 | **Free** | Look at the existing Dockerfile. What base image is it using? How big is that image? Run `docker images` to see. Check: who is the container running as? Research multi-stage Docker builds and slim base images. |
-| 2 | 25 pts | You need a **multi-stage build**: a `builder` stage to install dependencies, and a production stage with `python:3.13-slim`. Copy only pip packages from the builder with `COPY --from=builder`. Use `ARG` for the Python version, add `LABEL` for metadata, and add `HEALTHCHECK`. |
-| 3 | 40 pts | Builder: `pip install --no-cache-dir --prefix=/install -r requirements.txt`. Production: `COPY --from=builder /install /usr/local`, then `COPY src/ /app/src/`. Copy `requirements.txt` before `src/` for layer caching. Set `USER 1001:0` (SCC-compliant) before `CMD`. Push to `localhost:30500/sleigh-telemetry:latest`. |
-
-**Minimum achievable score:** 135 pts
-
----
-
-### Challenge 7: The Poisoned Present (100 pts)
+### Challenge 4: The Poisoned Present (100 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -112,7 +77,30 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 8: The Impatient Elf (150 pts)
+### Challenge 5: The Exposed Coordinates (100 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | The secret you need already exists in the cluster. Use `kubectl get secrets -n challenge1` to find it, then `kubectl describe secret <name> -n challenge1` to see its keys. |
+| 2 | 15 pts | The application expects `APP_TOKEN_PATH` to point to a file. The secret key `legacy-sys-token` must be mounted as a file named `credentials.key`. Check the TODO comments in `deployment.yaml` for the expected path format. |
+| 3 | 25 pts | In your Helm deployment template, add a `volumes[]` entry backed by the Secret with `items[]` mapping the key to the filename. Add a `volumeMounts[]` entry in the container spec with `readOnly: true`. Set `APP_TOKEN_PATH` to `<mountPath>/credentials.key`. Remove the old `APP_TOKEN` env var completely. |
+
+**Minimum achievable score:** 60 pts
+
+---
+
+### Challenge 6: The Frozen Handshake (100 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | The intro tells you everything: a Secret called `northpole-ca` exists with file key `ca.crt`. You need to mount it and set `TLS_CERT_PATH`. Check `deployment.yaml` in the Helm chart for the TODO. |
+| 2 | 15 pts | Add a `volumes[]` entry with `secret.secretName: northpole-ca`. Add a `volumeMounts[]` entry pointing to a directory like `/etc/tls`. Set `TLS_CERT_PATH` to `/etc/tls/ca.crt`. Then run `helm upgrade --install challenge4 ~/tls-client-chart -n challenge4`. |
+
+**Minimum achievable score:** 85 pts
+
+---
+
+### Challenge 7: The Impatient Elf (150 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -124,31 +112,19 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 9: The Trojan Manifest (300 pts)
+### Challenge 8: The Bloated Sleigh Image (200 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
-| 1 | **Free** | Try `kubectl apply -f ~/app.yaml` and read the error. Each step introduces one new policy. Use the error message to identify which field is missing, then fix it in `app.yaml`. |
-| 2 | 30 pts | The 5 policies enforce: (1) `resources.requests` and `resources.limits`, (2) `livenessProbe` and `readinessProbe` with `httpGet`, (3) `app.kubernetes.io/name` and `app.kubernetes.io/instance` labels on `pod.metadata.labels`, (4) a non-default `serviceAccountName`, (5) `securityContext.runAsNonRoot: true`. |
-| 3 | 60 pts | For probes, use `httpGet` on path `/` port `8000`. Create a ServiceAccount with `kubectl create sa gift-tracking-sa` and set `serviceAccountName: gift-tracking-sa`. Add `automountServiceAccountToken: false` for bonus points. For security, set `securityContext: { runAsNonRoot: true }` at the container level. |
+| 1 | **Free** | Look at the existing Dockerfile. What base image is it using? How big is that image? Run `docker images` to see. Check: who is the container running as? Research multi-stage Docker builds and slim base images. |
+| 2 | 25 pts | You need a **multi-stage build**: a `builder` stage to install dependencies, and a production stage with `python:3.13-slim`. Copy only pip packages from the builder with `COPY --from=builder`. Use `ARG` for the Python version, add `LABEL` for metadata, and add `HEALTHCHECK`. |
+| 3 | 40 pts | Builder: `pip install --no-cache-dir --prefix=/install -r requirements.txt`. Production: `COPY --from=builder /install /usr/local`, then `COPY src/ /app/src/`. Copy `requirements.txt` before `src/` for layer caching. Set `USER 1001:0` (SCC-compliant) before `CMD`. Push to `localhost:30500/sleigh-telemetry:latest`. |
 
-**Minimum achievable score:** 210 pts
-
----
-
-### Challenge 10: The Phantom Storage (300 pts)
-
-| Hint # | Cost | Hint Text |
-|--------|------|-----------|
-| 1 | **Free** | Step 1: Open `statefulset.yaml` and look at the `volumeClaimTemplates` section. The `storageClassName` and `accessModes` fields are missing. The StorageClass is called `local-path` and the access mode should be `ReadWriteOnce`. |
-| 2 | 30 pts | Step 2: Create a PVC named `backup-pvc` with `storageClassName: local-path`, `accessModes: [ReadWriteOnce]`, and `storage: 1Gi`. In `deployment.yaml`, add a `volumes[]` entry referencing your PVC and a `volumeMounts[]` entry mounting it at `/app/data` inside the `tracker` container. |
-| 3 | 60 pts | Step 2 (continued): Create a Service named `mongodb-service` targeting the MongoDB pods. Use `selector: { app: mongodb }` and `port: 27017 / targetPort: 27017`. Apply both the PVC, the updated deployment, and the Service with `kubectl apply -f`. |
-
-**Minimum achievable score:** 210 pts
+**Minimum achievable score:** 135 pts
 
 ---
 
-### Challenge 11: The Skeleton Key (200 pts)
+### Challenge 9: The Skeleton Key (200 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -160,12 +136,36 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
+### Challenge 10: The Trojan Manifest (300 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Try `kubectl apply -f ~/app.yaml` and read the error. Each step introduces one new policy. Use the error message to identify which field is missing, then fix it in `app.yaml`. |
+| 2 | 30 pts | The 5 policies enforce: (1) `resources.requests` and `resources.limits`, (2) `livenessProbe` and `readinessProbe` with `httpGet`, (3) `app.kubernetes.io/name` and `app.kubernetes.io/instance` labels on `pod.metadata.labels`, (4) a non-default `serviceAccountName`, (5) `securityContext.runAsNonRoot: true`. |
+| 3 | 60 pts | For probes, use `httpGet` on path `/` port `8000`. Create a ServiceAccount with `kubectl create sa gift-tracking-sa` and set `serviceAccountName: gift-tracking-sa`. Add `automountServiceAccountToken: false` for bonus points. For security, set `securityContext: { runAsNonRoot: true }` at the container level. |
+
+**Minimum achievable score:** 210 pts
+
+---
+
+### Challenge 11: The Phantom Storage (300 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Step 1: Open `statefulset.yaml` and look at the `volumeClaimTemplates` section. The `storageClassName` and `accessModes` fields are missing. The StorageClass is called `local-path` and the access mode should be `ReadWriteOnce`. |
+| 2 | 30 pts | Step 2: Create a PVC named `backup-pvc` with `storageClassName: local-path`, `accessModes: [ReadWriteOnce]`, and `storage: 1Gi`. In `deployment.yaml`, add a `volumes[]` entry referencing your PVC and a `volumeMounts[]` entry mounting it at `/app/data` inside the `tracker` container. |
+| 3 | 60 pts | Step 2 (continued): Create a Service named `mongodb-service` targeting the MongoDB pods. Use `selector: { app: mongodb }` and `port: 27017 / targetPort: 27017`. Apply both the PVC, the updated deployment, and the Service with `kubectl apply -f`. |
+
+**Minimum achievable score:** 210 pts
+
+---
+
 ## Scoring Summary by Difficulty
 
 | Tier | Challenges | Points Available | Target Audience |
 |------|-----------|-----------------|-----------------|
 | 🟢 Beginner | Orientation + OJT + Graduation + Poisoned Present | 250 pts | First-timers, students |
-| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image + Impatient Elf + Skeleton Key | 750 pts | Workshop graduates |
+| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Impatient Elf + Bloated Image + Skeleton Key | 750 pts | Workshop graduates |
 | 🔴 Advanced | Trojan Manifest + Phantom Storage | 600 pts | Daily practitioners |
 | 🏆 Bonus | All 11 completed | +100 pts | Completionists |
 | | **Grand Total** | **1700 pts** | |

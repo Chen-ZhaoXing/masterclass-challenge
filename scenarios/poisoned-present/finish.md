@@ -27,14 +27,14 @@ Slim only means "fewer packages" — not "newer packages." Once a base image sto
 urllib3==1.23       Pillow==8.1.0
 PyYAML==5.3.1       requests==2.24.0
 
-# ✅ patched versions, as floors
+# ✅ past the patched release
 urllib3>=2.2.2      Pillow>=10.3.0
 PyYAML>=6.0.1       requests>=2.32.0
 ```
 
 Pinning versions is good practice — but a pin is a promise you have to keep renewing.
 
-**Why `>=` and not `==`?**
+**The pin that fought back**
 
 If you tried bumping `urllib3` on its own, pip probably stopped you:
 
@@ -43,9 +43,21 @@ ERROR: Cannot install -r requirements.txt (line 7) and urllib3>=2.2.2
 because these package versions have conflicting dependencies.
 ```
 
-`requests==2.24.0` requires `urllib3<1.26`. An exact pin doesn't just freeze the package you named — **it freezes everything that package depends on too.** That's how one stale line quietly holds a dozen others back.
+`requests==2.24.0` has no finding of its own — it looks innocent. But it requires `urllib3<1.26`, so it blocks the fix for a package that *does* have one. A stale pin doesn't just freeze the package you named — **it freezes everything that package depends on too.** That's how one forgotten line quietly holds a dozen others back.
 
-A floor (`>=`) says "at least this new, newer is fine," so a rebuild picks up patches automatically. Use a ceiling only when you have a specific reason.
+**So should you pin at all?**
+
+Worth getting right, because the two obvious answers are each wrong on their own.
+
+A floor (`>=`) lets a rebuild pick up patches automatically. It also means whatever pip resolves on build day is what ships: two builds of identical source produce different images, and a compromised upstream release reaches production with nobody reviewing it. That is the supply-chain attack this challenge is named after.
+
+An exact pin (`==`) gives you a build you can reproduce and review — and then it rots. Look at how this image broke: exact pins, correct on the day they were written, left alone for years.
+
+> **Pinning isn't the problem. Unattended is the problem.**
+
+The production answer is exact pins — ideally hash-locked, via `pip-compile --generate-hashes`, `uv lock` or `poetry.lock` — with an automated updater opening a reviewed pull request the day a patch ships. That gets you patching, reproducibility, *and* review, instead of trading one away for another.
+
+The floors above are fine for clearing this scan. They are not what you ship without something watching them.
 
 **Problem 3: Fixed vs. unfixed**
 
