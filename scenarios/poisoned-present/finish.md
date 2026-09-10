@@ -20,6 +20,39 @@ FROM python:3.13-slim
 
 Slim only means "fewer packages" — not "newer packages." Once a base image stops getting patches, every bug found in it afterward just stays there. This one line was responsible for **55 of the findings**, most of them in `openssl` and `util-linux`.
 
+**Why bumping the base image actually fixed anything**
+
+Here is the part that surprises people: `python:3.9-slim` and `python:3.13-slim` are **both Debian 13**. Changing that line did not move you to a newer operating system.
+
+What changed is how recently the image was **rebuilt**.
+
+Docker Hub rebuilds its images periodically, and each rebuild pulls in whatever Debian packages are current that day. When a Python version reaches end-of-life, those rebuilds stop — and the OS packages inside it freeze at whatever was current on the last build. Debian keeps publishing patches; that image just never picks them up again.
+
+That is exactly what the scan was showing you:
+
+```
+Library:            openssl
+Installed Version:  3.5.1-1+deb13u1     <- frozen in an image nobody rebuilds
+Fixed Version:      3.5.5-1~deb13u2     <- Debian shipped this; your image missed it
+```
+
+A `Fixed Version` means the distro **has** published the patch. If your image doesn't have it, the image is stale, not the distro.
+
+**How you find the version to move to**
+
+The scanner won't tell you. Trivy reports that a fix exists; it has no idea which base image contains it. That step is yours:
+
+1. A `Fixed Version` is listed → a patch exists
+2. Your image doesn't have it → your base hasn't been rebuilt since
+3. Rebuilds stop at end-of-life → check whether your version is still supported
+4. Move to one that is — [endoflife.date/python](https://endoflife.date/python) is the fastest way to check
+
+**The outcome worth remembering**
+
+"Currently supported" is not the same as "patched right now." Even a supported base image drifts between rebuilds — a CVE published today sits in it until Docker Hub rebuilds and you pull again.
+
+So the fix isn't only picking a fresher base. It's **scanning on a schedule, not just when you change something**. This image passed its review every year precisely because nobody re-scanned an artifact that hadn't changed.
+
 **Problem 2: Old pinned dependencies**
 
 ```
