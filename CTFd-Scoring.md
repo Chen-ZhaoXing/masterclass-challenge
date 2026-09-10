@@ -20,8 +20,9 @@ This document defines the point allocation, hint costs, and configuration for ho
 | 8 | The Impatient Elf | `scenarios/impatient-elf` | 🟡 Intermediate | **150** | 2 | ~25 min |
 | 9 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
 | 10 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
-| - | **Completion Bonus** | *All 10 solved* | - | **+100** | - | - |
-| | | | **Max Total** | **1500** | | **~200 min** |
+| 11 | The Skeleton Key | `scenarios/skeleton-key` | 🟡 Intermediate | **200** | 2 | ~20 min |
+| - | **Completion Bonus** | *All 11 solved* | - | **+100** | - | - |
+| | | | **Max Total** | **1700** | | **~220 min** |
 
 ---
 
@@ -147,15 +148,27 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
+### Challenge 11: The Skeleton Key (200 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Nothing is broken — that is the point. Start by asking what the identity is *allowed* to do rather than what it is doing: `kubectl auth can-i --list --as=system:serviceaccount:gift-tracking:gift-tracking-sa`. Then read `~/rbac.yaml` and work out which object grants it. |
+| 2 | 25 pts | `*.*` on `*.*` is `cluster-admin`, and it is granted by a **ClusterRoleBinding** — not by the ServiceAccount itself. Delete that binding; leave the ServiceAccount and the `gift-tracker` Deployment alone, because both are checked. For step 2, the workload's only legitimate job is reading ConfigMaps in its own namespace. |
+| 3 | 40 pts | Step 2 needs a **Role** (namespaced, not a ClusterRole) granting `get,list,watch` on `configmaps` in `gift-tracking`, plus a RoleBinding tying it to the ServiceAccount: `kubectl create role gift-tracking-config-reader -n gift-tracking --verb=get,list,watch --resource=configmaps` then `kubectl create rolebinding gift-tracking-config-reader -n gift-tracking --role=gift-tracking-config-reader --serviceaccount=gift-tracking:gift-tracking-sa`. Grant verbs and scope narrowly — the audit fails you for anything extra. |
+
+**Minimum achievable score:** 135 pts
+
+---
+
 ## Scoring Summary by Difficulty
 
 | Tier | Challenges | Points Available | Target Audience |
 |------|-----------|-----------------|-----------------|
 | 🟢 Beginner | Orientation + OJT + Graduation + Poisoned Present | 250 pts | First-timers, students |
-| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image + Impatient Elf | 550 pts | Workshop graduates |
+| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image + Impatient Elf + Skeleton Key | 750 pts | Workshop graduates |
 | 🔴 Advanced | Trojan Manifest + Phantom Storage | 600 pts | Daily practitioners |
-| 🏆 Bonus | All 10 completed | +100 pts | Completionists |
-| | **Grand Total** | **1500 pts** | |
+| 🏆 Bonus | All 11 completed | +100 pts | Completionists |
+| | **Grand Total** | **1700 pts** | |
 
 ---
 
@@ -179,9 +192,9 @@ Flags are **not** traditional CTF text flags. Instead, participants are validate
 
 ### Completion Bonus
 
-The 100-point completion bonus for solving all 10 challenges can be implemented as:
-- A separate hidden challenge that auto-unlocks when all 10 are solved (requires CTFd plugin), or
-- A manual award given by admins after verifying all 10 are complete
+The 100-point completion bonus for solving all 11 challenges can be implemented as:
+- A separate hidden challenge that auto-unlocks when all 11 are solved (requires CTFd plugin), or
+- A manual award given by admins after verifying all 11 are complete
 
 ### Anti-Cheat Considerations
 
