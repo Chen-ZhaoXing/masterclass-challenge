@@ -24,8 +24,8 @@ kubectl -n workshop exec deploy/gift-registry -- \
 ```
 
 1. Edit `~/app.yaml` so the elf's work finishes before the shop container starts.
-2. Redeploy: `kubectl apply -f ~/app.yaml`{{exec}}
-3. Watch a fresh Pod come up healthy: `kubectl -n workshop get pods -w`{{exec}}
+2. Redeploy: `kubectl apply -f ~/app.yaml`{{exec interrupt}}
+3. Watch a fresh Pod come up healthy: `kubectl -n workshop get pods -w`{{exec interrupt}} — this keeps watching until you press `Ctrl+C`.
 4. Click the `Check` button!
 
 > 💡 If you're stuck, purchase hints from the challenge portal for guidance.

@@ -15,13 +15,28 @@ until kubectl cluster-info >/dev/null 2>&1; do
 done
 echo "Cluster is ready!"
 
-# Killercoda preserves the relative path of an asset under its target, so
-# "setup/postgres.yaml" -> "/var/impatient-elf/" lands in a setup/ subdirectory.
-SETUP_DIR="/var/impatient-elf/setup"
+# Killercoda does NOT keep an asset's subdirectory when the asset is a single
+# file: "setup/postgres.yaml" with target "/var/impatient-elf/" lands at
+# /var/impatient-elf/postgres.yaml. Confirmed on a live session (2026-09-11),
+# where looking in /var/impatient-elf/setup/ aborted setup before anything was
+# created. The setup/ subdirectory is still accepted as a fallback, so this
+# keeps working if the upload behaviour ever changes.
+ASSET_ROOT="/var/impatient-elf"
+SETUP_DIR=""
+
+find_setup_dir() {
+    for d in "$ASSET_ROOT" "$ASSET_ROOT/setup"; do
+        if [ -f "$d/namespace.yaml" ]; then
+            SETUP_DIR="$d"
+            return 0
+        fi
+    done
+    return 1
+}
 
 # Any failure below must still reach the sentinel, otherwise foreground.sh
 # polls forever and the environment never becomes usable. Record the reason
-# instead so verify.sh can report it.
+# instead so foreground.sh and verify.sh can report it.
 SETUP_FAILED=/tmp/impatient-elf-setup-failed
 rm -f "$SETUP_FAILED"
 
@@ -35,13 +50,14 @@ abort_setup() {
 # The setup assets may land a moment after this script starts, so give them
 # a grace period before giving up.
 i=0
-while [ "$i" -lt 15 ] && [ ! -f "$SETUP_DIR/namespace.yaml" ]; do
+until find_setup_dir || [ "$i" -ge 15 ]; do
     sleep 1
     i=$((i+1))
 done
-if [ ! -f "$SETUP_DIR/namespace.yaml" ]; then
-    abort_setup "could not find the scenario setup manifests in $SETUP_DIR"
+if [ -z "$SETUP_DIR" ]; then
+    abort_setup "could not find the scenario setup manifests in $ASSET_ROOT or $ASSET_ROOT/setup"
 fi
+echo "Using setup manifests from $SETUP_DIR"
 
 echo "==> provisioning local storage"
 kubectl apply -f "$SETUP_DIR/local-path-storage.yaml" >/dev/null 2>&1

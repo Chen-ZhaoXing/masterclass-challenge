@@ -6,6 +6,18 @@ while [ ! -f /tmp/setup-finished ]; do
 done
 
 echo ""
+
+# If setup failed, say so plainly. Otherwise the player sees an unhealthy Pod,
+# reads "that is the bug" below, and debugs a database that was never deployed.
+if [ -f /tmp/impatient-elf-setup-failed ]; then
+  echo "✗ The environment did not finish setting up:"
+  echo "    $(cat /tmp/impatient-elf-setup-failed)"
+  echo ""
+  echo "This is a problem with the environment, not part of the challenge."
+  echo "Restart the scenario, and tell the facilitator if it happens again."
+  exit 1
+fi
+
 echo "Environment ready. Deploying the gift-registry, as the release crew left it..."
 kubectl apply -f ~/app.yaml
 kubectl get pods -n workshop
