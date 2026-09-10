@@ -1,7 +1,12 @@
-# Every pin here is a floor (>=), never a ceiling. A floor lets pip resolve to
-# whatever is current at build time, which is what keeps this solution passing as
-# the CVE feed moves. An upper cap is what would freeze a package - and, through
-# it, that package's own dependencies - below its patched release.
+# Floors (>=) are used here so this reference solution keeps passing as the CVE
+# feed moves - pip resolves to whatever is current at build time. That is a
+# maintenance choice for an evergreen exercise, NOT the practice being taught:
+# finish.md teaches exact pins plus an automated updater, because an
+# unconstrained floor ships whatever pip resolved on build day with no
+# reproducibility and no review. See scenarios/poisoned-present/readme.md.
+#
+# verify.sh scans the built image, not this file, so a student who writes
+# urllib3==2.2.2 passes exactly like one who writes urllib3>=2.2.2.
 fastapi>=0.122.0
 uvicorn>=0.32.1
 python-dotenv>=1.0.1

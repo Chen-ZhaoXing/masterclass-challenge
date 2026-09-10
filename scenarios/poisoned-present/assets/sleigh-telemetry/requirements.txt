@@ -1,5 +1,5 @@
-# North Pole standard: pin a floor (>=) so a rebuild picks up security patches.
-# The rogue elves replaced four of these with ancient exact versions.
+# A pin is a promise you have to keep renewing.
+# The rogue elves stopped renewing four of these.
 fastapi>=0.122.0
 uvicorn>=0.32.1
 python-dotenv>=1.0.1
