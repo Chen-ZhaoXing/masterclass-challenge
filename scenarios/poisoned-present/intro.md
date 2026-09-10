@@ -1,4 +1,4 @@
-> **Points:** 200 · **Time:** ~25 min
+> **Points:** 50 · **Time:** ~15 min
 >
 > **Prerequisites:** Basic Docker knowledge
 >
@@ -18,11 +18,11 @@ New rule from the Chief Holiday Officer:
 
 ## Your Mission
 
-Fix the image, push it, get the scan clean.
+Fix the image, push it, get the scan clean. There are exactly **two files to edit**, both in `~/sleigh-telemetry/`:
 
-- Look at the `Dockerfile` and `requirements.txt` in `~/sleigh-telemetry/`
-- The base image **and** the dependency versions are outdated — start there
-- Then scan again. Not every finding will point at a line you can edit
-- The app still has to work after your fix
+- **`Dockerfile`** — the base image it starts `FROM` is end-of-life and gets no more patches
+- **`requirements.txt`** — four dependencies are pinned to ancient versions
+
+Bump both, rebuild, push, and scan again. The app still has to work when you're done.
 
 Good luck, Security Elf.

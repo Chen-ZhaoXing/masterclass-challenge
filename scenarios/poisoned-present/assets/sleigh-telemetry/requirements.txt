@@ -1,6 +1,8 @@
-fastapi==0.115.6
-uvicorn==0.32.1
-python-dotenv==1.0.1
+# North Pole standard: pin a floor (>=) so a rebuild picks up security patches.
+# The rogue elves replaced four of these with ancient exact versions.
+fastapi>=0.122.0
+uvicorn>=0.32.1
+python-dotenv>=1.0.1
 urllib3==1.23
 Pillow==8.1.0
 PyYAML==5.3.1

@@ -1,7 +1,7 @@
 {
     "title": "The Poisoned Present",
-    "description": "🟡 Intermediate • ~25 min • Trivy, Supply Chain, CVE Remediation - The rogue elves reintroduced ancient, vulnerable dependencies into the Sleigh Telemetry image. Bump versions, swap the base image, and track down the findings that requirements.txt never mentions, until the vulnerability scan comes back clean.",
-    "time": "25 minutes",
+    "description": "🟢 Beginner • ~15 min • Trivy, Supply Chain, CVE Remediation - The rogue elves left the Sleigh Telemetry image on an end-of-life base image with four ancient dependency pins. Read the Trivy report, bump the base image and the pins, rebuild, and push until the scan comes back clean.",
+    "time": "15 minutes",
     "details": {
         "intro": {
             "text": "intro.md",
