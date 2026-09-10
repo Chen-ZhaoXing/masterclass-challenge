@@ -48,8 +48,19 @@ Each step's `background.sh` applies the next policy.
 
 ## Verification Notes
 
+- **`background.sh` blocks until admission control is proven live before releasing the
+  sentinel.** This is the important one. Kyverno reports a ClusterPolicy `READY True` long
+  before its validating webhook is registered and serving — minutes apart on a cold cluster.
+  Releasing the student at "Ready" meant their first `kubectl apply` *and* their first Check
+  ran with admission control out of the request path, so an unfixed `app.yaml` was admitted
+  and step 1 reported a pass. Observed live: the same manifest gave ✅ immediately after setup
+  and ❌ five minutes later, with nothing edited in between.
+  Setup therefore applies step 1's policy and polls a deliberately-invalid Deployment
+  (`/tmp/kyverno-canary.yaml`) until it is actually **rejected**. Polling the policy's Ready
+  condition is not sufficient and must not be substituted back in.
 - Each verify script re-applies its own policy (normally a no-op, since the step's
-  `background.sh` applied it at step load) and then grades with `--dry-run=server`.
+  `background.sh` applied it at step load), re-probes the canary as a cheap safety net
+  (~0.5s once enforcement is live), and then grades with `--dry-run=server`.
 - **Policies accumulate across steps and are never deleted.** An earlier version ran
   `kubectl delete clusterpolicies --all` first, to grade each step against its own policy in
   isolation. That tears down Kyverno's admission webhook, which is re-registered

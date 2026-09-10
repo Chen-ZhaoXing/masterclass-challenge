@@ -41,8 +41,49 @@ kubectl wait --for=condition=ready pod -l app=admission -n kyverno --timeout=300
 kubectl create ns gift-tracking
 kubectl config set-context --current --namespace=gift-tracking
 
-# Give Kyverno webhooks a moment to fully register
-sleep 60
+# Kyverno reports a policy Ready long before its admission webhook is actually
+# registered and serving. Releasing the student at that point means their first
+# kubectl apply - and their first Check - run with admission control out of the
+# path, which silently passes any manifest.
+#
+# So apply step 1's policy here and block until a manifest that MUST be rejected
+# actually is. The student waits through the dots they are already watching, and
+# every Check afterwards is instant because enforcement is known to be live.
+kubectl apply -f /var/kyverno-policies/require-resource-limits.yaml
 
-# Policies are applied per step, by each step's background.sh and verify.sh.
+cat > /tmp/kyverno-canary.yaml <<'CANARY'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kyverno-canary
+  namespace: gift-tracking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-canary
+  template:
+    metadata:
+      labels:
+        app: kyverno-canary
+    spec:
+      containers:
+        - name: canary
+          image: busybox
+CANARY
+
+ENFORCING=0
+for _ in $(seq 1 60); do
+    if ! kubectl apply --dry-run=server -f /tmp/kyverno-canary.yaml >/dev/null 2>&1; then
+        ENFORCING=1
+        break
+    fi
+    sleep 2
+done
+
+if [ "$ENFORCING" -ne 1 ]; then
+    abort_setup "Kyverno never began enforcing policies - admission control is not in the path"
+fi
+
+# Remaining policies are applied per step, by each step's background.sh.
 touch /tmp/setup-finished

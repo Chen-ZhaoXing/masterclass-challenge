@@ -24,11 +24,23 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Normally already True, so this exits on the first pass.
+# background.sh already blocked until admission control was proven live, so this
+# normally passes on the first try. It is a safety net, not a wait: a Ready
+# ClusterPolicy does NOT mean the webhook is registered and serving.
+ENFORCING=0
 for _ in $(seq 1 10); do
-    [ "$(kubectl get clusterpolicy require-non-default-sa -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null)" = "True" ] && break
+    if ! kubectl apply --dry-run=server -f /tmp/kyverno-canary.yaml >/dev/null 2>&1; then
+        ENFORCING=1
+        break
+    fi
     sleep 1
 done
+
+if [ "$ENFORCING" -ne 1 ]; then
+    broadcast "⚠️  Admission control is not rejecting anything, so your manifest was never actually checked."
+    broadcast "   This is an environment problem, not your manifest - please report it."
+    exit 1
+fi
 APPLY_OUT=$(kubectl apply -f ~/app.yaml --dry-run=server 2>&1)
 
 APPLY_OUT_EXIT=$?
