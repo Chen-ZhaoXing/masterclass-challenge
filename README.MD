@@ -32,8 +32,9 @@ Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is
 | 8 | The Impatient Elf | 🟡 Intermediate | 150 | ~25 min | initContainers, Pod Startup Ordering, CrashLoopBackOff |
 | 9 | The Trojan Manifest | 🔴 Advanced | 300 | ~40 min | Security Context, Probes, Policy Enforcement |
 | 10 | The Phantom Storage | 🔴 Advanced | 300 | ~30 min | PVCs, StorageClasses, Services |
-| - | Completion Bonus | - | +100 | - | Complete all 10 challenges |
-| | | | **1500** | **~200 min** | |
+| 11 | The Skeleton Key | 🟡 Intermediate | 200 | ~20 min | RBAC, ServiceAccounts, Least Privilege |
+| - | Completion Bonus | - | +100 | - | Complete all 11 challenges |
+| | | | **1700** | **~220 min** | |
 
 Each challenge has **layered hints** - the first hint is free, with subsequent hints costing 10–20% of the challenge points. See [CTFd-Scoring.md](CTFd-Scoring.md) for full hint definitions and CTFd configuration details.
 
@@ -81,6 +82,11 @@ The rogue elves turned on TLS for an internal endpoint, but intentionally neglec
 The rogue elves have sabotaged the container build pipeline with a 1GB+ Docker image running as root. The North Pole Container Standard demands images under 250 MB with non-root execution.
 - **Your Mission:** Rewrite the Dockerfile using multi-stage builds, a slim base image, and a non-root user.
 - **Learning Objectives:** Multi-stage Docker builds, image size optimization, non-root containers, layer caching.
+
+#### The Skeleton Key
+The gift-tracking workload was handed `cluster-admin` during a deployment window and nobody took it back. Nothing is broken, nothing is alerting, and the service runs perfectly — which is exactly why it went unnoticed until the pre-flight audit pulled the authorization records.
+- **Your Mission:** Establish what the workload's identity can currently do, revoke the grant that gives it cluster-wide power without taking the service down, then grant back only what it genuinely needs: read access to ConfigMaps in its own namespace.
+- **Learning Objectives:** Kubernetes RBAC, least-privilege authorization, Roles vs ClusterRoles, auditing effective permissions with `kubectl auth can-i --as`.
 
 #### The Impatient Elf
 The new Gift Registry build crash-loops every time it boots: the shop opens *before* the shelves are stocked, because the restocking elf was moved out of the prep shift and now races the app as a sibling container.
