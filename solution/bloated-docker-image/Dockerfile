@@ -5,11 +5,6 @@ FROM python:${PYTHON_VERSION}-slim AS builder
 # [Golden Rule: Explicit root for installation]
 USER 0
 
-# [Golden Rule: Label metadata]
-LABEL maintainer="security-elf@northpole.com" \
-      version="1.0" \
-      description="Sleigh Telemetry Service"
-
 # Set environment variables to optimize Python for containers
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -32,6 +27,13 @@ FROM python:${PYTHON_VERSION}-slim
 
 # [Golden Rule: Explicit root for setup]
 USER 0
+
+# [Golden Rule: Label metadata]
+# Must live in the FINAL stage. Each FROM starts a new image, so a LABEL in the
+# builder stage is discarded with it and never reaches the shipped image.
+LABEL maintainer="security-elf@northpole.com" \
+      version="1.0" \
+      description="Sleigh Telemetry Service"
 
 WORKDIR /app
 

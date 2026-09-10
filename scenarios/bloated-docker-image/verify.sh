@@ -81,10 +81,18 @@ fi
 
 # --- CHECK 6: Metadata (LABEL) ---
 broadcast "\n[6/8] Checking metadata LABELS..."
-if grep -qi '^LABEL' /root/bloated-app/Dockerfile 2>/dev/null; then
-    broadcast "  ✅ LABEL instruction found."
+IMAGE_LABELS=$(docker inspect localhost:30500/sleigh-telemetry:latest --format '{{json .Config.Labels}}' 2>/dev/null)
+INSPECT_RC=$?
+if [ "$INSPECT_RC" -ne 0 ]; then
+    broadcast "  ❌ Could not inspect the image to read its labels (see the registry check above)."
+    FAIL=1
+elif [ -n "$IMAGE_LABELS" ] && [ "$IMAGE_LABELS" != "null" ] && [ "$IMAGE_LABELS" != "{}" ]; then
+    broadcast "  ✅ Image carries metadata labels."
+elif grep -qi '^LABEL' /root/bloated-app/Dockerfile 2>/dev/null; then
+    broadcast "  ❌ Your Dockerfile declares a LABEL, but the built image carries none."
+    FAIL=1
 else
-    broadcast "  ❌ Dockerfile is missing a LABEL instruction."
+    broadcast "  ❌ The built image carries no metadata labels."
     FAIL=1
 fi
 
