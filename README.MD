@@ -28,12 +28,12 @@ Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is
 | 4 | The Exposed Coordinates | 🟡 Intermediate | 100 | ~15 min | Kubernetes Secrets, Helm, Volume Mounts |
 | 5 | The Frozen Handshake | 🟡 Intermediate | 100 | ~15 min | TLS trust chains, Volume Mounts, Secret certs |
 | 6 | The Bloated Sleigh Image | 🟡 Intermediate | 200 | ~25 min | Dockerfile, Multi-Stage Builds, Non-Root |
-| 7 | The Poisoned Present | 🟡 Intermediate | 200 | ~25 min | Trivy, Supply Chain, CVE Remediation |
+| 7 | The Poisoned Present | 🟢 Beginner | 100 | ~15 min | Trivy, Supply Chain, CVE Remediation |
 | 8 | The Impatient Elf | 🟡 Intermediate | 150 | ~25 min | initContainers, Pod Startup Ordering, CrashLoopBackOff |
 | 9 | The Trojan Manifest | 🔴 Advanced | 300 | ~40 min | Security Context, Probes, Policy Enforcement |
 | 10 | The Phantom Storage | 🔴 Advanced | 300 | ~30 min | PVCs, StorageClasses, Services |
 | - | Completion Bonus | - | +100 | - | Complete all 10 challenges |
-| | | | **1600** | **~210 min** | |
+| | | | **1500** | **~200 min** | |
 
 Each challenge has **layered hints** - the first hint is free, with subsequent hints costing 10–20% of the challenge points. See [CTFd-Scoring.md](CTFd-Scoring.md) for full hint definitions and CTFd configuration details.
 
@@ -58,6 +58,11 @@ The final beginner assessment. Pods run fine, but the infrastructure around them
 - **Challenges:** Expose a deployment with a Service, provide application configuration via a ConfigMap.
 - **Learning Objectives:** Kubernetes Services (ClusterIP), ConfigMaps, environment variable injection.
 
+#### The Poisoned Present
+The Sleigh Telemetry Service has been small, non-root and green on the dashboard for years — so nobody rebuilt it. Its base image quietly reached end-of-life, its pinned dependencies aged past their own published patches, and the first supply-chain scan ever run against it comes back with 96 fixable HIGH/CRITICAL findings. Small and safe turn out to be different properties.
+- **Your Mission:** Read the Trivy report, then make exactly two edits — the `FROM` line in the `Dockerfile` and the four stale pins in `requirements.txt` — until the scan comes back clean of fixable HIGH/CRITICAL findings.
+- **Learning Objectives:** Reading a Trivy vulnerability report, fixed vs. unfixed CVEs, base image freshness vs. size, dependency-pinning hygiene (floors vs. ceilings).
+
 ---
 
 ### 🟡 Intermediate Tier
@@ -76,11 +81,6 @@ The rogue elves turned on TLS for an internal endpoint, but intentionally neglec
 The rogue elves have sabotaged the container build pipeline with a 1GB+ Docker image running as root. The North Pole Container Standard demands images under 250 MB with non-root execution.
 - **Your Mission:** Rewrite the Dockerfile using multi-stage builds, a slim base image, and a non-root user.
 - **Learning Objectives:** Multi-stage Docker builds, image size optimization, non-root containers, layer caching.
-
-#### The Poisoned Present
-The Sleigh Telemetry Service was just fixed in the prior challenge — it's slim now, and it no longer runs as root. But a routine scan turns up something the size fix never touched: the base image is years past end-of-life, and half the pinned dependencies predate published fixes for known HIGH/CRITICAL CVEs.
-- **Your Mission:** Investigate the image with Trivy, patch the EOL base image and the stale dependency pins, rebuild, and push until the scan comes back clean of fixable HIGH/CRITICAL findings.
-- **Learning Objectives:** Reading a Trivy vulnerability report, fixed vs. unfixed CVEs, base image freshness vs. size, dependency-pinning hygiene, transitive version caps.
 
 #### The Impatient Elf
 The new Gift Registry build crash-loops every time it boots: the shop opens *before* the shelves are stocked, because the restocking elf was moved out of the prep shift and now races the app as a sibling container.

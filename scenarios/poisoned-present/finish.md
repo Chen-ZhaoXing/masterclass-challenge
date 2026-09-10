@@ -1,6 +1,6 @@
 ## Challenge Complete: The Supply Chain is Clean
 
-The scan comes back clean. The image is now both small **and** current — two different things, and the rogue elves were counting on you mixing them up.
+The scan comes back clean. The image was always small. Now it is also **current** — and those were never the same property, which is exactly what the rogue elves were counting on.
 
 📸 **For CTFd:** screenshot the `SUPPLY CHAIN CHECK PASSED` output from your terminal and submit it as your challenge answer.
 
@@ -17,7 +17,8 @@ FROM python:3.9-slim
 # ✅ a currently-supported version
 FROM python:3.13-slim
 ```
-Slim only means "fewer packages" — not "newer packages." Once a base image stops getting patches, every bug found in it afterward just stays there.
+
+Slim only means "fewer packages" — not "newer packages." Once a base image stops getting patches, every bug found in it afterward just stays there. This one line was responsible for **55 of the findings**, most of them in `openssl` and `util-linux`.
 
 **Problem 2: Old pinned dependencies**
 
@@ -26,54 +27,45 @@ Slim only means "fewer packages" — not "newer packages." Once a base image sto
 urllib3==1.23       Pillow==8.1.0
 PyYAML==5.3.1       requests==2.24.0
 
-# ✅ patched versions
+# ✅ patched versions, as floors
 urllib3>=2.2.2      Pillow>=10.3.0
 PyYAML>=6.0.1       requests>=2.32.0
 ```
+
 Pinning versions is good practice — but a pin is a promise you have to keep renewing.
 
-**Problem 3: A dependency you never wrote down**
+**Why `>=` and not `==`?**
 
-The scan flagged `starlette`, which appears nowhere in `requirements.txt`. It arrives through FastAPI — and the old `fastapi==0.115.6` pin held it *below* its own patched release.
+If you tried bumping `urllib3` on its own, pip probably stopped you:
 
 ```
-# ❌ this line was capping starlette, three CVEs deep
-fastapi==0.115.6
-
-# ✅ a floor, not a ceiling
-fastapi>=0.122.0
+ERROR: Cannot install -r requirements.txt (line 7) and urllib3>=2.2.2
+because these package versions have conflicting dependencies.
 ```
 
-This is the part people miss. `==` doesn't just pin the package you named; it pins everything that package depends on. **An upper bound on one library can quietly hold a dozen others back.** Write floors (`>=`) unless you have a specific reason to cap.
+`requests==2.24.0` requires `urllib3<1.26`. An exact pin doesn't just freeze the package you named — **it freezes everything that package depends on too.** That's how one stale line quietly holds a dozen others back.
 
-**Problem 4: Shipping tools you don't run**
+A floor (`>=`) says "at least this new, newer is fine," so a rebuild picks up patches automatically. Use a ceiling only when you have a specific reason.
 
-`msgpack` and `setuptools` showed up in the scan even though neither is imported anywhere — they came from pip's own bundled dependency list. Your app doesn't install packages at runtime, so pip doesn't need to be in the final image:
+**Problem 3: Fixed vs. unfixed**
 
-```dockerfile
-RUN pip install --no-cache-dir -r requirements.txt && \
-    python -m pip uninstall -y pip
-```
-
-Same reasoning retired `gcc`. Every tool left in a production image is attack surface you're carrying for no reason.
-
-**Problem 5: Fixed vs. unfixed**
-
-Not every known issue has a patch available yet. We only fail the build on ones that *do* — chasing an unfixed issue wastes time, since there's nothing to upgrade to.
+Not every known issue has a patch available yet. We only fail the build on ones that *do* — that's the `--ignore-unfixed` flag. Chasing an unfixed CVE wastes time, since there's nothing to upgrade to. Re-run the scan periodically anyway: unfixed CVEs become fixed CVEs the moment a patch ships.
 
 ### Before / After
 
 | | Before | After |
 |---|---|---|
 | Base image | `python:3.9-slim` (EOL) | `python:3.13-slim` |
-| Fixable HIGH/CRITICAL | 97 | 0 |
-| Build tooling in image | `gcc`, `pip` | neither |
-| Image size | Small | Smaller (~59 MB) |
+| Fixable HIGH/CRITICAL | 96 | 0 |
+| Image size | ~60 MB | ~60 MB |
 | App | Working | Working |
+
+Note the size column. Nothing about this fix made the image bigger or smaller — **size and safety are independent**, which was the whole trick the rogue elves were relying on.
 
 ### Going Further
 
 - Wire this scan into CI so a bad image never reaches the registry
-- Audit your lockfile for upper bounds — they're where stale transitive deps hide
+- Audit your lockfile for upper bounds — they're where stale transitive dependencies hide
+- A runtime image doesn't need a package manager or a compiler; this one already drops `pip` after install, and `gcc` is only there to build one outdated package
 - Distroless base images take "ship nothing you don't run" to its conclusion
 - Tools like Dependabot can open a PR the moment a fix ships, so nobody has to remember to check

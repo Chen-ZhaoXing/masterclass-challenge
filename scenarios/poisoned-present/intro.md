@@ -1,4 +1,4 @@
-> **Points:** 200 · **Time:** ~25 min
+> **Points:** 100 · **Time:** ~15 min
 >
 > **Prerequisites:** Basic Docker knowledge
 >
@@ -8,9 +8,13 @@
 
 ## The Situation
 
-The Sleigh Telemetry image is slim now — the bloated, root-running version is gone. But a security scan just found something worse: **the base image and several dependencies haven't been updated in years.**
+Every year the Sleigh Telemetry Service passes its pre-flight review without comment. It is small, it runs as an unprivileged user, and the dashboard the Chief Holiday Officer actually looks at has been solid green since the day it shipped.
 
-A small image isn't automatically a safe one. The rogue elves snuck old, vulnerable packages back in, betting nobody would look past the file size.
+Then a routine supply-chain scan was run against it for the first time — and came back with **96 fixable HIGH and CRITICAL findings.**
+
+Nothing had broken. Nothing had changed. The image had simply sat there, unrebuilt, while the world moved on around it: the base image reached end-of-life and stopped receiving patches, and the dependency versions frozen into it aged past their own published fixes.
+
+That is what the rogue elves were counting on. They never had to break anything. They only had to make sure nobody looked past the file size.
 
 New rule from the Chief Holiday Officer:
 
@@ -18,11 +22,11 @@ New rule from the Chief Holiday Officer:
 
 ## Your Mission
 
-Fix the image, push it, get the scan clean.
+Fix the image, push it, get the scan clean. There are exactly **two files to edit**, both in `~/sleigh-telemetry/`:
 
-- Look at the `Dockerfile` and `requirements.txt` in `~/sleigh-telemetry/`
-- The base image **and** the dependency versions are outdated — start there
-- Then scan again. Not every finding will point at a line you can edit
-- The app still has to work after your fix
+- **`Dockerfile`** — the base image it starts `FROM` is end-of-life and gets no more patches
+- **`requirements.txt`** — four dependencies are pinned to ancient versions
+
+Bump both, rebuild, push, and scan again. The app still has to work when you're done.
 
 Good luck, Security Elf.

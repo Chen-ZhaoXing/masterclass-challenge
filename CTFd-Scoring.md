@@ -16,12 +16,12 @@ This document defines the point allocation, hint costs, and configuration for ho
 | 4 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | **100** | 1 | ~15 min |
 | 5 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
 | 6 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
-| 7 | The Poisoned Present | `scenarios/poisoned-present` | 🟡 Intermediate | **200** | 1 | ~25 min |
+| 7 | The Poisoned Present | `scenarios/poisoned-present` | 🟢 Beginner | **100** | 1 | ~15 min |
 | 8 | The Impatient Elf | `scenarios/impatient-elf` | 🟡 Intermediate | **150** | 2 | ~25 min |
 | 9 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
 | 10 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
 | - | **Completion Bonus** | *All 10 solved* | - | **+100** | - | - |
-| | | | **Max Total** | **1600** | | **~210 min** |
+| | | | **Max Total** | **1500** | | **~200 min** |
 
 ---
 
@@ -99,16 +99,15 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 7: The Poisoned Present (200 pts)
+### Challenge 7: The Poisoned Present (100 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
-| 1 | **Free** | Run `trivy image --severity HIGH,CRITICAL --ignore-unfixed <your-image>` and read both tables it prints. The top table is the OS layer — that one is about your `FROM` line. The bottom table is Python packages. Fix the obvious ones, then scan again: the second scan is where the real lesson is. |
-| 2 | 25 pts | Base image: `python:3.9` is end-of-life and gets no patches — move to a currently-supported release. Dependencies: `urllib3`, `Pillow`, `PyYAML` and `requests` are all years behind their patched versions. Bump all four. |
-| 3 | 40 pts | Still failing on `starlette`? It isn't in `requirements.txt` — FastAPI pulls it in, and `fastapi==0.115.6` pins it *below* its patched release. An `==` pin caps that package's dependencies too. Bump `fastapi` and prefer `>=` over `==` throughout. |
-| 4 | 40 pts | Still failing on `msgpack` and `setuptools`? Neither is installed — Trivy reads them from pip's own vendored dependency list. A runtime image doesn't need a package manager: add `python -m pip uninstall -y pip` to the end of your `pip install` layer. `gcc` can go too once PyYAML is current, since modern PyYAML ships prebuilt wheels. |
+| 1 | **Free** | Run `trivy image --severity HIGH,CRITICAL --ignore-unfixed <your-image>` and read both tables it prints. The top table is OS packages — that one is about your `FROM` line. The bottom table is Python packages — that one is about `requirements.txt`. You only need to edit those two files. |
+| 2 | 15 pts | Base image: `python:3.9` is end-of-life and gets no patches. Move to a currently-supported release such as `python:3.13-slim`. This clears the entire top table on its own. |
+| 3 | 25 pts | Dependencies: `urllib3`, `Pillow`, `PyYAML` and `requests` are years behind their patched versions. Bump **all four** — if you bump only some, pip will refuse to install, because `requests==2.24.0` caps `urllib3` below the patched release. Use `>=` floors, matching the pins already in the file. |
 
-**Minimum achievable score:** 95 pts
+**Minimum achievable score:** 60 pts
 
 ---
 
@@ -152,11 +151,11 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 | Tier | Challenges | Points Available | Target Audience |
 |------|-----------|-----------------|-----------------|
-| 🟢 Beginner | Orientation + OJT + Graduation | 150 pts | First-timers, students |
-| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image + Poisoned Present + Impatient Elf | 750 pts | Workshop graduates |
+| 🟢 Beginner | Orientation + OJT + Graduation + Poisoned Present | 250 pts | First-timers, students |
+| 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image + Impatient Elf | 550 pts | Workshop graduates |
 | 🔴 Advanced | Trojan Manifest + Phantom Storage | 600 pts | Daily practitioners |
 | 🏆 Bonus | All 10 completed | +100 pts | Completionists |
-| | **Grand Total** | **1600 pts** | |
+| | **Grand Total** | **1500 pts** | |
 
 ---
 
