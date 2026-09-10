@@ -82,7 +82,8 @@ cd ../scenarios/impatient-elf
 
 # 4) watch the crash loop (the point of the challenge)
 kubectl -n workshop get pods -w
-kubectl -n workshop logs -l app=gift-registry --all-containers --previous
+kubectl -n workshop logs deploy/gift-registry -c gift-registry --previous
+kubectl -n workshop logs deploy/gift-registry -c elf
 
 # 5) apply the fix and watch it come up clean
 ./local-test/test.sh deploy-fixed

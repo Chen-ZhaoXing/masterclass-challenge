@@ -10,10 +10,11 @@ Useful commands (click to run):
 
 - `kubectl -n workshop get pods`{{exec interrupt}}
 - `kubectl -n workshop describe pod -l app=gift-registry`{{exec interrupt}}
-- `kubectl -n workshop logs -l app=gift-registry --all-containers --previous`{{exec interrupt}}
+- `kubectl -n workshop logs deploy/gift-registry -c gift-registry --previous`{{exec interrupt}}
+- `kubectl -n workshop logs deploy/gift-registry -c elf`{{exec interrupt}}
 - `kubectl -n workshop get deployment gift-registry -o yaml`{{exec interrupt}}
 
-If `--previous` reports that no previous container was found, the Pod hasn't crashed yet — wait a few seconds and run it again.
+If `--previous` reports that no previous container was found, the shop hasn't crashed yet — wait a few seconds and run it again.
 
 1. Read the Pod events and the logs from both containers (including the previous crash).
 2. Open the Deployment spec: `kubectl -n workshop get deployment gift-registry -o yaml`{{exec interrupt}}

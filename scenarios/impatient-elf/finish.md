@@ -18,7 +18,7 @@ That's why `wait-for-db` was already living in `initContainers` and doing its jo
 
 You just fixed one of the most common "why does my pod crash-loop?" bugs in the wild: a workload that must finish **before** the app starts was declared in the wrong list. The production practices you used:
 
-- read **Pod events and per-container logs** (`--all-containers --previous`) instead of guessing,
+- read **Pod events and per-container logs** (`kubectl logs -c <container> --previous`) instead of guessing,
 - compare **declared order vs. actual start order** in the Pod spec,
 - and use **initContainers** for one-shot, must-complete-first work (migrations, seeding, config waits).
 
