@@ -1,4 +1,4 @@
-> **Points:** 50 · **Time:** ~15 min
+> **Points:** 100 · **Time:** ~15 min
 >
 > **Prerequisites:** Basic Docker knowledge
 >
@@ -8,9 +8,13 @@
 
 ## The Situation
 
-The Sleigh Telemetry image is slim now — the bloated, root-running version is gone. But a security scan just found something worse: **the base image and several dependencies haven't been updated in years.**
+Every year the Sleigh Telemetry Service passes its pre-flight review without comment. It is small, it runs as an unprivileged user, and the dashboard the Chief Holiday Officer actually looks at has been solid green since the day it shipped.
 
-A small image isn't automatically a safe one. The rogue elves snuck old, vulnerable packages back in, betting nobody would look past the file size.
+Then a routine supply-chain scan was run against it for the first time — and came back with **96 fixable HIGH and CRITICAL findings.**
+
+Nothing had broken. Nothing had changed. The image had simply sat there, unrebuilt, while the world moved on around it: the base image reached end-of-life and stopped receiving patches, and the dependency versions frozen into it aged past their own published fixes.
+
+That is what the rogue elves were counting on. They never had to break anything. They only had to make sure nobody looked past the file size.
 
 New rule from the Chief Holiday Officer:
 

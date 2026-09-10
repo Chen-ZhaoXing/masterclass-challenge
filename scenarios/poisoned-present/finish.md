@@ -1,6 +1,6 @@
 ## Challenge Complete: The Supply Chain is Clean
 
-The scan comes back clean. The image is now both small **and** current — two different things, and the rogue elves were counting on you mixing them up.
+The scan comes back clean. The image was always small. Now it is also **current** — and those were never the same property, which is exactly what the rogue elves were counting on.
 
 📸 **For CTFd:** screenshot the `SUPPLY CHAIN CHECK PASSED` output from your terminal and submit it as your challenge answer.
 

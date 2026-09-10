@@ -1,6 +1,6 @@
 {
     "title": "The Poisoned Present",
-    "description": "🟢 Beginner • ~15 min • Trivy, Supply Chain, CVE Remediation - The rogue elves left the Sleigh Telemetry image on an end-of-life base image with four ancient dependency pins. Read the Trivy report, bump the base image and the pins, rebuild, and push until the scan comes back clean.",
+    "description": "🟢 Beginner • ~15 min • Trivy, Supply Chain, CVE Remediation - The Sleigh Telemetry image has been small and green on the dashboard for years. Nobody rebuilt it, so its base image reached end-of-life and its pins aged past their own patches. Read the Trivy report, bump the base image and the four stale pins, and push until the scan comes back clean.",
     "time": "15 minutes",
     "details": {
         "intro": {

@@ -28,12 +28,12 @@ Challenges are scored using **static scoring** on CTFd. A **100-point bonus** is
 | 4 | The Exposed Coordinates | 🟡 Intermediate | 100 | ~15 min | Kubernetes Secrets, Helm, Volume Mounts |
 | 5 | The Frozen Handshake | 🟡 Intermediate | 100 | ~15 min | TLS trust chains, Volume Mounts, Secret certs |
 | 6 | The Bloated Sleigh Image | 🟡 Intermediate | 200 | ~25 min | Dockerfile, Multi-Stage Builds, Non-Root |
-| 7 | The Poisoned Present | 🟢 Beginner | 50 | ~15 min | Trivy, Supply Chain, CVE Remediation |
+| 7 | The Poisoned Present | 🟢 Beginner | 100 | ~15 min | Trivy, Supply Chain, CVE Remediation |
 | 8 | The Impatient Elf | 🟡 Intermediate | 150 | ~25 min | initContainers, Pod Startup Ordering, CrashLoopBackOff |
 | 9 | The Trojan Manifest | 🔴 Advanced | 300 | ~40 min | Security Context, Probes, Policy Enforcement |
 | 10 | The Phantom Storage | 🔴 Advanced | 300 | ~30 min | PVCs, StorageClasses, Services |
 | - | Completion Bonus | - | +100 | - | Complete all 10 challenges |
-| | | | **1450** | **~200 min** | |
+| | | | **1500** | **~200 min** | |
 
 Each challenge has **layered hints** - the first hint is free, with subsequent hints costing 10–20% of the challenge points. See [CTFd-Scoring.md](CTFd-Scoring.md) for full hint definitions and CTFd configuration details.
 
@@ -59,7 +59,7 @@ The final beginner assessment. Pods run fine, but the infrastructure around them
 - **Learning Objectives:** Kubernetes Services (ClusterIP), ConfigMaps, environment variable injection.
 
 #### The Poisoned Present
-A routine scan of the Sleigh Telemetry image turns up 96 fixable HIGH/CRITICAL findings: the base image is years past end-of-life, and four pinned dependencies predate their own published patches. Best attempted after **The Bloated Sleigh Image**, which works on the same image — small and safe turn out to be different properties.
+The Sleigh Telemetry Service has been small, non-root and green on the dashboard for years — so nobody rebuilt it. Its base image quietly reached end-of-life, its pinned dependencies aged past their own published patches, and the first supply-chain scan ever run against it comes back with 96 fixable HIGH/CRITICAL findings. Small and safe turn out to be different properties.
 - **Your Mission:** Read the Trivy report, then make exactly two edits — the `FROM` line in the `Dockerfile` and the four stale pins in `requirements.txt` — until the scan comes back clean of fixable HIGH/CRITICAL findings.
 - **Learning Objectives:** Reading a Trivy vulnerability report, fixed vs. unfixed CVEs, base image freshness vs. size, dependency-pinning hygiene (floors vs. ceilings).
 

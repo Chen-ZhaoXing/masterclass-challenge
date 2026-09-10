@@ -16,12 +16,12 @@ This document defines the point allocation, hint costs, and configuration for ho
 | 4 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | **100** | 1 | ~15 min |
 | 5 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
 | 6 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
-| 7 | The Poisoned Present | `scenarios/poisoned-present` | 🟢 Beginner | **50** | 1 | ~15 min |
+| 7 | The Poisoned Present | `scenarios/poisoned-present` | 🟢 Beginner | **100** | 1 | ~15 min |
 | 8 | The Impatient Elf | `scenarios/impatient-elf` | 🟡 Intermediate | **150** | 2 | ~25 min |
 | 9 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
 | 10 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
 | - | **Completion Bonus** | *All 10 solved* | - | **+100** | - | - |
-| | | | **Max Total** | **1450** | | **~200 min** |
+| | | | **Max Total** | **1500** | | **~200 min** |
 
 ---
 
@@ -99,15 +99,15 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 7: The Poisoned Present (50 pts)
+### Challenge 7: The Poisoned Present (100 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
 | 1 | **Free** | Run `trivy image --severity HIGH,CRITICAL --ignore-unfixed <your-image>` and read both tables it prints. The top table is OS packages — that one is about your `FROM` line. The bottom table is Python packages — that one is about `requirements.txt`. You only need to edit those two files. |
-| 2 | 10 pts | Base image: `python:3.9` is end-of-life and gets no patches. Move to a currently-supported release such as `python:3.13-slim`. This clears the entire top table on its own. |
-| 3 | 10 pts | Dependencies: `urllib3`, `Pillow`, `PyYAML` and `requests` are years behind their patched versions. Bump **all four** — if you bump only some, pip will refuse to install, because `requests==2.24.0` caps `urllib3` below the patched release. Use `>=` floors, matching the pins already in the file. |
+| 2 | 15 pts | Base image: `python:3.9` is end-of-life and gets no patches. Move to a currently-supported release such as `python:3.13-slim`. This clears the entire top table on its own. |
+| 3 | 25 pts | Dependencies: `urllib3`, `Pillow`, `PyYAML` and `requests` are years behind their patched versions. Bump **all four** — if you bump only some, pip will refuse to install, because `requests==2.24.0` caps `urllib3` below the patched release. Use `>=` floors, matching the pins already in the file. |
 
-**Minimum achievable score:** 30 pts
+**Minimum achievable score:** 60 pts
 
 ---
 
@@ -151,11 +151,11 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 | Tier | Challenges | Points Available | Target Audience |
 |------|-----------|-----------------|-----------------|
-| 🟢 Beginner | Orientation + OJT + Graduation + Poisoned Present | 200 pts | First-timers, students |
+| 🟢 Beginner | Orientation + OJT + Graduation + Poisoned Present | 250 pts | First-timers, students |
 | 🟡 Intermediate | Exposed Coords + Frozen Handshake + Bloated Image + Impatient Elf | 550 pts | Workshop graduates |
 | 🔴 Advanced | Trojan Manifest + Phantom Storage | 600 pts | Daily practitioners |
 | 🏆 Bonus | All 10 completed | +100 pts | Completionists |
-| | **Grand Total** | **1450 pts** | |
+| | **Grand Total** | **1500 pts** | |
 
 ---
 

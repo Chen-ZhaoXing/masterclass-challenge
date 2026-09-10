@@ -3,14 +3,16 @@
 | | |
 |---|---|
 | **Difficulty** | 🟢 Beginner |
-| **Points** | 50 |
+| **Points** | 100 |
 | **Steps** | 1 |
 | **Prerequisites** | Basic Docker/Dockerfile knowledge |
 | **Learning Objectives** | Reading a Trivy report, fixed vs. unfixed CVEs, base image freshness vs. size, dependency-pinning hygiene (floors vs. ceilings) |
 
 ## Overview
 
-Sequel to **The Bloated Sleigh Image**. The image is slim and non-root already; the vulnerability now is an EOL base image (`python:3.9-slim`) plus four deliberately old, CVE-carrying pinned dependencies (`urllib3`, `Pillow`, `PyYAML`, `requests`).
+**Standalone.** The image ships already slim and already non-root — that is the premise, not the reward for a previous challenge. The vulnerability is an EOL base image (`python:3.9-slim`) plus four deliberately old, CVE-carrying pinned dependencies (`urllib3`, `Pillow`, `PyYAML`, `requests`).
+
+The narrative deliberately does **not** depend on `bloated-docker-image`. An earlier draft framed this as its sequel ("the image is slim now, because you just made it slim"), which forced an ordering: a 100-pt Beginner scenario sitting behind a 200-pt Intermediate one. The story now stands on its own — the image has been small and green-on-the-dashboard for years, and that is precisely why nobody looked at it. If you edit `intro.md` or `finish.md`, keep it that way.
 
 **Passing requires exactly two file edits, and nothing else:**
 
