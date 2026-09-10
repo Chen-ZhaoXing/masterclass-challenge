@@ -13,14 +13,14 @@ This document defines the point allocation, hint costs, and configuration for ho
 | 1 | Trainee Elf Orientation | `scenarios/basics` | 🟢 Beginner | **50** | 3 | ~10 min |
 | 2 | Trainee Elf OJT | `scenarios/basics-2` | 🟢 Beginner | **50** | 3 | ~10 min |
 | 3 | Trainee Elf Graduation | `scenarios/basics-3` | 🟢 Beginner | **50** | 2 | ~15 min |
-| 4 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | **100** | 1 | ~15 min |
-| 5 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
-| 6 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
-| 7 | The Poisoned Present | `scenarios/poisoned-present` | 🟢 Beginner | **100** | 1 | ~15 min |
+| 4 | The Poisoned Present | `scenarios/poisoned-present` | 🟢 Beginner | **100** | 1 | ~15 min |
+| 5 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | **100** | 1 | ~15 min |
+| 6 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
+| 7 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
 | 8 | The Impatient Elf | `scenarios/impatient-elf` | 🟡 Intermediate | **150** | 2 | ~25 min |
-| 9 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
-| 10 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
-| 11 | The Skeleton Key | `scenarios/skeleton-key` | 🟡 Intermediate | **200** | 2 | ~20 min |
+| 9 | The Skeleton Key | `scenarios/skeleton-key` | 🟡 Intermediate | **200** | 2 | ~20 min |
+| 10 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
+| 11 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
 | - | **Completion Bonus** | *All 11 solved* | - | **+100** | - | - |
 | | | | **Max Total** | **1700** | | **~220 min** |
 
@@ -65,7 +65,19 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 4: The Exposed Coordinates (100 pts)
+### Challenge 4: The Poisoned Present (100 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Run `trivy image --severity HIGH,CRITICAL --ignore-unfixed <your-image>` and read both tables it prints. The top table is OS packages — that one is about your `FROM` line. The bottom table is Python packages — that one is about `requirements.txt`. You only need to edit those two files. |
+| 2 | 15 pts | Base image: `python:3.9` is end-of-life and gets no patches. Move to a currently-supported release such as `python:3.13-slim`. This clears the entire top table on its own. |
+| 3 | 25 pts | Dependencies: `urllib3`, `Pillow`, `PyYAML` and `requests` are years behind their patched versions. Bump **all four** — if you bump only some, pip will refuse to install, because `requests==2.24.0` caps `urllib3` below the patched release. Use `>=` floors, matching the pins already in the file. |
+
+**Minimum achievable score:** 60 pts
+
+---
+
+### Challenge 5: The Exposed Coordinates (100 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -77,7 +89,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 5: The Frozen Handshake (100 pts)
+### Challenge 6: The Frozen Handshake (100 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -88,7 +100,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 6: The Bloated Sleigh Image (200 pts)
+### Challenge 7: The Bloated Sleigh Image (200 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -97,18 +109,6 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 | 3 | 40 pts | Builder: `pip install --no-cache-dir --prefix=/install -r requirements.txt`. Production: `COPY --from=builder /install /usr/local`, then `COPY src/ /app/src/`. Copy `requirements.txt` before `src/` for layer caching. Set `USER 1001:0` (SCC-compliant) before `CMD`. Push to `localhost:30500/sleigh-telemetry:latest`. |
 
 **Minimum achievable score:** 135 pts
-
----
-
-### Challenge 7: The Poisoned Present (100 pts)
-
-| Hint # | Cost | Hint Text |
-|--------|------|-----------|
-| 1 | **Free** | Run `trivy image --severity HIGH,CRITICAL --ignore-unfixed <your-image>` and read both tables it prints. The top table is OS packages — that one is about your `FROM` line. The bottom table is Python packages — that one is about `requirements.txt`. You only need to edit those two files. |
-| 2 | 15 pts | Base image: `python:3.9` is end-of-life and gets no patches. Move to a currently-supported release such as `python:3.13-slim`. This clears the entire top table on its own. |
-| 3 | 25 pts | Dependencies: `urllib3`, `Pillow`, `PyYAML` and `requests` are years behind their patched versions. Bump **all four** — if you bump only some, pip will refuse to install, because `requests==2.24.0` caps `urllib3` below the patched release. Use `>=` floors, matching the pins already in the file. |
-
-**Minimum achievable score:** 60 pts
 
 ---
 
@@ -124,7 +124,19 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 9: The Trojan Manifest (300 pts)
+### Challenge 9: The Skeleton Key (200 pts)
+
+| Hint # | Cost | Hint Text |
+|--------|------|-----------|
+| 1 | **Free** | Nothing is broken — that is the point. Start by asking what the identity is *allowed* to do rather than what it is doing: `kubectl auth can-i --list --as=system:serviceaccount:gift-tracking:gift-tracking-sa`. Then read `~/rbac.yaml` and work out which object grants it. |
+| 2 | 25 pts | `*.*` on `*.*` is `cluster-admin`, and it is granted by a **ClusterRoleBinding** — not by the ServiceAccount itself. Delete that binding; leave the ServiceAccount and the `gift-tracker` Deployment alone, because both are checked. For step 2, the workload's only legitimate job is reading ConfigMaps in its own namespace. |
+| 3 | 40 pts | Step 2 needs a **Role** (namespaced, not a ClusterRole) granting `get,list,watch` on `configmaps` in `gift-tracking`, plus a RoleBinding tying it to the ServiceAccount: `kubectl create role gift-tracking-config-reader -n gift-tracking --verb=get,list,watch --resource=configmaps` then `kubectl create rolebinding gift-tracking-config-reader -n gift-tracking --role=gift-tracking-config-reader --serviceaccount=gift-tracking:gift-tracking-sa`. Grant verbs and scope narrowly — the audit fails you for anything extra. |
+
+**Minimum achievable score:** 135 pts
+
+---
+
+### Challenge 10: The Trojan Manifest (300 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -136,7 +148,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 ---
 
-### Challenge 10: The Phantom Storage (300 pts)
+### Challenge 11: The Phantom Storage (300 pts)
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
@@ -145,18 +157,6 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 | 3 | 60 pts | Step 2 (continued): Create a Service named `mongodb-service` targeting the MongoDB pods. Use `selector: { app: mongodb }` and `port: 27017 / targetPort: 27017`. Apply both the PVC, the updated deployment, and the Service with `kubectl apply -f`. |
 
 **Minimum achievable score:** 210 pts
-
----
-
-### Challenge 11: The Skeleton Key (200 pts)
-
-| Hint # | Cost | Hint Text |
-|--------|------|-----------|
-| 1 | **Free** | Nothing is broken — that is the point. Start by asking what the identity is *allowed* to do rather than what it is doing: `kubectl auth can-i --list --as=system:serviceaccount:gift-tracking:gift-tracking-sa`. Then read `~/rbac.yaml` and work out which object grants it. |
-| 2 | 25 pts | `*.*` on `*.*` is `cluster-admin`, and it is granted by a **ClusterRoleBinding** — not by the ServiceAccount itself. Delete that binding; leave the ServiceAccount and the `gift-tracker` Deployment alone, because both are checked. For step 2, the workload's only legitimate job is reading ConfigMaps in its own namespace. |
-| 3 | 40 pts | Step 2 needs a **Role** (namespaced, not a ClusterRole) granting `get,list,watch` on `configmaps` in `gift-tracking`, plus a RoleBinding tying it to the ServiceAccount: `kubectl create role gift-tracking-config-reader -n gift-tracking --verb=get,list,watch --resource=configmaps` then `kubectl create rolebinding gift-tracking-config-reader -n gift-tracking --role=gift-tracking-config-reader --serviceaccount=gift-tracking:gift-tracking-sa`. Grant verbs and scope narrowly — the audit fails you for anything extra. |
-
-**Minimum achievable score:** 135 pts
 
 ---
 
