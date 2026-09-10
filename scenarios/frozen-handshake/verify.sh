@@ -26,18 +26,21 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "$TEMPLATE_OUTPUT" > /tmp/challenge4-rendered.yaml
-yq e 'select(.kind == "Deployment")' /tmp/challenge4-rendered.yaml > /tmp/challenge4-deployment.yaml
+
+CLIENT_DEPLOY="challenge4-tls-client"
+yq e "select(.kind == \"Deployment\" and .metadata.name == \"$CLIENT_DEPLOY\")" \
+    /tmp/challenge4-rendered.yaml > /tmp/challenge4-deployment.yaml
 
 if [ ! -s /tmp/challenge4-deployment.yaml ]; then
-    broadcast "❌ [FAIL] No Deployment found in rendered chart output."
+    broadcast "❌ [FAIL] No Deployment named '$CLIENT_DEPLOY' found in the rendered chart."
     exit 1
 fi
 
 # 2) Must reference the expected certificate secret (dynamic volume name)
 SECRET_VOLUME_NAME=$(yq e '.spec.template.spec.volumes[] | select(.secret.secretName == "northpole-ca") | .name' /tmp/challenge4-deployment.yaml | head -n 1)
 if [ -z "$SECRET_VOLUME_NAME" ] || [ "$SECRET_VOLUME_NAME" = "null" ]; then
-    broadcast "❌ [FAIL] No volume references secret 'northpole-ca'."
-    broadcast "Hint: Add a volume under spec.template.spec.volumes[] using secret.secretName: northpole-ca"
+    broadcast "❌ [FAIL] No volume in the '$CLIENT_DEPLOY' Deployment references secret 'northpole-ca'."
+    broadcast "Note: the client workload is the one under test, not the tls-echo server."
     exit 1
 fi
 
@@ -67,15 +70,15 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-kubectl -n "$NAMESPACE" rollout status deployment/challenge4-tls-client --timeout=120s >/tmp/challenge4-rollout.log 2>&1
+kubectl -n "$NAMESPACE" rollout status "deployment/$CLIENT_DEPLOY" --timeout=45s >/tmp/challenge4-rollout.log 2>&1
 if [ $? -ne 0 ]; then
     broadcast "❌ [FAIL] Client deployment did not become ready. TLS handshake is likely still failing."
-    broadcast "Hint: Check logs with: kubectl logs -n challenge4 deploy/challenge4-tls-client --tail=50"
+    broadcast "Hint: Check logs with: kubectl logs -n challenge4 deploy/$CLIENT_DEPLOY --tail=50"
     exit 1
 fi
 
 # 6) Ensure Helm also deploys the simple HTTPS endpoint app
-kubectl -n "$NAMESPACE" rollout status deployment/tls-echo --timeout=120s >/tmp/challenge4-app-rollout.log 2>&1
+kubectl -n "$NAMESPACE" rollout status deployment/tls-echo --timeout=30s >/tmp/challenge4-app-rollout.log 2>&1
 if [ $? -ne 0 ]; then
     broadcast "❌ [FAIL] HTTPS endpoint app (deployment/tls-echo) is not ready."
     broadcast "Hint: Ensure Helm deploys the application and service resources."
@@ -83,7 +86,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # 7) Runtime assertion: curl without CA should fail
-kubectl exec -n "$NAMESPACE" deploy/challenge4-tls-client -- sh -c 'curl --silent --show-error --fail https://tls-echo.challenge4.svc.cluster.local:8443/ > /tmp/ch4-no-ca.out 2>/tmp/ch4-no-ca.err'
+timeout 20 kubectl exec -n "$NAMESPACE" "deploy/$CLIENT_DEPLOY" -- sh -c 'curl --silent --show-error --fail --max-time 10 https://tls-echo.challenge4.svc.cluster.local:8443/ > /tmp/ch4-no-ca.out 2>/tmp/ch4-no-ca.err'
 NO_CA_EXIT=$?
 if [ "$NO_CA_EXIT" -eq 0 ]; then
     broadcast "❌ [FAIL] Curl without CA certificate unexpectedly succeeded. TLS trust is not being validated."
@@ -91,7 +94,7 @@ if [ "$NO_CA_EXIT" -eq 0 ]; then
 fi
 
 # 8) Runtime assertion: curl with mounted CA should succeed
-WITH_CA_OUTPUT=$(kubectl exec -n "$NAMESPACE" deploy/challenge4-tls-client -- sh -c 'curl --silent --show-error --fail --cacert "$TLS_CERT_PATH" https://tls-echo.challenge4.svc.cluster.local:8443/')
+WITH_CA_OUTPUT=$(timeout 20 kubectl exec -n "$NAMESPACE" "deploy/$CLIENT_DEPLOY" -- sh -c 'curl --silent --show-error --fail --max-time 10 --cacert "$TLS_CERT_PATH" https://tls-echo.challenge4.svc.cluster.local:8443/')
 if [ $? -ne 0 ] || ! echo "$WITH_CA_OUTPUT" | grep -q "north-pole-secure-endpoint"; then
     broadcast "❌ [FAIL] Curl with mounted CA certificate failed."
     broadcast "Hint: Confirm TLS_CERT_PATH points to <mountPath>/ca.crt and secret northpole-ca is mounted."
