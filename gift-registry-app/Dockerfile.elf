@@ -4,7 +4,7 @@
 # the workload that must run to completion BEFORE the shop starts (i.e. as an
 # initContainer).
 #
-# Build:  docker build -f Dockerfile.elf -t touching/elf:1.7.0 .
+# Build:  docker build -f Dockerfile.elf -t newbieshine/elf:1.7.0 .
 # (run from this directory, or: make docker)
 FROM python:3.12-slim
 

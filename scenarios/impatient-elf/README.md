@@ -42,10 +42,12 @@ Two images, one codebase (the shop and the elf share the Django project), built 
 
 | Image | Entrypoint | Job |
 |---|---|---|
-| `touching/gift-registry:2.4.1` | `entrypoint-app.sh` | `catalog_status --require-populated` gate, then gunicorn on :8000 |
-| `touching/elf:1.7.0` | `entrypoint-elf.sh` | `migrate` + `reseed_catalog` (TRUNCATE + restock + ANALYZE), then exit 0 |
+| `newbieshine/gift-registry:2.4.1` | `entrypoint-app.sh` | `catalog_status --require-populated` gate, then gunicorn on :8000 |
+| `newbieshine/elf:1.7.0` | `entrypoint-elf.sh` | `migrate` + `reseed_catalog` (TRUNCATE + restock + ANALYZE), then exit 0 |
 
-Build and push them before uploading the scenario (same `touching/...` convention as the other scenarios' custom images):
+Build and push them before uploading the scenario. Note these two live under
+`newbieshine/`, not the `touching/` account the older scenarios' images use -
+`touching` belongs to a different maintainer and cannot be pushed to:
 
 ```bash
 cd gift-registry-app

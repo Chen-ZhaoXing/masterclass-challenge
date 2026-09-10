@@ -27,7 +27,7 @@ spec:
               done
       containers:
         - name: gift-registry
-          image: touching/gift-registry:2.4.1
+          image: newbieshine/gift-registry:2.4.1
           ports:
             - containerPort: 8000
           env:
@@ -64,7 +64,7 @@ spec:
               cpu: 500m
               memory: 512Mi
         - name: elf
-          image: touching/elf:1.7.0
+          image: newbieshine/elf:1.7.0
           env:
             - name: POSTGRES_HOST
               value: workshop-db

@@ -22,6 +22,12 @@ if [ ! -f /tmp/setup-finished ]; then
     exit 1
 fi
 
+if [ -f /tmp/impatient-elf-setup-failed ]; then
+    broadcast "⚠️  The environment did not finish setting up: $(cat /tmp/impatient-elf-setup-failed)"
+    broadcast "   This is not your fault - please report it to the workshop staff."
+    exit 1
+fi
+
 NS=workshop
 DEPLOY=gift-registry
 APP_LABEL="app=gift-registry"

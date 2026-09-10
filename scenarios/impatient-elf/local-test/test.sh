@@ -19,7 +19,7 @@ APP_SRC="$REPO_ROOT/gift-registry-app"
 SOLUTION="$REPO_ROOT/solution/impatient-elf/app.yaml"
 
 CLUSTER="${CLUSTER:-elf}"
-REGISTRY="${REGISTRY:-touching}"
+REGISTRY="${REGISTRY:-newbieshine}"
 TAG_APP="${TAG_APP:-2.4.1}"
 TAG_ELF="${TAG_ELF:-1.7.0}"
 NS=workshop

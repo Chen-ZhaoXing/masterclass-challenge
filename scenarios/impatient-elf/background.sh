@@ -10,14 +10,27 @@
 #   3. PostgreSQL (StatefulSet + Service)
 #   4. the gift-registry Service
 #
-set -e
-
 until kubectl cluster-info >/dev/null 2>&1; do
     sleep 2
 done
 echo "Cluster is ready!"
 
-SETUP_DIR="/var/impatient-elf"
+# Killercoda preserves the relative path of an asset under its target, so
+# "setup/postgres.yaml" -> "/var/impatient-elf/" lands in a setup/ subdirectory.
+SETUP_DIR="/var/impatient-elf/setup"
+
+# Any failure below must still reach the sentinel, otherwise foreground.sh
+# polls forever and the environment never becomes usable. Record the reason
+# instead so verify.sh can report it.
+SETUP_FAILED=/tmp/impatient-elf-setup-failed
+rm -f "$SETUP_FAILED"
+
+abort_setup() {
+    echo "$1" > "$SETUP_FAILED"
+    echo "✗ $1"
+    touch /tmp/setup-finished
+    exit 1
+}
 
 # The setup assets may land a moment after this script starts, so give them
 # a grace period before giving up.
@@ -27,8 +40,7 @@ while [ "$i" -lt 15 ] && [ ! -f "$SETUP_DIR/namespace.yaml" ]; do
     i=$((i+1))
 done
 if [ ! -f "$SETUP_DIR/namespace.yaml" ]; then
-    echo "✗ could not find the scenario setup manifests in $SETUP_DIR"
-    exit 1
+    abort_setup "could not find the scenario setup manifests in $SETUP_DIR"
 fi
 
 echo "==> provisioning local storage"
@@ -36,14 +48,15 @@ kubectl apply -f "$SETUP_DIR/local-path-storage.yaml" >/dev/null 2>&1
 kubectl -n local-path-storage wait --for=condition=Ready pod -l app=local-path-provisioner --timeout=120s >/dev/null 2>&1 || true
 
 echo "==> creating namespace + DB secret"
-kubectl apply -f "$SETUP_DIR/namespace.yaml"
-kubectl apply -f "$SETUP_DIR/db-secret.yaml"
+kubectl apply -f "$SETUP_DIR/namespace.yaml" || abort_setup "failed to create the workshop namespace"
+kubectl apply -f "$SETUP_DIR/db-secret.yaml" || abort_setup "failed to create the database secret"
 
 echo "==> deploying PostgreSQL"
-kubectl apply -f "$SETUP_DIR/postgres.yaml"
-kubectl -n workshop wait --for=condition=Ready pod -l app=workshop-db --timeout=180s
+kubectl apply -f "$SETUP_DIR/postgres.yaml" || abort_setup "failed to apply the PostgreSQL manifests"
+kubectl -n workshop wait --for=condition=Ready pod -l app=workshop-db --timeout=180s \
+    || abort_setup "PostgreSQL did not become ready within 180s"
 
 echo "==> deploying the gift-registry Service"
-kubectl apply -f "$SETUP_DIR/app-service.yaml"
+kubectl apply -f "$SETUP_DIR/app-service.yaml" || abort_setup "failed to apply the gift-registry Service"
 
 touch /tmp/setup-finished

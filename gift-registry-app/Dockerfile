@@ -1,6 +1,6 @@
 # gift-registry image — the Django "shop" (gunicorn on :8000).
 #
-# Build:  docker build -t touching/gift-registry:2.4.1 .
+# Build:  docker build -t newbieshine/gift-registry:2.4.1 .
 # (run from this directory, or: make docker)
 FROM python:3.12-slim
 
