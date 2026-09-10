@@ -13,6 +13,13 @@ if [ ! -f /tmp/setup-finished ]; then
     exit 1
 fi
 
+# A failed setup is an environment problem, not the player's; say so before grading.
+if [ -f /tmp/setup-failed ]; then
+    broadcast "\n⚠️  The environment did not finish setting up: $(cat /tmp/setup-failed)"
+    broadcast "   This is not something you did. Restart the scenario, and tell the facilitator if it happens again."
+    exit 1
+fi
+
 # The vulnerability DB is fetched once during setup; verify.sh scans offline with
 # --skip-db-update. If that fetch failed, say so plainly rather than failing the
 # student for a broken environment.

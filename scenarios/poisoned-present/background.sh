@@ -1,9 +1,20 @@
 #!/bin/bash
 
+# --- setup guard ------------------------------------------------------------
+# foreground.sh waits for /tmp/setup-finished. Touch it on every exit, so a
+# failure can never leave the terminal waiting forever, and record the first
+# failed step so foreground.sh and verify.sh can report it instead of the
+# player debugging a half-built environment.
+SETUP_FAILED=/tmp/setup-failed
+rm -f "$SETUP_FAILED"
+note_failure() { [ -f "$SETUP_FAILED" ] || echo "$1" > "$SETUP_FAILED"; echo "✗ $1"; }
+trap 'touch /tmp/setup-finished' EXIT
+
 # Install Docker if not present (Killercoda k8s images have containerd but may lack Docker CLI)
 if ! command -v docker &> /dev/null; then
     apt-get update && apt-get install -y docker.io
 fi
+command -v docker >/dev/null 2>&1 || note_failure "Docker could not be installed"
 
 # Allow students to use 'podman' as an alias for 'docker'
 echo 'alias podman=docker' >> ~/.bashrc
@@ -58,7 +69,8 @@ spec:
 EOF
 
 # Wait for registry to be ready
-kubectl wait --for=condition=ready pod -l app=registry -n registry --timeout=120s
+kubectl wait --for=condition=ready pod -l app=registry -n registry --timeout=120s \
+    || note_failure "the in-cluster registry at localhost:30500 did not become ready within 120s"
 
 # Configure containerd to trust the local insecure registry
 mkdir -p /etc/containerd/certs.d/localhost:30500
@@ -77,11 +89,13 @@ cat <<EOF > /etc/docker/daemon.json
 EOF
 
 systemctl restart docker || true
-systemctl restart containerd
+systemctl restart containerd \
+    || note_failure "containerd could not be restarted after trusting the local registry"
 
 # Wait for containerd and nodes to come back
 sleep 10
-kubectl wait --for=condition=ready node --all --timeout=120s
+kubectl wait --for=condition=ready node --all --timeout=120s \
+    || note_failure "the node did not become ready again after containerd restarted"
 
 # Install Trivy
 apt-get update
@@ -90,6 +104,8 @@ wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dear
 echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | tee -a /etc/apt/sources.list.d/trivy.list
 apt-get update
 apt-get install -y trivy
+# Trivy is the grader for this scenario; without it no scan and no Check can run.
+command -v trivy >/dev/null 2>&1 || note_failure "Trivy could not be installed"
 
 # Pre-fetch the vulnerability DB now, once, while there's a terminal-free window.
 # verify.sh runs with --skip-db-update so it never depends on the network, which

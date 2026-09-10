@@ -8,6 +8,18 @@ broadcast() {
     done
 }
 
+if [ ! -f /tmp/setup-finished ]; then
+    broadcast "⚠️  Environment is still being set up. Please wait..."
+    exit 1
+fi
+
+# A failed setup is an environment problem, not the player's; say so before grading.
+if [ -f /tmp/setup-failed ]; then
+    broadcast "⚠️  The environment did not finish setting up: $(cat /tmp/setup-failed)"
+    broadcast "   This is not something you did. Restart the scenario, and tell the facilitator if it happens again."
+    exit 1
+fi
+
 TARGET="deployment.yaml"
 
 if [ ! -f ~/"$TARGET" ]; then
