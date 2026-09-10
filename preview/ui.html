@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Killercoda Local Preview</title>
+<style>
+  :root {
+    --bg: #0f1218; --bar: #171b24; --line: #262c38;
+    --ink: #1a1f28; --muted: #6b7684; --accent: #2f7de1; --green: #22a06b;
+    --term-bg: #0b0d12; --term-ink: #d6dde8;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink); background: var(--bg); display: flex; flex-direction: column;
+  }
+  code, pre, .mono { font-family: "SF Mono", Menlo, Consolas, monospace; }
+
+  /* ---- top bar ---- */
+  header {
+    flex: 0 0 auto; background: var(--bar); color: #e7ecf3;
+    border-bottom: 1px solid var(--line); display: flex; align-items: center;
+    gap: 14px; padding: 0 16px; height: 52px;
+  }
+  .brand { font-weight: 700; letter-spacing: .3px; display: flex; align-items: center; gap: 8px; }
+  .brand .dot { width: 10px; height: 10px; background: var(--green); border-radius: 2px; transform: rotate(45deg); }
+  .chip {
+    font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 4px; border: 1px solid var(--line); color: #9aa7b8;
+  }
+  .chip.warn { color: #ffcf70; border-color: #5a4a20; background: #2a2213; }
+  header .title { flex: 1; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  header select { background: #0f1218; color: #e7ecf3; border: 1px solid var(--line); border-radius: 5px; padding: 5px 8px; font-size: 13px; }
+
+  /* ---- split ---- */
+  main { flex: 1; display: flex; min-height: 0; }
+  .pane-left { flex: 0 0 44%; background: #fff; display: flex; flex-direction: column; min-width: 0; }
+  .pane-right { flex: 1; background: var(--bg); display: flex; flex-direction: column; min-width: 0; border-left: 1px solid var(--line); }
+
+  /* ---- content ---- */
+  .content { flex: 1; overflow-y: auto; padding: 28px 32px 40px; }
+  .content h1 { font-size: 26px; margin: 0 0 14px; line-height: 1.25; }
+  .content h2 { font-size: 19px; margin: 28px 0 10px; }
+  .content h3 { font-size: 16px; margin: 22px 0 8px; }
+  .content p, .content li { color: #2c3440; }
+  .content a { color: var(--accent); }
+  .content blockquote {
+    margin: 16px 0; padding: 12px 16px; border-left: 3px solid var(--accent);
+    background: #f3f7fd; color: #35404e; border-radius: 0 6px 6px 0;
+  }
+  .content blockquote p { margin: 6px 0; }
+  .content pre {
+    background: #11161e; color: #dfe6f0; padding: 14px 16px; border-radius: 8px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55;
+  }
+  .content :not(pre) > code {
+    background: #eef1f5; padding: 2px 6px; border-radius: 4px; font-size: 13px; color: #b3305e;
+  }
+  .content table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+  .content th, .content td { border: 1px solid #e2e7ee; padding: 8px 11px; text-align: left; }
+  .content th { background: #f6f8fb; }
+  .content hr { border: 0; border-top: 1px solid #e6eaf0; margin: 26px 0; }
+  .kc-run { position: relative; }
+  .kc-run-tag {
+    position: absolute; top: 8px; right: 8px; background: var(--accent); color: #fff;
+    font-size: 10px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+    padding: 3px 7px; border-radius: 4px;
+  }
+  .kc-inline-run { background: #e4efff !important; color: #17509c !important; border: 1px solid #b9d5f7; cursor: pointer; }
+
+  /* ---- footer nav ---- */
+  .navbar {
+    flex: 0 0 auto; border-top: 1px solid #e6eaf0; background: #fafbfd;
+    display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+  }
+  .steps { flex: 1; display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--muted); }
+  .pip { width: 8px; height: 8px; border-radius: 50%; background: #d3dae3; }
+  .pip.on { background: var(--accent); }
+  button {
+    font: inherit; font-size: 14px; font-weight: 600; padding: 8px 18px; border-radius: 6px;
+    border: 1px solid transparent; cursor: pointer;
+  }
+  button:disabled { opacity: .4; cursor: default; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-check { background: var(--green); color: #fff; }
+  .btn-ghost { background: #fff; color: #384252; border-color: #d3dae3; }
+
+  /* ---- right pane ---- */
+  .tabs { flex: 0 0 auto; display: flex; gap: 2px; background: var(--bar); border-bottom: 1px solid var(--line); padding: 0 8px; }
+  .tab {
+    padding: 10px 16px; font-size: 13px; color: #8e9aab; cursor: pointer;
+    border-bottom: 2px solid transparent; background: none; border-radius: 0; font-weight: 500;
+  }
+  .tab.on { color: #fff; border-bottom-color: var(--accent); }
+  .tabbody { flex: 1; min-height: 0; display: none; }
+  .tabbody.on { display: flex; }
+
+  .ide { flex: 1; min-height: 0; display: flex; }
+  .tree { flex: 0 0 250px; overflow-y: auto; border-right: 1px solid var(--line); padding: 10px 0; }
+  .tree .grp { font-size: 10px; letter-spacing: .9px; text-transform: uppercase; color: #5d6878; padding: 8px 14px 4px; }
+  .tree .f {
+    padding: 6px 14px; font-size: 13px; color: #aab6c6; cursor: pointer;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .tree .f:hover { background: #191e28; color: #fff; }
+  .tree .f.on { background: #1d2431; color: #fff; border-left: 2px solid var(--accent); padding-left: 12px; }
+  .editor { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .editor .path { flex: 0 0 auto; padding: 8px 14px; font-size: 12px; color: #7f8b9c; border-bottom: 1px solid var(--line); }
+  .editor pre {
+    flex: 1; margin: 0; overflow: auto; padding: 14px 16px; color: var(--term-ink);
+    font-size: 13px; line-height: 1.55; white-space: pre-wrap; word-break: break-word;
+  }
+
+  .term { flex: 1; background: var(--term-bg); overflow: auto; padding: 16px 18px; color: var(--term-ink); font-size: 13px; line-height: 1.6; }
+  .term .cmd { color: #7fd0a0; }
+  .term .cmd::before { content: "$ "; color: #4f6b80; }
+  .term .live { color: #5d6878; font-style: italic; }
+  .term .alt { opacity: .45; }
+  .term .tag {
+    margin-left: 10px; font-size: 10px; letter-spacing: .5px; text-transform: uppercase;
+    color: #ffcf70; border: 1px solid #5a4a20; border-radius: 3px; padding: 1px 5px;
+  }
+  .note {
+    margin: 0; padding: 10px 18px; background: #2a2213; color: #ffcf70;
+    font-size: 12px; border-bottom: 1px solid #443616;
+  }
+  .empty { padding: 40px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <span class="brand"><span class="dot"></span>killercoda</span>
+  <span class="chip warn">local preview</span>
+  <span class="title" id="title">Loading…</span>
+  <select id="picker" hidden></select>
+  <span class="chip" id="meta"></span>
+</header>
+
+<main>
+  <section class="pane-left">
+    <div class="content" id="content"></div>
+    <div class="navbar">
+      <div class="steps" id="steps"></div>
+      <button class="btn-ghost" id="prev">Back</button>
+      <button class="btn-check" id="check" hidden>Check</button>
+      <button class="btn-primary" id="next">Start</button>
+    </div>
+  </section>
+
+  <section class="pane-right">
+    <div class="tabs">
+      <button class="tab on" data-tab="editor">Editor</button>
+      <button class="tab" data-tab="terminal">Terminal</button>
+      <button class="tab" data-tab="scripts">Scripts <span style="opacity:.6">(author only)</span></button>
+    </div>
+
+    <div class="tabbody on" data-body="editor" style="flex-direction:column">
+      <p class="note">Files as the student receives them, placed per <code>index.json</code> assets. Read-only here.</p>
+      <div class="ide">
+        <div class="tree" id="tree"></div>
+        <div class="editor"><div class="path" id="fpath"></div><pre id="fbody"></pre></div>
+      </div>
+    </div>
+
+    <div class="tabbody" data-body="terminal" style="flex-direction:column">
+      <p class="note">Approximation of the opening terminal: literal <code>echo</code> output from foreground.sh. Real command output — the Trivy table included — only exists on the live VM.</p>
+      <div class="term" id="term"></div>
+    </div>
+
+    <div class="tabbody" data-body="scripts" style="flex-direction:column">
+      <p class="note">Setup and grading scripts. Students never see these; shown for authoring review. Nothing is executed by this preview.</p>
+      <div class="ide">
+        <div class="tree" id="stree"></div>
+        <div class="editor"><div class="path" id="spath"></div><pre id="sbody"></pre></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+let SCENARIOS = [], S = null, page = 0;
+
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+function renderNav() {
+  const p = S.pages[page];
+  const pips = S.pages.map((_, i) => `<span class="pip ${i <= page ? "on" : ""}"></span>`).join("");
+  let label = p.kind === "step" ? `Step ${p.index} of ${S.pages.filter(x => x.kind === "step").length} — ${p.title}` : p.title;
+  $("steps").innerHTML = pips + `<span style="margin-left:6px">${esc(label)}</span>`;
+
+  $("prev").disabled = page === 0;
+  const last = page === S.pages.length - 1;
+  $("next").textContent = p.kind === "intro" ? "Start" : (last ? "Done" : "Next");
+  $("next").disabled = last;
+  $("check").hidden = p.kind !== "step";
+}
+
+function show(i, keepHash) {
+  page = Math.max(0, Math.min(i, S.pages.length - 1));
+  $("content").innerHTML = S.pages[page].html;
+  $("content").scrollTop = 0;
+  if (!keepHash) location.hash = "p" + page + "/" + curTab;
+  renderNav();
+}
+
+function loadScenario(s) {
+  S = s;
+  $("title").textContent = s.title;
+  $("meta").textContent = [s.time, s.backend, "layout: " + s.layout].filter(Boolean).join("  ·  ");
+
+  // Student-facing files
+  const tree = $("tree");
+  tree.innerHTML = "";
+  if (!s.assets.length) {
+    tree.innerHTML = '<div class="empty">No asset files declared.</div>';
+    $("fpath").textContent = ""; $("fbody").textContent = "";
+  } else {
+    if (s.root) {
+      const g = document.createElement("div");
+      g.className = "grp"; g.textContent = "workdir " + s.root;
+      tree.appendChild(g);
+    }
+    s.assets.forEach((f, i) => {
+      const el = document.createElement("div");
+      el.className = "f" + (i === 0 ? " on" : "");
+      el.textContent = f.path.replace(s.root ? s.root + "/" : "", "");
+      el.title = f.path;
+      el.onclick = () => {
+        [...tree.querySelectorAll(".f")].forEach(x => x.classList.remove("on"));
+        el.classList.add("on");
+        $("fpath").textContent = f.path;
+        $("fbody").textContent = f.content;
+      };
+      tree.appendChild(el);
+    });
+    $("fpath").textContent = s.assets[0].path;
+    $("fbody").textContent = s.assets[0].content;
+  }
+
+  // Author-only scripts
+  const st = $("stree");
+  st.innerHTML = "";
+  s.scripts.forEach((sc, i) => {
+    const el = document.createElement("div");
+    el.className = "f" + (i === 0 ? " on" : "");
+    el.textContent = sc.name;
+    el.onclick = () => {
+      [...st.querySelectorAll(".f")].forEach(x => x.classList.remove("on"));
+      el.classList.add("on");
+      $("spath").textContent = sc.name;
+      $("sbody").textContent = sc.src;
+    };
+    st.appendChild(el);
+  });
+  if (s.scripts.length) {
+    $("spath").textContent = s.scripts[0].name;
+    $("sbody").textContent = s.scripts[0].src;
+  }
+
+  // Opening terminal
+  $("term").innerHTML = s.terminal.length
+    ? s.terminal.map(l => {
+        const alt = l.branch === "else" ? " alt" : "";
+        const tag = l.branch === "else" ? '<span class="tag">failure branch only</span>' : "";
+        return l.kind === "cmd"
+          ? `<div class="cmd${alt}">${esc(l.text)}${tag}</div><div class="live">   … output shown on the live VM</div>`
+          : `<div class="${alt.trim()}">${esc(l.text) || "&nbsp;"}${tag}</div>`;
+      }).join("")
+    : '<div class="live">No foreground script declared.</div>';
+
+  const parts = (location.hash || "").replace("#p", "").split("/");
+  const want = parseInt(parts[0], 10);
+  if (parts[1]) tab(parts[1]);
+  show(isNaN(want) ? 0 : want, true);
+}
+
+let curTab = "editor";
+function tab(name) {
+  curTab = name;
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t.dataset.tab === name));
+  document.querySelectorAll(".tabbody").forEach(b => b.classList.toggle("on", b.dataset.body === name));
+  if (S) location.hash = "p" + page + "/" + curTab;
+}
+
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => tab(t.dataset.tab));
+$("next").onclick = () => show(page + 1);
+$("prev").onclick = () => show(page - 1);
+$("check").onclick = () => {
+  const v = S.pages[page].verify;
+  tab("scripts");
+  const hit = [...$("stree").querySelectorAll(".f")].find(x => x.textContent === v);
+  if (hit) hit.click();
+  alert("Grading runs on the Killercoda VM, not here.\n\nThis preview cannot pass or fail the step — it has no cluster, no registry and no Trivy.\nShowing " + v + " so you can read what it will check.");
+};
+
+fetch("/api/scenarios").then(r => r.json()).then(data => {
+  if (data.error) { $("content").innerHTML = "<h1>Scenario failed to load</h1><pre>" + esc(data.error) + "</pre>"; return; }
+  SCENARIOS = data;
+  if (!SCENARIOS.length) { $("content").innerHTML = "<h1>No scenarios found</h1>"; return; }
+  if (SCENARIOS.length > 1) {
+    const p = $("picker"); p.hidden = false;
+    SCENARIOS.forEach((s, i) => p.add(new Option(s.slug, i)));
+    p.onchange = () => loadScenario(SCENARIOS[p.value]);
+  }
+  loadScenario(SCENARIOS[0]);
+});
+</script>
+</body>
+</html>
