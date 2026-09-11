@@ -104,7 +104,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
-| 1 | **Free** | Look at the Pod from the inside out: `kubectl -n workshop describe pod -l app=gift-registry`, `kubectl -n workshop logs -l app=gift-registry --all-containers --previous`, and `kubectl -n workshop get deployment gift-registry -o yaml`. Notice *when* each container does its work — and compare how `wait-for-db` is declared in the Pod spec versus how `elf` is declared. |
+| 1 | **Free** | Look at the Pod from the inside out: `kubectl -n workshop describe pod -l app=gift-registry`, `kubectl -n workshop logs deploy/gift-registry -c gift-registry --previous`, `kubectl -n workshop logs deploy/gift-registry -c elf`, and `kubectl -n workshop get deployment gift-registry -o yaml`. Notice *when* each container does its work — and compare how `wait-for-db` is declared in the Pod spec versus how `elf` is declared. |
 | 2 | 20 pts | Kubernetes has two container lists in a Pod spec: `initContainers` run one by one and must exit 0 before the app starts, while `containers` all start at the same instant, in parallel. The elf is declared in the wrong list — it belongs in `initContainers`, after `wait-for-db`. |
 | 3 | 30 pts | Edit `~/app.yaml`: move the entire `elf` container block from `containers:` into `initContainers:` (keep it after `wait-for-db`), leaving only `gift-registry` under `containers:`. Then `kubectl apply -f ~/app.yaml` and wait for a fresh Pod — the elf's restock takes a few seconds. Verify with `kubectl -n workshop get pods` (1/1 Running, 0 restarts) and the `/healthz` check from step 2. |
 

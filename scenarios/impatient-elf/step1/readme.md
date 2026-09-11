@@ -6,17 +6,18 @@ Investigate with `kubectl` — describe, logs, events, and the Deployment spec �
 
 When you're confident about the root cause, write it down in `~/root-cause.txt` (a sentence or two is plenty), then continue.
 
-Useful commands:
+Useful commands (click to run):
 
-```bash
-kubectl -n workshop get pods -w
-kubectl -n workshop describe pod -l app=gift-registry
-kubectl -n workshop logs -l app=gift-registry --all-containers --previous
-kubectl -n workshop get deployment gift-registry -o yaml
-```
+- `kubectl -n workshop get pods`{{exec interrupt}}
+- `kubectl -n workshop describe pod -l app=gift-registry`{{exec interrupt}}
+- `kubectl -n workshop logs deploy/gift-registry -c gift-registry --previous`{{exec interrupt}}
+- `kubectl -n workshop logs deploy/gift-registry -c elf`{{exec interrupt}}
+- `kubectl -n workshop get deployment gift-registry -o yaml`{{exec interrupt}}
+
+If `--previous` reports that no previous container was found, the shop hasn't crashed yet — wait a few seconds and run it again.
 
 1. Read the Pod events and the logs from both containers (including the previous crash).
-2. Open the Deployment spec: `kubectl -n workshop get deployment gift-registry -o yaml`{{exec}}
+2. Open the Deployment spec: `kubectl -n workshop get deployment gift-registry -o yaml`{{exec interrupt}}
 3. Work out *why* the two workloads are fighting each other.
 4. Write your root cause to `~/root-cause.txt`.
 5. Click the `Check` button!
