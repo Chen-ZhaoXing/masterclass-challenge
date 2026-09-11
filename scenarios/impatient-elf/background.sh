@@ -61,7 +61,8 @@ echo "Using setup manifests from $SETUP_DIR"
 
 echo "==> provisioning local storage"
 kubectl apply -f "$SETUP_DIR/local-path-storage.yaml" >/dev/null 2>&1
-kubectl -n local-path-storage wait --for=condition=Ready pod -l app=local-path-provisioner --timeout=120s >/dev/null 2>&1 || true
+# `rollout status`, not `wait ... -l`: see the note on the PostgreSQL wait below.
+kubectl -n local-path-storage rollout status deployment/local-path-provisioner --timeout=120s >/dev/null 2>&1 || true
 
 echo "==> creating namespace + DB secret"
 kubectl apply -f "$SETUP_DIR/namespace.yaml" || abort_setup "failed to create the workshop namespace"
@@ -69,8 +70,16 @@ kubectl apply -f "$SETUP_DIR/db-secret.yaml" || abort_setup "failed to create th
 
 echo "==> deploying PostgreSQL"
 kubectl apply -f "$SETUP_DIR/postgres.yaml" || abort_setup "failed to apply the PostgreSQL manifests"
-kubectl -n workshop wait --for=condition=Ready pod -l app=workshop-db --timeout=180s \
-    || abort_setup "PostgreSQL did not become ready within 180s"
+# `kubectl wait -l <selector>` does NOT wait for the Pod to exist: if the
+# StatefulSet controller hasn't created workshop-db-0 yet at this instant, it
+# exits immediately with "no matching resources found" and --timeout never
+# applies. Observed on a live session (2026-09-11): setup aborted claiming
+# PostgreSQL wasn't ready while workshop-db-0 was 1/1 Running with the PVC
+# bound and the image pulled in under 8s. `rollout status` waits on the
+# controller instead, so a not-yet-created Pod is a state it waits through
+# rather than an error.
+kubectl -n workshop rollout status statefulset/workshop-db --timeout=180s >/dev/null 2>&1 \
+    || abort_setup "PostgreSQL did not become ready within 180s. Pod state: $(kubectl -n workshop get pod -l app=workshop-db --no-headers 2>&1 | tr '\n' ';' | head -c 300)"
 
 echo "==> deploying the gift-registry Service"
 kubectl apply -f "$SETUP_DIR/app-service.yaml" || abort_setup "failed to apply the gift-registry Service"
