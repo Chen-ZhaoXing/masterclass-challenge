@@ -1,10 +1,8 @@
 # 🎄 The Impatient Elf
 
-A two-step Kubernetes debugging challenge. A Django **gift-registry** app crash-loops in front of PostgreSQL because the workload that restocks its database — *the elf* — was declared as a **regular container** instead of an **initContainer**. Kubernetes starts all regular containers of a Pod at the same instant, in parallel, so the shop keeps opening while the shelves are still being (re)stocked — and the elf clears the shelves before restocking them, so the shop *always* finds them empty, fails its startup check, and the Pod crash-loops forever.
+A Kubernetes challenge about **Pod startup ordering**. A Django **gift-registry** app crash-loops in front of PostgreSQL because the workload that restocks its database — *the elf* — was declared as a **regular container** instead of an **initContainer**. Kubernetes starts all regular containers of a Pod at the same instant, in parallel, so the shop keeps opening while the shelves are still being (re)stocked — and the elf clears the shelves before restocking them, so the shop *always* finds them empty, fails its startup check, and the Pod crash-loops forever.
 
-The player must (1) diagnose the race and write up the root cause, then (2) fix the Deployment so the elf's work is guaranteed to **exit 0 before the shop container starts** — i.e. move it to `initContainers:`.
-
-## Why the broken state is deterministic
+## Why the bug is deterministic
 
 The classic "migrate as a sidecar" bug is only a *probabilistic* race: after a crash-loop or two, the migration is already applied and the app may start fine. This scenario is engineered so it **cannot** self-heal:
 
@@ -20,16 +18,13 @@ index.json            scenario definition (intro/steps/finish + assets + backend
 intro.md              story + brief
 finish.md             wrap-up explaining initContainers
 background.sh         env setup: provisioner, namespace, DB secret, PostgreSQL,
-                      app Service (declared assets under /var/impatient-elf/)
-foreground.sh         waits for background, deploys the BUGGY ~/app.yaml
+                      app Service, app Deployment (declared assets under /var/impatient-elf/)
+foreground.sh         waits for background, deploys the FIXED ~/app.yaml
 step1/
-  readme.md           Step 1 — diagnose the crash loop
-  verify.sh           checks ~/root-cause.txt names the real bug
-step2/
-  readme.md           Step 2 — put the elf back in line
+  readme.md           Step 1 — fix the deployment by moving the elf to initContainers
   verify.sh           checks the fixed Deployment spec AND the healthy shop
 assets/
-  app.yaml            **the broken Deployment** (elf under `containers:`) —
+  app.yaml            **the Deployment** (elf under `containers:` or `initContainers:`) —
                       the only player-facing file (uploaded to ~/)
   setup/              setup-only manifests (uploaded to /var/impatient-elf/,
                       applied by background.sh; not player-facing)
@@ -77,15 +72,10 @@ cd ../scenarios/impatient-elf
 ./local-test/test.sh build
 ./local-test/test.sh load
 
-# 3) deploy the BROKEN environment
-./local-test/test.sh deploy-broken
+# 3) (optional) deploy the BROKEN environment to see the crash loop
+#    ./local-test/test.sh deploy-broken
 
-# 4) watch the crash loop (the point of the challenge)
-kubectl -n workshop get pods -w
-kubectl -n workshop logs deploy/gift-registry -c gift-registry --previous
-kubectl -n workshop logs deploy/gift-registry -c elf
-
-# 5) apply the fix and watch it come up clean
+# 4) apply the fix and watch it come up clean
 ./local-test/test.sh deploy-fixed
 kubectl -n workshop get pods -w        # → 1/1 Running, 0 restarts
 ```

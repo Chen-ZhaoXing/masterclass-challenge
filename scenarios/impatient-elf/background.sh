@@ -84,4 +84,8 @@ kubectl -n workshop rollout status statefulset/workshop-db --timeout=180s >/dev/
 echo "==> deploying the gift-registry Service"
 kubectl apply -f "$SETUP_DIR/app-service.yaml" || abort_setup "failed to apply the gift-registry Service"
 
+echo "==> deploying the gift-registry Deployment"
+kubectl apply -f "$ASSET_ROOT/app.yaml" || abort_setup "failed to apply the gift-registry Deployment"
+kubectl -n workshop get pods -l app=gift-registry
+
 touch /tmp/setup-finished

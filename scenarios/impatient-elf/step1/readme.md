@@ -1,25 +1,31 @@
-# Scenario Objective: Diagnose the Crash Loop
+# Scenario Objective: Put the Elf Back in Line
 
-The `gift-registry` Pod in namespace `workshop` will not stay up. It starts, lives for a few seconds, and comes back down — over and over.
+You know why the shop keeps slamming shut. Fix the `gift-registry` Deployment in namespace `workshop` so the elf's catalog rebuild is guaranteed to **exit successfully before the shop container starts**.
 
-Investigate with `kubectl` — describe, logs, events, and the Deployment spec — and work out **why** it crash-loops. The Pod runs two workloads (the shop and the elf), so pay close attention to **when** each of them starts relative to the other, and to what each of them does on boot.
+The manifest to fix is `~/app.yaml`.
 
-When you're confident about the root cause, write it down in `~/root-cause.txt` (a sentence or two is plenty), then continue.
+Requirements:
 
-Useful commands (click to run):
+- The elf's work (migrate + restock) must run to completion **first** — not in parallel with the shop.
+- The shop container must only start once that work has **exited with code 0**.
+- `wait-for-db` must keep doing its job.
+- Don't cheat by removing the elf — the shelves still have to be restocked.
 
-- `kubectl -n workshop get pods`{{exec interrupt}}
-- `kubectl -n workshop describe pod -l app=gift-registry`{{exec interrupt}}
-- `kubectl -n workshop logs deploy/gift-registry -c gift-registry --previous`{{exec interrupt}}
-- `kubectl -n workshop logs deploy/gift-registry -c elf`{{exec interrupt}}
-- `kubectl -n workshop get deployment gift-registry -o yaml`{{exec interrupt}}
+Apply your change to the **Deployment** (not a temporary Pod), then wait a moment for a fresh Pod to boot. You'll know it's fixed when:
 
-If `--previous` reports that no previous container was found, the shop hasn't crashed yet — wait a few seconds and run it again.
+```bash
+kubectl -n workshop get pods -l app=gift-registry
+# NAME                           READY   STATUS    RESTARTS
+# gift-registry-...              1/1     Running   0
 
-1. Read the Pod events and the logs from both containers (including the previous crash).
-2. Open the Deployment spec: `kubectl -n workshop get deployment gift-registry -o yaml`{{exec interrupt}}
-3. Work out *why* the two workloads are fighting each other.
-4. Write your root cause to `~/root-cause.txt`.
-5. Click the `Check` button!
+kubectl -n workshop exec deploy/gift-registry -- \
+  python -c 'import urllib.request; print(urllib.request.urlopen("http://127.0.0.1:8000/healthz").read())'
+# {"status": "ok", "catalog_rows": 15000}
+```
+
+1. Edit `~/app.yaml` so the elf's work finishes before the shop container starts.
+2. Redeploy: `kubectl apply -f ~/app.yaml`{{exec interrupt}}
+3. Watch a fresh Pod come up healthy: `kubectl -n workshop get pods -w`{{exec interrupt}} — this keeps watching until you press `Ctrl+C`.
+4. Click the `Check` button!
 
 > 💡 If you're stuck, purchase hints from the challenge portal for guidance.

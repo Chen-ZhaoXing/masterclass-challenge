@@ -3,10 +3,7 @@
 # Local end-to-end test for "The Impatient Elf" (kind or minikube).
 #
 # Usage:
-#   ./local-test/test.sh build              # build both images
-#   ./local-test/test.sh load               # load images into a kind cluster (CLUSTER=...)
-#   ./local-test/test.sh deploy-broken      # provisioner+ns+db+service+BUGGY deployment
-#   ./local-test/test.sh deploy-fixed       # apply the reference fix
+#   ./local-test/test.sh deploy-fixed       # provision, deploy the fix, and apply the reference solution
 #   ./local-test/test.sh observe [SECONDS]  # watch the Pod + logs for a while (default 60)
 #   ./local-test/test.sh health             # hit /healthz from inside the Pod
 #   ./local-test/test.sh cleanup            # delete the workshop namespace
@@ -37,7 +34,7 @@ cmd_load() {
   kind load docker-image "${REGISTRY}/elf:${TAG_ELF}" --name "${CLUSTER}"
 }
 
-cmd_deploy_broken() {
+cmd_deploy_fixed() {
   echo "==> provisioning local storage (same as background.sh)"
   kubectl apply -f "$SCENARIO_DIR/assets/setup/local-path-storage.yaml"
   kubectl -n local-path-storage wait --for=condition=Ready pod -l app=local-path-provisioner --timeout=120s || true
@@ -46,13 +43,7 @@ cmd_deploy_broken() {
   kubectl apply -f "$SCENARIO_DIR/assets/setup/postgres.yaml"
   kubectl -n "$NS" wait --for=condition=Ready pod -l app=workshop-db --timeout=180s
   kubectl apply -f "$SCENARIO_DIR/assets/setup/app-service.yaml"
-  echo "==> deploying the BROKEN deployment (elf as a regular container)"
-  kubectl apply -f "$SCENARIO_DIR/assets/app.yaml"
-  echo "expected: gift-registry Pod crash-looping; elf container Terminated(0)"
-}
-
-cmd_deploy_fixed() {
-  echo "==> applying the FIX (elf as an initContainer)"
+  echo "==> deploying the gift-registry Deployment"
   kubectl apply -f "$SOLUTION"
   echo "expected: fresh Pod, elf initContainer runs to completion, then 1/1 Running"
 }
@@ -74,10 +65,9 @@ cmd_cleanup() {
   kubectl delete namespace "$NS" --ignore-not-found
 }
 
-case "${1:-}" in
+case "${1:-deploy-fixed}" in
   build)          cmd_build ;;
   load)           cmd_load ;;
-  deploy-broken)  cmd_deploy_broken ;;
   deploy-fixed)   cmd_deploy_fixed ;;
   observe)        cmd_observe "${2:-60}" ;;
   health)         cmd_health ;;

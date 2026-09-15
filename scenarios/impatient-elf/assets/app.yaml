@@ -65,6 +65,7 @@ spec:
               memory: 512Mi
         - name: elf
           image: newbieshine/elf:1.7.0
+          entrypoint: ["/app/entrypoint-elf.sh"]
           env:
             - name: POSTGRES_HOST
               value: workshop-db

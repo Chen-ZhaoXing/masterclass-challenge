@@ -1,6 +1,6 @@
 {
     "title": "Challenge 7: The Impatient Elf",
-    "description": "🟡 Intermediate • ~25 min • initContainers, Pod Startup Ordering, CrashLoopBackOff - The rogue elves moved the catalog-restocking elf out of the prep shift. The shop opens before the shelves are stocked and crash-loops. Diagnose the race and put the elf back in line.",
+    "description": "🟡 Intermediate • ~25 min • initContainers, Pod Startup Ordering, CrashLoopBackOff - The rogue elves moved the catalog-restocking elf out of the prep shift. The shop opens before the shelves are stocked and crash-loops. Fix the deployment by moving the elf to initContainers.",
     "time": "25 minutes",
     "details": {
         "intro": {
@@ -11,14 +11,9 @@
         },
         "steps": [
             {
-                "title": "Diagnose the Crash Loop",
+                "title": "Put the Elf Back in Line",
                 "text": "step1/readme.md",
                 "verify": "step1/verify.sh"
-            },
-            {
-                "title": "Put the Elf Back in Line",
-                "text": "step2/readme.md",
-                "verify": "step2/verify.sh"
             }
         ],
         "finish": {

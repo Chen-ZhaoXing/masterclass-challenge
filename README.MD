@@ -80,8 +80,8 @@ The rogue elves turned on TLS for an internal endpoint, but intentionally neglec
 
 #### The Impatient Elf
 The new Gift Registry build crash-loops every time it boots: the shop opens *before* the shelves are stocked, because the restocking elf was moved out of the prep shift and now races the app as a sibling container.
-- **Your Mission:** Diagnose why the Pod crash-loops (write the root cause down), then fix the Deployment so the elf's catalog rebuild is guaranteed to finish before the shop container starts.
-- **Learning Objectives:** initContainers vs. regular containers, Pod startup ordering, diagnosing `CrashLoopBackOff` with `kubectl describe` / per-container logs.
+- **Your Mission:** Fix the Deployment by moving the elf to `initContainers` so its work completes before the shop container starts.
+- **Learning Objectives:** initContainers vs. regular containers, Pod startup ordering, fixing `CrashLoopBackOff`.
 #### The Bloated Sleigh Image
 The rogue elves have sabotaged the container build pipeline with a 1GB+ Docker image running as root. The North Pole Container Standard demands images under 250 MB with non-root execution.
 - **Your Mission:** Rewrite the Dockerfile using multi-stage builds, a slim base image, and a non-root user.
