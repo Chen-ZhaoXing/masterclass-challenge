@@ -37,31 +37,7 @@
 >
 > Fix the Deployment so the elf's work is guaranteed to **exit with code 0 before the shop container starts**.
 >
-> Move the `elf` container from `containers:` to `initContainers:` (after `wait-for-db`). The guaranteed start order becomes:
->
-> ```
-> wait-for-db (init) → elf: migrate + restock, exit 0 (init) → gift-registry
-> ```
->
 > You'll know it's fixed when the Deployment starts cleanly with **0 restarts** and the health check reports a populated catalog.
->
-> ## Useful Commands
->
-> - View the Deployment spec: `kubectl -n workshop get deployment gift-registry -o yaml`{{exec interrupt}}
->
-> Edit `~/app.yaml`:
->
-> - Remove the `elf` from `containers:`
-> - Add the `elf` to `initContainers:` (as an init container)
-> - Ensure the `elf` exits with code 0 (keep the existing `wait-for-db` initContainer)
->
-> Then redeploy and watch for a healthy Pod:
->
-> ```bash
-> kubectl apply -f ~/app.yaml
-> kubectl -n workshop get pods -w  # press Ctrl+C when done
-> kubectl -n workshop get pods -l app=gift-registry
-> ```
 >
 > ## Verification
 >
