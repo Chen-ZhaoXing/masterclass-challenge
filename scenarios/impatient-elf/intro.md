@@ -33,7 +33,7 @@
 > - t≈5-15s: the elf finishes loading all 15,000 rows
 > - The Pod crashes and Kubernetes restarts it — and the loop never ends.
 >
-> ### Your Task
+> ## Your Task
 >
 > Fix the Deployment so the elf's work is guaranteed to **exit with code 0 before the shop container starts**.
 >
