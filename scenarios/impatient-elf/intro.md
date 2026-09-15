@@ -39,6 +39,20 @@
 >
 > You'll know it's fixed when the Deployment starts cleanly with **0 restarts** and the health check reports a populated catalog.
 >
+> ## Useful Commands
+>
+> - View the Deployment spec: `kubectl -n workshop get deployment gift-registry -o yaml`
+>
+> Edit `~/app.yaml`:
+>
+> Then redeploy and watch for a healthy Pod:
+>
+> ```bash
+> kubectl apply -f ~/app.yaml
+> kubectl -n workshop get pods -w  # press Ctrl+C when done
+> kubectl -n workshop get pods -l app=gift-registry
+> ```
+>
 > ## Verification
 >
 > Your fix will be checked against the requirements above.
