@@ -28,6 +28,11 @@
                     "chmod": "+rw"
                 },
                 {
+                    "file": "app.yaml",
+                    "target": "/var/impatient-elf/",
+                    "chmod": "+rw"
+                },
+                {
                     "file": "setup/namespace.yaml",
                     "target": "/var/impatient-elf/",
                     "chmod": "+rw"
