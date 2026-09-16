@@ -41,7 +41,7 @@
 >
 > ## Useful Commands
 >
-> - View the Deployment spec: `kubectl -n workshop get deployment gift-registry -o yaml`
+> - View the Deployment spec: `kubectl -n workshop get deployment gift-registry -o yaml`{{exec interrupt}}
 >
 > Edit `~/app.yaml`:
 >
