@@ -10,16 +10,16 @@ This document defines the point allocation, hint costs, and configuration for ho
 
 | # | Challenge | Killercoda Scenario | Difficulty | Base Points | Steps | Est. Time |
 |---|-----------|---------------------|------------|-------------|-------|-----------|
-| 1 | Trainee Elf Orientation | `scenarios/basics` | 🟢 Beginner | Trainee Elf Orientation + Trainee Elf OJT + Trainee Elf Graduation + The Poisoned Present | 250 pts | ~10 min |
+| 1 | Trainee Elf Orientation | `scenarios/basics` | 🟢 Beginner | **50** | 3 | ~10 min |
 | 2 | Trainee Elf OJT | `scenarios/basics-2` | 🟢 Beginner | **50** | 3 | ~10 min |
 | 3 | Trainee Elf Graduation | `scenarios/basics-3` | 🟢 Beginner | **50** | 2 | ~15 min |
 | 4 | The Poisoned Present | `scenarios/poisoned-present` | 🟢 Beginner | **100** | 1 | ~15 min |
-| 5 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | The Exposed Coordinates + The Frozen Handshake + The Impatient Elf + The Bloated Sleigh Image + The Skeleton Key | 750 pts | ~15 min |
+| 5 | The Exposed Coordinates | `scenarios/exposed-coordinates` | 🟡 Intermediate | **100** | 1 | ~15 min |
 | 6 | The Frozen Handshake | `scenarios/frozen-handshake` | 🟡 Intermediate | **100** | 1 | ~15 min |
 | 7 | The Impatient Elf | `scenarios/impatient-elf` | 🟡 Intermediate | **150** | 2 | ~25 min |
 | 8 | The Bloated Sleigh Image | `scenarios/bloated-docker-image` | 🟡 Intermediate | **200** | 1 | ~25 min |
 | 9 | The Skeleton Key | `scenarios/skeleton-key` | 🟡 Intermediate | **200** | 2 | ~20 min |
-| 10 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | The Trojan Manifest + The Phantom Storage | 600 pts | ~40 min |
+| 10 | The Trojan Manifest | `scenarios/trojan-manifest` | 🔴 Advanced | **300** | 5 | ~40 min |
 | 11 | The Phantom Storage | `scenarios/storageclass` | 🔴 Advanced | **300** | 2 | ~30 min |
 | - | **Completion Bonus** | *All 11 solved* | - | **+100** | - | - |
 | | | | **Max Total** | **1700** | | **~220 min** |
