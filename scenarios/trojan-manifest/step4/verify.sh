@@ -67,6 +67,12 @@ gate_reason() {   # gate_reason <policy-name>
     fi
 }
 
+if [ ! -f /tmp/setup-finished ]; then
+    broadcast "⏳ The environment is still being set up - the policy engine is not running yet."
+    broadcast "   Wait for the dots in the terminal to finish, then click Check again."
+    exit 1
+fi
+
 if [ -f /tmp/kyverno-setup-failed ]; then
     broadcast "⚠️  The policy engine did not install correctly: $(cat /tmp/kyverno-setup-failed)"
     broadcast "   This is an environment problem, not your manifest - please report it."

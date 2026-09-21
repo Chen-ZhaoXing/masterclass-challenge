@@ -1,8 +1,16 @@
-# Retry: Kyverno's policy-validation webhook times out intermittently on a
-# cold cluster, and a silent failure here used to leave require-non-default-sa absent
-# while the step still graded as if it were live.
+#!/bin/bash
+# Killercoda runs this the moment the step opens, concurrently with the
+# scenario's own background.sh. Signalling readiness here released the
+# student while Kyverno was still installing, so the sentinel is now owned
+# solely by the scenario background.sh. Wait for it before touching any
+# policy: before Kyverno is installed the ClusterPolicy CRD does not exist
+# and every apply below would fail silently.
+for _ in $(seq 1 180); do
+    [ -f /tmp/setup-finished ] && break
+    sleep 2
+done
+
 for _ in 1 2 3 4 5; do
     kubectl apply -f /var/kyverno-policies/require-non-default-sa.yaml && break
     sleep 2
 done
-touch /tmp/setup-finished
