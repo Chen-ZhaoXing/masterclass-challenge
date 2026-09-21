@@ -29,7 +29,7 @@ broadcast() {
     done
 }
 
-# Kyverno's own policy-validation webhook intermittently times out on a cold
+# Kyverno's own policy webhooks intermittently refuse connections on a cold
 # cluster, so a single apply is not reliable.
 apply_policy() {
     for _ in 1 2 3 4 5; do
@@ -37,6 +37,34 @@ apply_policy() {
         sleep 2
     done
     return 1
+}
+
+# --- enforcement gate -------------------------------------------------------
+# A non-zero exit from the dry-run is NOT proof the policy is enforcing:
+# validate.kyverno.svc-fail is failurePolicy=Fail, so while Kyverno is
+# unreachable the API server rejects everything with an InternalError. Require
+# the rejection to name the policy we are actually gating on.
+gate_policy() {   # gate_policy <canary-file> <policy-name> <attempts>
+    GATE_LAST=""
+    _n=${3:-15}
+    while [ "$_n" -gt 0 ]; do
+        if GATE_LAST=$(kubectl apply --dry-run=server -f "$1" 2>&1); then
+            :                                   # accepted -> not enforcing yet
+        elif printf '%s' "$GATE_LAST" | grep -q "$2"; then
+            return 0                            # rejected BY THIS POLICY
+        fi
+        _n=$((_n - 1))
+        [ "$_n" -gt 0 ] && sleep 2
+    done
+    return 1
+}
+
+gate_reason() {   # gate_reason <policy-name>
+    if printf '%s' "$GATE_LAST" | grep -Eq 'failed calling webhook|connection refused|context deadline exceeded|InternalError|EOF'; then
+        printf 'The policy engine is restarting, so your manifest was never actually checked.'
+    else
+        printf "The '%s' policy is not enforcing yet, so your manifest was never actually checked." "$1"
+    fi
 }
 
 if [ -f /tmp/kyverno-setup-failed ]; then
@@ -56,11 +84,8 @@ if ! apply_policy /var/kyverno-policies/require-non-root.yaml; then
     exit 1
 fi
 
-# Prove THIS step's policy is actually enforcing before grading anything.
-# The shared canary violates every policy, so once step 1's require-resources is
-# live it is rejected regardless - which let steps 2-5 pass a manifest that only
-# ever satisfied step 1. This canary satisfies every earlier policy and breaks
-# only require-non-root, so a rejection can only have come from require-non-root.
+# This canary satisfies every EARLIER policy and violates only require-non-root,
+# so a rejection naming require-non-root can only have come from require-non-root itself.
 cat > /tmp/kyverno-canary-step5.yaml <<'CANARY'
 apiVersion: apps/v1
 kind: Deployment
@@ -100,17 +125,9 @@ spec:
               port: 8000
 CANARY
 
-ENFORCING=0
-for _ in $(seq 1 30); do
-    if ! kubectl apply --dry-run=server -f /tmp/kyverno-canary-step5.yaml >/dev/null 2>&1; then
-        ENFORCING=1
-        break
-    fi
-    sleep 1
-done
-
-if [ "$ENFORCING" -ne 1 ]; then
-    broadcast "⚠️  The 'require-non-root' policy is not enforcing yet, so your manifest was never actually checked."
+# Prove require-non-root is enforcing RIGHT NOW, before grading anything.
+if ! gate_policy /tmp/kyverno-canary-step5.yaml "require-non-root" 15; then
+    broadcast "⚠️  $(gate_reason "require-non-root")"
     broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
     exit 1
 fi
@@ -119,8 +136,22 @@ APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 APPLY_EXIT=$?
 
 if [ $APPLY_EXIT -eq 0 ]; then
+    # Kyverno's admission path flaps: the same manifest has been seen rejected
+    # and then accepted seconds later, so passing the gate above proves nothing
+    # about the moment this manifest was graded. Prove it again. An acceptance
+    # is only trustworthy if the policy was live on both sides of it.
+    if ! gate_policy /tmp/kyverno-canary-step5.yaml "require-non-root" 5; then
+        broadcast "⚠️  $(gate_reason "require-non-root")"
+        broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
+        exit 1
+    fi
     broadcast "✅ North Pole approves of your Non Root Configuration!"
 else
+    if ! printf '%s' "$APPLY_OUT" | grep -q "require-non-root"; then
+        broadcast "⚠️  The policy engine is restarting, so your manifest was never actually checked."
+        broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
+        exit 1
+    fi
     broadcast "❌ North Pole needs you to set the Non Root Configuration!"
     exit 1
 fi
@@ -133,11 +164,6 @@ if ! apply_policy /var/kyverno-policies/require-drop-all.yaml; then
     exit 0
 fi
 
-# Prove THIS step's policy is actually enforcing before grading anything.
-# The shared canary violates every policy, so once step 1's require-resources is
-# live it is rejected regardless - which let steps 2-5 pass a manifest that only
-# ever satisfied step 1. This canary satisfies every earlier policy and breaks
-# only require-drop-all, so a rejection can only have come from require-drop-all.
 cat > /tmp/kyverno-canary-bonus.yaml <<'CANARY'
 apiVersion: apps/v1
 kind: Deployment
@@ -179,18 +205,8 @@ spec:
             runAsNonRoot: true
 CANARY
 
-BONUS_ENFORCING=0
-for _ in $(seq 1 30); do
-    if ! kubectl apply --dry-run=server -f /tmp/kyverno-canary-bonus.yaml >/dev/null 2>&1; then
-        BONUS_ENFORCING=1
-        break
-    fi
-    sleep 1
-done
-
-if [ "$BONUS_ENFORCING" -ne 1 ]; then
-    broadcast "⚠️  The 'require-drop-all' policy is not enforcing yet, so your manifest was never actually checked."
-    broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
+if ! gate_policy /tmp/kyverno-canary-bonus.yaml "require-drop-all" 5; then
+    broadcast "⚠️  The bonus policy is not enforcing yet, so the bonus was not checked."
     exit 0
 fi
 
@@ -198,6 +214,10 @@ BONUS_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 BONUS_EXIT=$?
 
 if [ $BONUS_EXIT -eq 0 ]; then
+    if ! gate_policy /tmp/kyverno-canary-bonus.yaml "require-drop-all" 3; then
+        broadcast "⚠️  The bonus could not be confirmed - click Check again."
+        exit 0
+    fi
     broadcast "🌟 BONUS ACHIEVED: North Pole approves of your Drop All Capabilities Configuration!"
 else
     broadcast "❌ North Pole needs you to set the Drop All Capabilities Configuration!"
