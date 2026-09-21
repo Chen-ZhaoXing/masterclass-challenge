@@ -50,7 +50,38 @@ kubectl config set-context --current --namespace=gift-tracking
 # So apply step 1's policy here and block until a manifest that MUST be rejected
 # actually is. The student waits through the dots they are already watching, and
 # every Check afterwards is instant because enforcement is known to be live.
-kubectl apply -f /var/kyverno-policies/require-resource-limits.yaml
+# This apply used to have no error check. On a cold cluster Kyverno's own
+# policy webhook is not serving yet even though the admission pod reports
+# Ready, so it fails with "connection refused" - and then NO ClusterPolicy
+# exists at all. Retry until it lands.
+POLICY_OK=0
+for _ in $(seq 1 60); do
+    if kubectl apply -f /var/kyverno-policies/require-resource-limits.yaml >/dev/null 2>&1; then
+        POLICY_OK=1
+        break
+    fi
+    sleep 2
+done
+[ "$POLICY_OK" -ne 1 ] && abort_setup "the first Kyverno policy could not be applied"
+
+# Kyverno rebuilds kyverno-resource-validating-webhook-cfg from the policies
+# that exist. With no policy it is EMPTY - no rules, no sideEffects - so the
+# API server sends it nothing and every manifest is accepted. Observed live:
+#
+#   kyverno-resource-validating-webhook-cfg  sideEffects=  rules=
+#
+# That, not a flapping engine, is why manifests passed steps they should have
+# failed. Wait for the config to actually carry rules before going further.
+WEBHOOK_OK=0
+for _ in $(seq 1 60); do
+    RULES=$(kubectl get validatingwebhookconfiguration kyverno-resource-validating-webhook-cfg               -o jsonpath='{.webhooks[*].rules[*].resources}' 2>/dev/null)
+    if [ -n "$RULES" ]; then
+        WEBHOOK_OK=1
+        break
+    fi
+    sleep 2
+done
+[ "$WEBHOOK_OK" -ne 1 ] && abort_setup "Kyverno never registered an admission rule for any resource"
 
 cat > /tmp/kyverno-canary.yaml <<'CANARY'
 apiVersion: apps/v1
@@ -80,7 +111,7 @@ CANARY
 # student, rather than catching one lucky moment.
 ENFORCING=0
 STREAK=0
-for _ in $(seq 1 120); do
+for _ in $(seq 1 45); do
     if CANARY_OUT=$(kubectl apply --dry-run=server -f /tmp/kyverno-canary.yaml 2>&1); then
         STREAK=0
     elif printf '%s' "$CANARY_OUT" | grep -q "require-resources"; then
