@@ -132,13 +132,27 @@ spec:
 CANARY
 
 # Prove require-non-root is enforcing RIGHT NOW, before grading anything.
-if ! gate_policy /tmp/kyverno-canary-step5.yaml "require-non-root" 15; then
+if ! gate_policy /tmp/kyverno-canary-step5.yaml "require-non-root" 6; then
     broadcast "⚠️  $(gate_reason "require-non-root")"
     broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
     exit 1
 fi
 
-APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
+# Grade a CREATE, never an UPDATE. The student created this Deployment back in
+# step 1, so re-applying the same file is a no-op update - and Kyverno does not
+# re-validate one. That is why a manifest with no probes and no labels was
+# accepted by steps 2 and 3 while the canary was correctly being rejected:
+# enforcement was live, the manifest just was not being evaluated.
+# Renaming into a scratch copy makes every check a fresh create.
+# --dry-run=server means nothing is persisted under either name.
+GRADE_SRC=/tmp/grader-app.yaml
+sed '0,/^[[:space:]][[:space:]]name:[[:space:]]*.*$/s//  name: grader-check/' ~/app.yaml > "$GRADE_SRC"
+if ! grep -qx '  name: grader-check' "$GRADE_SRC"; then
+    broadcast "⚠️  The grader could not rewrite your manifest's metadata.name, so it was not checked."
+    broadcast "   This is an environment problem, not your manifest - please report it."
+    exit 1
+fi
+APPLY_OUT=$(kubectl apply --dry-run=server -f "$GRADE_SRC" 2>&1)
 APPLY_EXIT=$?
 
 if [ $APPLY_EXIT -eq 0 ]; then
@@ -146,7 +160,7 @@ if [ $APPLY_EXIT -eq 0 ]; then
     # and then accepted seconds later, so passing the gate above proves nothing
     # about the moment this manifest was graded. Prove it again. An acceptance
     # is only trustworthy if the policy was live on both sides of it.
-    if ! gate_policy /tmp/kyverno-canary-step5.yaml "require-non-root" 5; then
+    if ! gate_policy /tmp/kyverno-canary-step5.yaml "require-non-root" 3; then
         broadcast "⚠️  $(gate_reason "require-non-root")"
         broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
         exit 1
@@ -212,12 +226,12 @@ spec:
             runAsNonRoot: true
 CANARY
 
-if ! gate_policy /tmp/kyverno-canary-bonus.yaml "require-drop-all" 5; then
+if ! gate_policy /tmp/kyverno-canary-bonus.yaml "require-drop-all" 3; then
     broadcast "⚠️  The bonus policy is not enforcing yet, so the bonus was not checked."
     exit 0
 fi
 
-BONUS_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
+BONUS_OUT=$(kubectl apply --dry-run=server -f "$GRADE_SRC" 2>&1)
 BONUS_EXIT=$?
 
 if [ $BONUS_EXIT -eq 0 ]; then
