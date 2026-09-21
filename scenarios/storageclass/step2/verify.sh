@@ -72,6 +72,30 @@ else
     broadcast "✅ North Pole approves: PersistentVolumeClaim '${CLAIM_NAME}' exists and is mounted!"
 fi
 
+# Step 1 provisioned MongoDB a disk. Only a volumeMounts entry makes MongoDB
+# actually write to it, and nothing checked that: step 1 reads
+# volumeClaimTemplates and this step used to look only at the gift-tracker
+# Deployment. A claim nobody mounts leaves /data/db on ephemeral container
+# storage, so the original data-loss bug survived a fully passing challenge.
+MONGO_VOL=$(kubectl get statefulset mongodb -o jsonpath='{.spec.template.spec.containers[?(@.name=="mongodb")].volumeMounts[?(@.mountPath=="/data/db")].name}' 2>/dev/null)
+if [ -z "$MONGO_VOL" ]; then
+    broadcast "❌ MongoDB has a claim but nothing mounts it - /data/db is still ephemeral. Add a volumeMounts entry to the mongodb container in statefulset.yaml."
+    exit 1
+fi
+
+# ...and it has to mount the claim template, not some unrelated volume. The
+# two are linked only by name, which is the easiest thing to get out of step.
+TEMPLATE_NAME=$(kubectl get statefulset mongodb -o jsonpath='{.spec.volumeClaimTemplates[*].metadata.name}' 2>/dev/null)
+case " $TEMPLATE_NAME " in
+    *" $MONGO_VOL "*)
+        broadcast "✅ North Pole approves: MongoDB mounts its claim at /data/db - the data survives a restart."
+        ;;
+    *)
+        broadcast "❌ The volume mounted at /data/db is '${MONGO_VOL}', but the volumeClaimTemplates is named '${TEMPLATE_NAME}'. They must use the same name."
+        exit 1
+        ;;
+esac
+
 # Verify the user created the 'mongodb-service' to fix network connectivity
 kubectl get service mongodb-service >/dev/null 2>&1
 if [ $? -ne 0 ]; then
