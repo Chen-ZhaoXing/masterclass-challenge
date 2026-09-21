@@ -1,6 +1,16 @@
 #!/bin/bash
 set -e
 
+# --- setup guard ------------------------------------------------------------
+# foreground.sh waits for /tmp/setup-finished. Touch it on every exit, so a
+# failed step can never leave the terminal waiting forever, and record the first
+# failed step so foreground.sh and verify.sh can report it instead of the player
+# debugging a half-built environment.
+SETUP_FAILED=/tmp/setup-failed
+rm -f "$SETUP_FAILED"
+trap '[ -f "$SETUP_FAILED" ] || echo "setup step failed (line $LINENO): $BASH_COMMAND" > "$SETUP_FAILED"' ERR
+trap 'touch /tmp/setup-finished' EXIT
+
 NAMESPACE="challenge4"
 WORKDIR="/tmp/challenge4-tls"
 

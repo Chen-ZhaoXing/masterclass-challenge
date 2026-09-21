@@ -4,7 +4,19 @@
 
 set -e
 
-sudo apt update && sudo apt install curl -y
+# --- setup guard ------------------------------------------------------------
+# foreground.sh waits for /opt/background-finished. Touch it on every exit, so
+# a failed step can never leave the terminal waiting forever, and record the
+# first failed step so foreground.sh and verify.sh can report it instead of the
+# player debugging a half-built environment.
+SETUP_FAILED=/tmp/setup-failed
+rm -f "$SETUP_FAILED"
+trap '[ -f "$SETUP_FAILED" ] || echo "setup step failed (line $LINENO): $BASH_COMMAND" > "$SETUP_FAILED"' ERR
+trap 'touch /opt/background-finished' EXIT
+
+# Only reach for apt when curl is actually missing: apt is often locked for the
+# first minutes of a fresh VM, and under set -e that alone would abort setup.
+command -v curl >/dev/null 2>&1 || { sudo apt update && sudo apt install curl -y; }
 
 # Install yq (Mike Farah's Go-based yq v4)
 curl -sL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64" -o /usr/local/bin/yq

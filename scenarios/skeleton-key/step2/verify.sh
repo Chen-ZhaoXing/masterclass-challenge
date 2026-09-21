@@ -18,6 +18,13 @@ if [ ! -f /tmp/setup-finished ]; then
     exit 1
 fi
 
+# A failed setup is an environment problem, not the player's; say so before grading.
+if [ -f /tmp/setup-failed ]; then
+    broadcast "⚠️  The environment did not finish setting up: $(cat /tmp/setup-failed)"
+    broadcast "   This is not something you did. Restart the scenario, and tell the facilitator if it happens again."
+    exit 1
+fi
+
 SA="system:serviceaccount:gift-tracking:gift-tracking-sa"
 
 allowed() {
