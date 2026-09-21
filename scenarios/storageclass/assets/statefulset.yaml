@@ -30,11 +30,6 @@ spec:
           envFrom:
             - secretRef:
                 name: mongodb-secret
-          # TASK (step 1): Add the volumeMounts section here, inside the mongodb
-          # container, mounting the claim you define below at /data/db. That is
-          # MongoDB's own data directory - not the app's.
+          # TASK (step 1): this container mounts nothing.
 
-  # TASK (step 1): Add the volumeClaimTemplates section here, at this
-  # indentation - level with 'template:' above, not inside it. It needs a name,
-  # storageClassName, accessModes and a size. The name must match the
-  # volumeMounts entry above; that name is the only thing linking the two.
+  # TASK (step 1): this StatefulSet claims no storage.
