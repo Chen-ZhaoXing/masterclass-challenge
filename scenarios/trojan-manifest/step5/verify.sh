@@ -29,6 +29,16 @@ broadcast() {
     done
 }
 
+# Kyverno's own policy-validation webhook intermittently times out on a cold
+# cluster, so a single apply is not reliable.
+apply_policy() {
+    for _ in 1 2 3 4 5; do
+        POLICY_APPLY_ERR=$(kubectl apply -f "$1" 2>&1) && return 0
+        sleep 2
+    done
+    return 1
+}
+
 if [ -f /tmp/kyverno-setup-failed ]; then
     broadcast "⚠️  The policy engine did not install correctly: $(cat /tmp/kyverno-setup-failed)"
     broadcast "   This is an environment problem, not your manifest - please report it."
@@ -40,19 +50,59 @@ fi
 # manifest has to keep satisfying everything it satisfied earlier, which is how
 # admission control behaves in reality. Nothing is deleted, so Kyverno's webhook
 # is never torn down and there is no re-registration race to wait out.
-POLICY_APPLY_ERR=$(kubectl apply -f /var/kyverno-policies/require-non-root.yaml 2>&1)
-if [ $? -ne 0 ]; then
+if ! apply_policy /var/kyverno-policies/require-non-root.yaml; then
     broadcast "⚠️  The policy could not be loaded, so your manifest was never actually checked:"
     broadcast "$POLICY_APPLY_ERR"
     exit 1
 fi
 
-# background.sh already blocked until admission control was proven live, so this
-# normally passes on the first try. It is a safety net, not a wait: a Ready
-# ClusterPolicy does NOT mean the webhook is registered and serving.
+# Prove THIS step's policy is actually enforcing before grading anything.
+# The shared canary violates every policy, so once step 1's require-resources is
+# live it is rejected regardless - which let steps 2-5 pass a manifest that only
+# ever satisfied step 1. This canary satisfies every earlier policy and breaks
+# only require-non-root, so a rejection can only have come from require-non-root.
+cat > /tmp/kyverno-canary-step5.yaml <<'CANARY'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kyverno-canary
+  namespace: gift-tracking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-canary
+  template:
+    metadata:
+      labels:
+        app: kyverno-canary
+        app.kubernetes.io/name: gift-tracking-app
+        app.kubernetes.io/instance: gift-tracking-app
+    spec:
+      serviceAccountName: kyverno-canary-sa
+      containers:
+        - name: canary
+          image: busybox
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+CANARY
+
 ENFORCING=0
-for _ in $(seq 1 10); do
-    if ! kubectl apply --dry-run=server -f /tmp/kyverno-canary.yaml >/dev/null 2>&1; then
+for _ in $(seq 1 30); do
+    if ! kubectl apply --dry-run=server -f /tmp/kyverno-canary-step5.yaml >/dev/null 2>&1; then
         ENFORCING=1
         break
     fi
@@ -60,8 +110,8 @@ for _ in $(seq 1 10); do
 done
 
 if [ "$ENFORCING" -ne 1 ]; then
-    broadcast "⚠️  Admission control is not rejecting anything, so your manifest was never actually checked."
-    broadcast "   This is an environment problem, not your manifest - please report it."
+    broadcast "⚠️  The 'require-non-root' policy is not enforcing yet, so your manifest was never actually checked."
+    broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
     exit 1
 fi
 
@@ -78,10 +128,70 @@ fi
 
 # Bonus: layered on top of require-non-root, so both must hold. A silenced
 # apply here would award the bonus for free.
-BONUS_APPLY_ERR=$(kubectl apply -f /var/kyverno-policies/require-drop-all.yaml 2>&1)
-if [ $? -ne 0 ]; then
+if ! apply_policy /var/kyverno-policies/require-drop-all.yaml; then
     broadcast "⚠️  The bonus policy could not be loaded, so the bonus was not checked."
-    broadcast "$BONUS_APPLY_ERR"
+    broadcast "$POLICY_APPLY_ERR"
+    exit 0
+fi
+
+# Prove THIS step's policy is actually enforcing before grading anything.
+# The shared canary violates every policy, so once step 1's require-resources is
+# live it is rejected regardless - which let steps 2-5 pass a manifest that only
+# ever satisfied step 1. This canary satisfies every earlier policy and breaks
+# only require-drop-all, so a rejection can only have come from require-drop-all.
+cat > /tmp/kyverno-canary-bonus.yaml <<'CANARY'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kyverno-canary
+  namespace: gift-tracking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyverno-canary
+  template:
+    metadata:
+      labels:
+        app: kyverno-canary
+        app.kubernetes.io/name: gift-tracking-app
+        app.kubernetes.io/instance: gift-tracking-app
+    spec:
+      serviceAccountName: kyverno-canary-sa
+      containers:
+        - name: canary
+          image: busybox
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+          securityContext:
+            runAsNonRoot: true
+CANARY
+
+BONUS_ENFORCING=0
+for _ in $(seq 1 30); do
+    if ! kubectl apply --dry-run=server -f /tmp/kyverno-canary-bonus.yaml >/dev/null 2>&1; then
+        BONUS_ENFORCING=1
+        break
+    fi
+    sleep 1
+done
+
+if [ "$BONUS_ENFORCING" -ne 1 ]; then
+    broadcast "⚠️  The 'require-drop-all' policy is not enforcing yet, so your manifest was never actually checked."
+    broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
     exit 0
 fi
 
