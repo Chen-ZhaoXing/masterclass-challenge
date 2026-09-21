@@ -1,5 +1,4 @@
 #!/bin/bash
-printf %s "2026-09-21-r4" > /tmp/scenario-build
 # Killercoda runs this the moment the step opens, concurrently with the
 # scenario's own background.sh. Signalling readiness here released the
 # student while Kyverno was still installing, so the sentinel is now owned

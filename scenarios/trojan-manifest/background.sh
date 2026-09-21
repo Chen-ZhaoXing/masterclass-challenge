@@ -1,5 +1,5 @@
 #!/bin/bash
-printf %s "2026-09-21-r4" > /tmp/scenario-build
+printf %s "2026-09-21-r6" > /tmp/scenario-build
 # Install Helm if not present
 if ! command -v helm &> /dev/null; then
     curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
@@ -19,7 +19,11 @@ abort_setup() {
     echo "$1" > "$KYVERNO_FAILED"
     echo "✗ $1"
     touch /tmp/setup-finished
-    exit 1
+    # exit 0, NOT 1. Killercoda reports any non-zero exit from a background
+    # script as "background script initialization failure" and the student
+    # never gets into the scenario at all. The reason is recorded in the file
+    # above and every verify.sh reports it, which is the useful behaviour.
+    exit 0
 }
 
 helm repo add kyverno https://kyverno.github.io/kyverno/ \
@@ -33,11 +37,22 @@ helm install kyverno kyverno/kyverno \
     --set admissionController.podLabels.app=admission \
     || abort_setup "Kyverno chart ${KYVERNO_CHART_VERSION} failed to install"
 
-sleep 15
-
-# Wait for Kyverno to be ready
-kubectl wait --for=condition=ready pod -l app=admission -n kyverno --timeout=300s \
-    || abort_setup "the Kyverno admission controller did not become ready"
+# kubectl wait errors out immediately with "no matching resources found" when
+# the pod does not exist yet, which a fixed sleep cannot reliably cover - and
+# that error reached abort_setup, which used to exit 1, which Killercoda
+# reported as a background script initialization failure. The admission
+# controller also exits 0 and restarts once while bootstrapping its webhook
+# certificates (observed: restarts=1, lastTerminated=Completed, ~2 min to
+# Ready), so poll for the condition rather than betting on one attempt.
+READY=0
+for _ in $(seq 1 120); do
+    if [ "$(kubectl get pod -l app=admission -n kyverno -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}' 2>/dev/null)" = "True" ]; then
+        READY=1
+        break
+    fi
+    sleep 2
+done
+[ "$READY" -ne 1 ] && abort_setup "the Kyverno admission controller did not become ready"
 
 kubectl create ns gift-tracking
 kubectl config set-context --current --namespace=gift-tracking
@@ -55,7 +70,7 @@ kubectl config set-context --current --namespace=gift-tracking
 # Ready, so it fails with "connection refused" - and then NO ClusterPolicy
 # exists at all. Retry until it lands.
 POLICY_OK=0
-for _ in $(seq 1 60); do
+for _ in $(seq 1 20); do
     if kubectl apply -f /var/kyverno-policies/require-resource-limits.yaml >/dev/null 2>&1; then
         POLICY_OK=1
         break
@@ -73,7 +88,7 @@ done
 # That, not a flapping engine, is why manifests passed steps they should have
 # failed. Wait for the config to actually carry rules before going further.
 WEBHOOK_OK=0
-for _ in $(seq 1 60); do
+for _ in $(seq 1 20); do
     RULES=$(kubectl get validatingwebhookconfiguration kyverno-resource-validating-webhook-cfg               -o jsonpath='{.webhooks[*].rules[*].resources}' 2>/dev/null)
     if [ -n "$RULES" ]; then
         WEBHOOK_OK=1
@@ -111,7 +126,7 @@ CANARY
 # student, rather than catching one lucky moment.
 ENFORCING=0
 STREAK=0
-for _ in $(seq 1 45); do
+for _ in $(seq 1 15); do
     if CANARY_OUT=$(kubectl apply --dry-run=server -f /tmp/kyverno-canary.yaml 2>&1); then
         STREAK=0
     elif printf '%s' "$CANARY_OUT" | grep -q "require-resources"; then
@@ -132,3 +147,5 @@ fi
 
 # Remaining policies are applied per step, by each step's background.sh.
 touch /tmp/setup-finished
+
+exit 0
