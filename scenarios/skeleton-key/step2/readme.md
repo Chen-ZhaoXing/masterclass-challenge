@@ -1,4 +1,4 @@
-# Scenario Objective: Grant Only What Is Needed
+# Step 2 · Scenario Objective: Grant Only What Is Needed
 
 The skeleton key is gone, and the gift-tracking workload now has no authority at all. It still has one legitimate job to do tonight: read its own configuration.
 

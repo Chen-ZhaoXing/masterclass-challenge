@@ -3,7 +3,10 @@
 broadcast() {
     for pts in /dev/pts/[0-9]*; do
         if [ -w "$pts" ]; then
-            echo -e "\n$1\n" > "$pts" 2>/dev/null
+            # \r\n, not \n: an interactive shell leaves the pty in raw mode while
+            # readline waits for input, so a bare newline is line-feed only and the
+            # text lands indented at the cursor column.
+            printf '\r\n%s\r\n' "$1" > "$pts" 2>/dev/null
             rows=$(stty -F "$pts" size 2>/dev/null | cut -d' ' -f1)
             if [ -n "$rows" ]; then
                 stty -F "$pts" rows $((rows + 1)) 2>/dev/null
@@ -20,60 +23,93 @@ fi
 
 SA="system:serviceaccount:gift-tracking:gift-tracking-sa"
 
-allowed() {
-    if [ -n "${3:-}" ]; then
-        kubectl auth can-i "$1" "$2" --as="$SA" -n "$3" >/dev/null 2>&1
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' EXIT
+
+# 16 independent permission probes. Run in series that is 16 API round trips
+# and roughly ten seconds of staring at nothing; fired concurrently it costs
+# about one.
+probe() {   # probe <slot> <verb> <resource> [namespace]
+    if [ -n "${4:-}" ]; then
+        kubectl auth can-i "$2" "$3" --as="$SA" -n "$4" >/dev/null 2>&1
     else
-        kubectl auth can-i "$1" "$2" --as="$SA" >/dev/null 2>&1
+        kubectl auth can-i "$2" "$3" --as="$SA" >/dev/null 2>&1
     fi
+    echo "$?" > "$TMP/$1"
 }
 
-allow() {
-    if ! allowed "$1" "$2" "${3:-}"; then
-        broadcast "❌ [FAIL] The workload identity cannot '$1 $2' in namespace '$3'. It needs this to run."
+kubectl get serviceaccount gift-tracking-sa -n gift-tracking >/dev/null 2>&1 \
+    && echo yes > "$TMP/sa" || echo no > "$TMP/sa" &
+kubectl get deployment gift-tracker -n gift-tracking \
+    -o jsonpath='{.status.availableReplicas}' >"$TMP/replicas" 2>/dev/null &
+
+# must be allowed
+probe get_cm    get    configmaps  gift-tracking &
+probe list_cm   list   configmaps  gift-tracking &
+probe watch_cm  watch  configmaps  gift-tracking &
+
+# must be denied
+probe wildcard      "*"     "*"                                &
+probe create_cm     create  configmaps           gift-tracking &
+probe update_cm     update  configmaps           gift-tracking &
+probe delete_cm     delete  configmaps           gift-tracking &
+probe get_sec       get     secrets              gift-tracking &
+probe list_sec      list    secrets              gift-tracking &
+probe create_pods   create  pods                 gift-tracking &
+probe delete_pods   delete  pods                 gift-tracking &
+probe cm_default    get     configmaps           default       &
+probe cm_kube       get     configmaps           kube-system   &
+probe cm_kube_list  list    configmaps           kube-system   &
+probe create_crb    create  clusterrolebindings                &
+probe del_nodes     delete  nodes                              &
+
+wait
+
+# kubectl auth can-i exits 0 when the action IS allowed.
+was_allowed() { [ "$(cat "$TMP/$1" 2>/dev/null)" = "0" ]; }
+
+allow() {   # allow <slot> <description>
+    if ! was_allowed "$1"; then
+        broadcast "❌ [FAIL] The workload identity cannot $2. It needs this to run."
         exit 1
     fi
 }
 
-deny() {
-    if allowed "$1" "$2" "${3:-}"; then
-        if [ -n "${3:-}" ]; then
-            broadcast "❌ [FAIL] The workload identity can '$1 $2' in namespace '$3'. That exceeds what it needs."
-        else
-            broadcast "❌ [FAIL] The workload identity can '$1 $2' at cluster scope. That exceeds what it needs."
-        fi
+deny() {    # deny <slot> <description>
+    if was_allowed "$1"; then
+        broadcast "❌ [FAIL] The workload identity can $2. That exceeds what it needs."
         exit 1
     fi
 }
 
-if ! kubectl get serviceaccount gift-tracking-sa -n gift-tracking >/dev/null 2>&1; then
+if [ "$(cat "$TMP/sa" 2>/dev/null)" != "yes" ]; then
     broadcast "❌ [FAIL] The gift-tracking workload no longer has an identity in the cluster."
     exit 1
 fi
 
-AVAILABLE=$(kubectl get deployment gift-tracker -n gift-tracking -o jsonpath='{.status.availableReplicas}' 2>/dev/null)
+AVAILABLE=$(cat "$TMP/replicas" 2>/dev/null)
 if [ -z "$AVAILABLE" ] || [ "$AVAILABLE" -lt 1 ]; then
     broadcast "❌ [FAIL] The gift-tracking application is not running."
     exit 1
 fi
 
-allow "get" "configmaps" "gift-tracking"
-allow "list" "configmaps" "gift-tracking"
-allow "watch" "configmaps" "gift-tracking"
+allow get_cm   "'get configmaps' in namespace 'gift-tracking'"
+allow list_cm  "'list configmaps' in namespace 'gift-tracking'"
+allow watch_cm "'watch configmaps' in namespace 'gift-tracking'"
 
-deny "*" "*"
-deny "create" "configmaps" "gift-tracking"
-deny "update" "configmaps" "gift-tracking"
-deny "delete" "configmaps" "gift-tracking"
-deny "get" "secrets" "gift-tracking"
-deny "list" "secrets" "gift-tracking"
-deny "create" "pods" "gift-tracking"
-deny "delete" "pods" "gift-tracking"
-deny "get" "configmaps" "default"
-deny "get" "configmaps" "kube-system"
-deny "list" "configmaps" "kube-system"
-deny "create" "clusterrolebindings"
-deny "delete" "nodes"
+deny wildcard     "do anything it likes at cluster scope"
+deny create_cm    "'create configmaps' in namespace 'gift-tracking'"
+deny update_cm    "'update configmaps' in namespace 'gift-tracking'"
+deny delete_cm    "'delete configmaps' in namespace 'gift-tracking'"
+deny get_sec      "'get secrets' in namespace 'gift-tracking'"
+deny list_sec     "'list secrets' in namespace 'gift-tracking'"
+deny create_pods  "'create pods' in namespace 'gift-tracking'"
+deny delete_pods  "'delete pods' in namespace 'gift-tracking'"
+deny cm_default   "'get configmaps' in namespace 'default' - the grant is not scoped to one namespace"
+deny cm_kube      "'get configmaps' in namespace 'kube-system' - the grant is not scoped to one namespace"
+deny cm_kube_list "'list configmaps' in namespace 'kube-system'"
+deny create_crb   "'create clusterrolebindings' at cluster scope"
+deny del_nodes    "'delete nodes' at cluster scope"
 
 broadcast "✅ [PASS] Least privilege achieved. The workload can read its own configuration and nothing else. The North Pole is secure."
 exit 0

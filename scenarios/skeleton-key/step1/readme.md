@@ -1,4 +1,4 @@
-# Scenario Objective: Revoke the Skeleton Key
+# Step 1 · Scenario Objective: Revoke the Skeleton Key
 
 The gift-tracking workload is running with unlimited authority over the entire North Pole cluster. A rogue elf on the release crew handed it a skeleton key during the last deployment window and never took it back.
 
