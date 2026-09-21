@@ -102,4 +102,5 @@ if [ $? -ne 0 ] || ! echo "$WITH_CA_OUTPUT" | grep -q "north-pole-secure-endpoin
 fi
 
 broadcast "✅ [PASS] TLS trust is restored. Certificate is mounted correctly and the secure endpoint is reachable."
+broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: SWxvdmVNYXN0ZXJjbGFzczIwMjZzZXA="
 exit 0

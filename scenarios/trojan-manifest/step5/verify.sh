@@ -70,6 +70,7 @@ APPLY_EXIT=$?
 
 if [ $APPLY_EXIT -eq 0 ]; then
     broadcast "✅ North Pole approves of your Non Root Configuration!"
+    broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: SWxPdkVtQXNUZVJjTGFTczIwMjZzRXA="
 else
     broadcast "❌ North Pole needs you to set the Non Root Configuration!"
     exit 1

@@ -100,7 +100,7 @@ fi
 broadcast "\n============================================================"
 if [ "$FAIL" -eq 0 ]; then
     broadcast "  ✅ SUPPLY CHAIN CHECK PASSED"
-    broadcast "  📸 Screenshot this message and submit it for your CTFd points."
+    broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: SUxvdmVNYXN0ZXJDbGFzczIwMjZTZXA="
     broadcast "========================================\n"
     exit 0
 else
