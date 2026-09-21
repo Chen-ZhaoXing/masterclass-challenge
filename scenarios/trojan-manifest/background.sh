@@ -1,4 +1,5 @@
 #!/bin/bash
+printf %s "2026-09-21-r4" > /tmp/scenario-build
 # Install Helm if not present
 if ! command -v helm &> /dev/null; then
     curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
