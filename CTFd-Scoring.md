@@ -152,7 +152,7 @@ Hints are tiered from vague to specific. The first hint per challenge is **free*
 
 | Hint # | Cost | Hint Text |
 |--------|------|-----------|
-| 1 | **Free** | Step 1: Open `statefulset.yaml` and look at the `volumeClaimTemplates` section. The `storageClassName` and `accessModes` fields are missing. The StorageClass is called `local-path` and the access mode should be `ReadWriteOnce`. |
+| 1 | **Free** | Step 1: `statefulset.yaml` has no storage in it at all. Add a `volumeClaimTemplates` section to the StatefulSet spec, and a matching `volumeMounts` entry in the `mongodb` container - the two are linked by the volume name, and a claim nothing mounts changes nothing. The StorageClass is called `local-path` and the access mode should be `ReadWriteOnce`. |
 | 2 | 30 pts | Step 2: Create a PVC named `backup-pvc` with `storageClassName: local-path`, `accessModes: [ReadWriteOnce]`, and `storage: 1Gi`. In `deployment.yaml`, add a `volumes[]` entry referencing your PVC and a `volumeMounts[]` entry mounting it at `/app/data` inside the `tracker` container. |
 | 3 | 60 pts | Step 2 (continued): Create a Service named `mongodb-service` targeting the MongoDB pods. Use `selector: { app: mongodb }` and `port: 27017 / targetPort: 27017`. Apply both the PVC, the updated deployment, and the Service with `kubectl apply -f`. |
 
