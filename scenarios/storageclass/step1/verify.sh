@@ -50,10 +50,30 @@ fi
 STORAGE_CLASS=$(kubectl get -f ~/"$TARGET" -o jsonpath='{..volumeClaimTemplates[*].spec.storageClassName}')
 ACCESS_MODES=$(kubectl get -f ~/"$TARGET" -o jsonpath='{..volumeClaimTemplates[*].spec.accessModes[*]}')
 
-if [[ "${STORAGE_CLASS,,}" == *"local-path"* ]] && [[ "${ACCESS_MODES,,}" == *"readwriteonce"* ]]; then
-    broadcast "✅ North Pole approves of your Storage Configuration!"
-    exit 0
-else
+if [[ "${STORAGE_CLASS,,}" != *"local-path"* ]] || [[ "${ACCESS_MODES,,}" != *"readwriteonce"* ]]; then
     broadcast "❌ North Pole needs you to correctly set the accessModes to [ReadWriteOnce] and storageClassName to local-path under volumeClaimTemplates."
     exit 1
 fi
+
+# A claim nothing mounts is just a claim. Without this, MongoDB keeps writing
+# to /data/db on ephemeral container storage and the data-loss bug the whole
+# challenge is about survives a passing check.
+MONGO_VOL=$(kubectl get statefulset mongodb -o jsonpath='{.spec.template.spec.containers[?(@.name=="mongodb")].volumeMounts[?(@.mountPath=="/data/db")].name}' 2>/dev/null)
+if [ -z "$MONGO_VOL" ]; then
+    broadcast "❌ The claim exists but nothing mounts it - MongoDB is still writing to ephemeral storage. Add a volumeMounts entry for /data/db to the mongodb container."
+    exit 1
+fi
+
+# ...and it has to mount the claim template, not some unrelated volume. The two
+# are linked only by name, which is the easiest thing to get out of step.
+TEMPLATE_NAME=$(kubectl get statefulset mongodb -o jsonpath='{.spec.volumeClaimTemplates[*].metadata.name}' 2>/dev/null)
+case " $TEMPLATE_NAME " in
+    *" $MONGO_VOL "*) ;;
+    *)
+        broadcast "❌ The volume mounted at /data/db is '${MONGO_VOL}', but the volumeClaimTemplates is named '${TEMPLATE_NAME}'. They must use the same name."
+        exit 1
+        ;;
+esac
+
+broadcast "✅ North Pole approves of your Storage Configuration - and MongoDB is actually writing to it!"
+exit 0
