@@ -28,7 +28,7 @@ broadcast() {
         [ -w "$pts" ] && _bc_write "$pts" "$1"
     done
 }
-# Kyverno's own policy-validation webhook intermittently times out on a cold
+# Kyverno's own policy webhooks intermittently refuse connections on a cold
 # cluster, so a single apply is not reliable.
 apply_policy() {
     for _ in 1 2 3 4 5; do
@@ -36,6 +36,34 @@ apply_policy() {
         sleep 2
     done
     return 1
+}
+
+# --- enforcement gate -------------------------------------------------------
+# A non-zero exit from the dry-run is NOT proof the policy is enforcing:
+# validate.kyverno.svc-fail is failurePolicy=Fail, so while Kyverno is
+# unreachable the API server rejects everything with an InternalError. Require
+# the rejection to name the policy we are actually gating on.
+gate_policy() {   # gate_policy <canary-file> <policy-name> <attempts>
+    GATE_LAST=""
+    _n=${3:-15}
+    while [ "$_n" -gt 0 ]; do
+        if GATE_LAST=$(kubectl apply --dry-run=server -f "$1" 2>&1); then
+            :                                   # accepted -> not enforcing yet
+        elif printf '%s' "$GATE_LAST" | grep -q "$2"; then
+            return 0                            # rejected BY THIS POLICY
+        fi
+        _n=$((_n - 1))
+        [ "$_n" -gt 0 ] && sleep 2
+    done
+    return 1
+}
+
+gate_reason() {   # gate_reason <policy-name>
+    if printf '%s' "$GATE_LAST" | grep -Eq 'failed calling webhook|connection refused|context deadline exceeded|InternalError|EOF'; then
+        printf 'The policy engine is restarting, so your manifest was never actually checked.'
+    else
+        printf "The '%s' policy is not enforcing yet, so your manifest was never actually checked." "$1"
+    fi
 }
 
 if [ -f /tmp/kyverno-setup-failed ]; then
@@ -55,11 +83,8 @@ if ! apply_policy /var/kyverno-policies/require-http-probes.yaml; then
     exit 1
 fi
 
-# Prove THIS step's policy is actually enforcing before grading anything.
-# The shared canary violates every policy, so once step 1's require-resources is
-# live it is rejected regardless - which let steps 2-5 pass a manifest that only
-# ever satisfied step 1. This canary satisfies every earlier policy and breaks
-# only require-probes, so a rejection can only have come from require-probes.
+# This canary satisfies every EARLIER policy and violates only require-probes,
+# so a rejection naming require-probes can only have come from require-probes itself.
 cat > /tmp/kyverno-canary-step2.yaml <<'CANARY'
 apiVersion: apps/v1
 kind: Deployment
@@ -88,17 +113,9 @@ spec:
               cpu: "100m"
 CANARY
 
-ENFORCING=0
-for _ in $(seq 1 30); do
-    if ! kubectl apply --dry-run=server -f /tmp/kyverno-canary-step2.yaml >/dev/null 2>&1; then
-        ENFORCING=1
-        break
-    fi
-    sleep 1
-done
-
-if [ "$ENFORCING" -ne 1 ]; then
-    broadcast "⚠️  The 'require-probes' policy is not enforcing yet, so your manifest was never actually checked."
+# Prove require-probes is enforcing RIGHT NOW, before grading anything.
+if ! gate_policy /tmp/kyverno-canary-step2.yaml "require-probes" 15; then
+    broadcast "⚠️  $(gate_reason "require-probes")"
     broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
     exit 1
 fi
@@ -107,9 +124,23 @@ APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 APPLY_OUT_EXIT=$?
 
 if [ $APPLY_OUT_EXIT -eq 0 ]; then
+    # Kyverno's admission path flaps: the same manifest has been seen rejected
+    # and then accepted seconds later, so passing the gate above proves nothing
+    # about the moment this manifest was graded. Prove it again. An acceptance
+    # is only trustworthy if the policy was live on both sides of it.
+    if ! gate_policy /tmp/kyverno-canary-step2.yaml "require-probes" 5; then
+        broadcast "⚠️  $(gate_reason "require-probes")"
+        broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
+        exit 1
+    fi
     broadcast "✅ North Pole approves of your HTTP probes!"
     exit 0
 else
+    if ! printf '%s' "$APPLY_OUT" | grep -q "require-probes"; then
+        broadcast "⚠️  The policy engine is restarting, so your manifest was never actually checked."
+        broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
+        exit 1
+    fi
     broadcast "❌ North Pole needs you to set the HTTP probes!"
     exit 1
 fi

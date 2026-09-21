@@ -72,11 +72,24 @@ spec:
           image: busybox
 CANARY
 
+# Two things the old loop got wrong. A rejection is not proof the policy is
+# enforcing - while Kyverno is unreachable, failurePolicy=Fail rejects
+# everything - so require the rejection to name require-resources. And Kyverno
+# flaps, so require it to hold three times in a row before releasing the
+# student, rather than catching one lucky moment.
 ENFORCING=0
-for _ in $(seq 1 60); do
-    if ! kubectl apply --dry-run=server -f /tmp/kyverno-canary.yaml >/dev/null 2>&1; then
-        ENFORCING=1
-        break
+STREAK=0
+for _ in $(seq 1 120); do
+    if CANARY_OUT=$(kubectl apply --dry-run=server -f /tmp/kyverno-canary.yaml 2>&1); then
+        STREAK=0
+    elif printf '%s' "$CANARY_OUT" | grep -q "require-resources"; then
+        STREAK=$((STREAK + 1))
+        if [ "$STREAK" -ge 3 ]; then
+            ENFORCING=1
+            break
+        fi
+    else
+        STREAK=0
     fi
     sleep 2
 done

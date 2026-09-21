@@ -28,6 +28,44 @@ broadcast() {
         [ -w "$pts" ] && _bc_write "$pts" "$1"
     done
 }
+# Kyverno's own policy webhooks intermittently refuse connections on a cold
+# cluster, so a single apply is not reliable.
+apply_policy() {
+    for _ in 1 2 3 4 5; do
+        POLICY_APPLY_ERR=$(kubectl apply -f "$1" 2>&1) && return 0
+        sleep 2
+    done
+    return 1
+}
+
+# --- enforcement gate -------------------------------------------------------
+# A non-zero exit from the dry-run is NOT proof the policy is enforcing:
+# validate.kyverno.svc-fail is failurePolicy=Fail, so while Kyverno is
+# unreachable the API server rejects everything with an InternalError. Require
+# the rejection to name the policy we are actually gating on.
+gate_policy() {   # gate_policy <canary-file> <policy-name> <attempts>
+    GATE_LAST=""
+    _n=${3:-15}
+    while [ "$_n" -gt 0 ]; do
+        if GATE_LAST=$(kubectl apply --dry-run=server -f "$1" 2>&1); then
+            :                                   # accepted -> not enforcing yet
+        elif printf '%s' "$GATE_LAST" | grep -q "$2"; then
+            return 0                            # rejected BY THIS POLICY
+        fi
+        _n=$((_n - 1))
+        [ "$_n" -gt 0 ] && sleep 2
+    done
+    return 1
+}
+
+gate_reason() {   # gate_reason <policy-name>
+    if printf '%s' "$GATE_LAST" | grep -Eq 'failed calling webhook|connection refused|context deadline exceeded|InternalError|EOF'; then
+        printf 'The policy engine is restarting, so your manifest was never actually checked.'
+    else
+        printf "The '%s' policy is not enforcing yet, so your manifest was never actually checked." "$1"
+    fi
+}
+
 if [ -f /tmp/kyverno-setup-failed ]; then
     broadcast "⚠️  The policy engine did not install correctly: $(cat /tmp/kyverno-setup-failed)"
     broadcast "   This is an environment problem, not your manifest - please report it."
@@ -39,28 +77,18 @@ fi
 # manifest has to keep satisfying everything it satisfied earlier, which is how
 # admission control behaves in reality. Nothing is deleted, so Kyverno's webhook
 # is never torn down and there is no re-registration race to wait out.
-POLICY_APPLY_ERR=$(kubectl apply -f /var/kyverno-policies/require-resource-limits.yaml 2>&1)
-if [ $? -ne 0 ]; then
+if ! apply_policy /var/kyverno-policies/require-resource-limits.yaml; then
     broadcast "⚠️  The policy could not be loaded, so your manifest was never actually checked:"
     broadcast "$POLICY_APPLY_ERR"
     exit 1
 fi
 
-# background.sh already blocked until admission control was proven live, so this
-# normally passes on the first try. It is a safety net, not a wait: a Ready
-# ClusterPolicy does NOT mean the webhook is registered and serving.
-ENFORCING=0
-for _ in $(seq 1 10); do
-    if ! kubectl apply --dry-run=server -f /tmp/kyverno-canary.yaml >/dev/null 2>&1; then
-        ENFORCING=1
-        break
-    fi
-    sleep 1
-done
-
-if [ "$ENFORCING" -ne 1 ]; then
-    broadcast "⚠️  Admission control is not rejecting anything, so your manifest was never actually checked."
-    broadcast "   This is an environment problem, not your manifest - please report it."
+# This canary satisfies every EARLIER policy and violates only require-resources,
+# so a rejection naming require-resources can only have come from require-resources itself.
+# Prove require-resources is enforcing RIGHT NOW, before grading anything.
+if ! gate_policy /tmp/kyverno-canary.yaml "require-resources" 15; then
+    broadcast "⚠️  $(gate_reason "require-resources")"
+    broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
     exit 1
 fi
 APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
@@ -68,9 +96,23 @@ APPLY_OUT=$(kubectl apply --dry-run=server -f ~/app.yaml 2>&1)
 APPLY_OUT_EXIT=$?
 
 if [ $APPLY_OUT_EXIT -eq 0 ]; then
+    # Kyverno's admission path flaps: the same manifest has been seen rejected
+    # and then accepted seconds later, so passing the gate above proves nothing
+    # about the moment this manifest was graded. Prove it again. An acceptance
+    # is only trustworthy if the policy was live on both sides of it.
+    if ! gate_policy /tmp/kyverno-canary.yaml "require-resources" 5; then
+        broadcast "⚠️  $(gate_reason "require-resources")"
+        broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
+        exit 1
+    fi
     broadcast "✅ North Pole approves of your resource requests and limits!"
     exit 0
 else
+    if ! printf '%s' "$APPLY_OUT" | grep -q "require-resources"; then
+        broadcast "⚠️  The policy engine is restarting, so your manifest was never actually checked."
+        broadcast "   Nothing is wrong with your answer - wait a few seconds and click Check again."
+        exit 1
+    fi
     broadcast "❌ North Pole needs you to set the resource requests and limits"
     exit 1
 fi
