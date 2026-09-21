@@ -30,4 +30,11 @@ spec:
                 secretKeyRef:
                   name: mongodb-secret
                   key: MONGO_INITDB_ROOT_PASSWORD
-          # TASK: Add the volumeMounts section here to mount the volume to /app/data
+          # TASK (step 2): Add the volumeMounts section here, mounting YOUR
+          # backup-pvc at /app/data. This is the gift-tracker app - MongoDB's
+          # own storage lives in statefulset.yaml and belongs to step 1.
+
+      # TASK (step 2): Add the volumes section here, level with 'containers:'
+      # above, pointing at the PersistentVolumeClaim you create. The PVC and the
+      # Service are separate documents - add them at the end of this file,
+      # each after a --- separator.
