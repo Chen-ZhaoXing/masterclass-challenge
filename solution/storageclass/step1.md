@@ -23,15 +23,17 @@ spec:
           envFrom:
             - secretRef:
                 name: mongodb-secret
+          # vvv  everything below is what the student adds  vvv
           volumeMounts:
             - name: mongodb-data
               mountPath: /data/db
   volumeClaimTemplates:
     - metadata:
-        name: mongodb-data
+        name: mongodb-data          # must match the volumeMounts name above
       spec:
-        accessModes: ["ReadWriteOnce"]  # <-- Add this line
-        storageClassName: "local-path"  # <-- Add this line
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-path
         resources:
           requests:
             storage: 5Gi
