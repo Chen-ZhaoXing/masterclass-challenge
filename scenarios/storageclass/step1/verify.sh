@@ -37,13 +37,28 @@ if [ ! -f ~/"$TARGET" ]; then
     exit 1
 fi
 
-# Apply the user's statefulset
-kubectl apply -f ~/"$TARGET" >/dev/null 2>&1
-APPLY_EXIT=$?
-
-if [ $APPLY_EXIT -ne 0 ]; then
-    broadcast "❌ North Pole found some errors while applying your manifest :("
-    exit 1
+# Apply the user's statefulset.
+APPLY_ERR=$(kubectl apply -f ~/"$TARGET" 2>&1)
+if [ $? -ne 0 ]; then
+    # volumeClaimTemplates is immutable on an existing StatefulSet. Anyone who
+    # clicked Check - or applied the file - before adding storage created a
+    # StatefulSet with none, and from then on every apply is rejected with
+    # "updates to statefulset spec ... are forbidden". Their manifest is fine
+    # and no amount of editing can fix it, so recreate the object for them.
+    # Nothing is lost: PVCs outlive the StatefulSet that made them.
+    if printf '%s' "$APPLY_ERR" | grep -q "updates to statefulset spec"; then
+        kubectl delete statefulset mongodb --wait=true >/dev/null 2>&1
+        APPLY_ERR=$(kubectl apply -f ~/"$TARGET" 2>&1)
+        if [ $? -ne 0 ]; then
+            broadcast "❌ North Pole could not apply your manifest:"
+            broadcast "$APPLY_ERR"
+            exit 1
+        fi
+    else
+        broadcast "❌ North Pole found some errors while applying your manifest:"
+        broadcast "$APPLY_ERR"
+        exit 1
+    fi
 fi
 
 # Query the running cluster to see if the fields were correctly populated
