@@ -33,11 +33,25 @@
 > - t≈5-15s: the elf finishes loading all 15,000 rows
 > - The Pod crashes and Kubernetes restarts it — and the loop never ends.
 >
-> ### Your Task
+> ## Your Task
 >
 > Fix the Deployment so the elf's work is guaranteed to **exit with code 0 before the shop container starts**.
 >
 > You'll know it's fixed when the Deployment starts cleanly with **0 restarts** and the health check reports a populated catalog.
+>
+> ## Useful Commands
+>
+> - View the Deployment spec: `kubectl -n workshop get deployment gift-registry -o yaml`{{exec interrupt}}
+>
+> Edit `~/app.yaml`:
+>
+> Then redeploy and watch for a healthy Pod:
+>
+> ```bash
+> kubectl apply -f ~/app.yaml
+> kubectl -n workshop get pods -w  # press Ctrl+C when done
+> kubectl -n workshop get pods -l app=gift-registry
+> ```
 >
 > ## Verification
 >
