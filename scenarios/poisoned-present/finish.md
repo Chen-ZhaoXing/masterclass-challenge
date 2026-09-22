@@ -2,7 +2,7 @@
 
 The scan comes back clean. The image was always small. Now it is also **current** — and those were never the same property, which is exactly what the rogue elves were counting on.
 
-📸 **For CTFd:** screenshot the `SUPPLY CHAIN CHECK PASSED` output from your terminal and submit it as your challenge answer.
+🏁 **Your CTFd flag was printed in the terminal** alongside the pass banner. Submit it to claim your points.
 
 ---
 
