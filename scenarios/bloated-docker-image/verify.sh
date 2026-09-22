@@ -121,6 +121,8 @@ fi
 # --- FINAL RESULT ---
 broadcast "\n============================================================"
 if [ "$FAIL" -eq 0 ]; then
+    broadcast "  ✅ STANDARDS CHECK PASSED"
+    broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: aWxvdmVNQVNURVJjbGFzczIwMjZTRVA="
     exit 0
 else
     broadcast "  ❌ STANDARDS CHECK FAILED"

@@ -37,5 +37,6 @@ if [ "$POD_STATUS" != "Running" ]; then
 fi
 
 broadcast "✅ The Weather API is configured and running! ConfigMap created successfully."
+broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: SWxvdmVtYXN0ZXJjbGFzczIwMjZzZXA="
 
 exit 0

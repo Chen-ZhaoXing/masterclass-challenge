@@ -83,4 +83,5 @@ if [ "$APP_TOKEN_PATH_VALUE" != "${TOKEN_MOUNT_PATH}/credentials.key" ]; then
 fi
 
 broadcast "✅ [PASS] The Master Guidance Coordinates are secured. All validation checks passed."
+broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: aUxvdmVNYXN0ZXJDbGFzczIwMjZTZXA="
 exit 0

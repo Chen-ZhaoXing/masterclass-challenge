@@ -166,6 +166,7 @@ if [ $APPLY_EXIT -eq 0 ]; then
         exit 1
     fi
     broadcast "✅ North Pole approves of your Non Root Configuration!"
+    broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: SWxPdkVtQXNUZVJjTGFTczIwMjZzRXA="
 else
     if ! printf '%s' "$APPLY_OUT" | grep -q "require-non-root"; then
         broadcast "⚠️  The policy engine is restarting, so your manifest was never actually checked."
