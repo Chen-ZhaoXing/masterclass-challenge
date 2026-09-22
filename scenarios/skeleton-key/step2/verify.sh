@@ -127,4 +127,5 @@ deny create_crb   "'create clusterrolebindings' at cluster scope"
 deny del_nodes    "'delete nodes' at cluster scope"
 
 broadcast "✅ [PASS] Least privilege achieved. The workload can read its own configuration and nothing else. The North Pole is secure."
+broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: SUxPVkVtYXN0ZXJjbGFzczIwMjZTRVA="
 exit 0

@@ -43,5 +43,6 @@ else
 fi
 
 broadcast "✅ The Hardcoded Password has been secured! No more plaintext secrets!"
+broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: SUxPVkVNQVNURVJDTEFTUzIwMjZTRVA="
 
 exit 0

@@ -27,5 +27,6 @@ else
 fi
 
 broadcast "✅ The Lost Namespace has been found! Well done, Trainee Elf!"
+broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: aWxvdmVtYXN0ZXJjbGFzczIwMjZzZXA="
 
 exit 0

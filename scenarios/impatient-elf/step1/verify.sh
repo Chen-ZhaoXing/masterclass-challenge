@@ -82,4 +82,5 @@ ROWS=$(echo "$HEALTH" | grep -oE '"catalog_rows"[[:space:]]*:[[:space:]]*[0-9]+'
   || fail "the catalog reports 0 rows — the elf's restock did not complete. Its initContainer must run migrate AND the catalog rebuild."
 
 broadcast "✅ [PASS] The elf now finishes its shift (initContainer, exit 0) before the shop container starts — and the shop stays up with full shelves."
+broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: aUxPVkVtYXN0ZXJDTEFTUzIwMjZzZXA="
 exit 0

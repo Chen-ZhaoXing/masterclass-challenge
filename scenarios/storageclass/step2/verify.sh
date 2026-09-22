@@ -82,5 +82,6 @@ else
 fi
 
 broadcast "✅ North Pole approves of your solution!"
+broadcast "🏁 CHALLENGE COMPLETE - submit this flag in CTFd: aWxvdmVfbWFzdGVyY2xhc3NfMjAyNl9zZXA="
 
 exit 0
