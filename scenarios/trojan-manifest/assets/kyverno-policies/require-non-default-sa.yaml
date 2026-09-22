@@ -16,4 +16,4 @@ spec:
         message: "Using the 'default' service account is not allowed. A specific ServiceAccount must be configured."
         pattern:
           spec:
-            =(serviceAccountName): "!default"
+            serviceAccountName: "!default"

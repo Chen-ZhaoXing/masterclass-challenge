@@ -39,6 +39,16 @@ apply_policy() {
     return 1
 }
 
+# Re-applying a ClusterPolicy on every Check goes through Kyverno's own policy
+# webhooks, which are cold on the first call and time out at 10s - that is what
+# made the first Check slow while later ones were instant. background.sh has
+# already applied it, so confirm with a plain read and only fall back to an
+# apply if it is genuinely missing.
+ensure_policy() {   # ensure_policy <file> <policy-name>
+    kubectl get clusterpolicy "$2" >/dev/null 2>&1 && return 0
+    apply_policy "$1"
+}
+
 # --- enforcement gate -------------------------------------------------------
 # A non-zero exit from the dry-run is NOT proof the policy is enforcing:
 # validate.kyverno.svc-fail is failurePolicy=Fail, so while Kyverno is
@@ -84,7 +94,7 @@ fi
 # manifest has to keep satisfying everything it satisfied earlier, which is how
 # admission control behaves in reality. Nothing is deleted, so Kyverno's webhook
 # is never torn down and there is no re-registration race to wait out.
-if ! apply_policy /var/kyverno-policies/require-non-default-sa.yaml; then
+if ! ensure_policy /var/kyverno-policies/require-non-default-sa.yaml require-non-default-sa; then
     broadcast "⚠️  The policy could not be loaded, so your manifest was never actually checked:"
     broadcast "$POLICY_APPLY_ERR"
     exit 1
